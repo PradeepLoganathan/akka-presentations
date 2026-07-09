@@ -1,0 +1,68 @@
+{
+  "slides": [
+    {
+      "id": "00-title",
+      "folder": "slides/00-title"
+    },
+    {
+      "id": "01-foundation",
+      "folder": "slides/01-foundation"
+    },
+    {
+      "id": "02-observations-model",
+      "folder": "slides/02-observations-model"
+    },
+    {
+      "id": "03-observations-governance",
+      "folder": "slides/03-observations-governance"
+    },
+    {
+      "id": "04-observations-corpus",
+      "folder": "slides/04-observations-corpus"
+    },
+    {
+      "id": "05-observations-evidence",
+      "folder": "slides/05-observations-evidence"
+    },
+    {
+      "id": "06-shift",
+      "folder": "slides/06-shift"
+    },
+    {
+      "id": "07-trust-loop",
+      "folder": "slides/07-trust-loop"
+    },
+    {
+      "id": "08-akka-move",
+      "folder": "slides/08-akka-move"
+    },
+    {
+      "id": "09-evalmatrix",
+      "folder": "slides/09-evalmatrix"
+    },
+    {
+      "id": "10-control-loci",
+      "folder": "slides/10-control-loci"
+    },
+    {
+      "id": "11-human-controls",
+      "folder": "slides/11-human-controls"
+    },
+    {
+      "id": "12-layering",
+      "folder": "slides/12-layering"
+    },
+    {
+      "id": "13-harness-roadmap",
+      "folder": "slides/13-harness-roadmap"
+    },
+    {
+      "id": "14-whiteboard",
+      "folder": "slides/14-whiteboard"
+    },
+    {
+      "id": "15-azure-comparison",
+      "folder": "slides/15-azure-comparison"
+    }
+  ]
+}
