@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI that lowers its own bill — Akka Token Shredder</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   SHARED — variables, resets, fonts, keyframes
+═══════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --yellow: #F5C518;
+  --black:  #000;
+  --dark:   #07070C;
+  --white:  #fff;
+  --gray:   #555;
+  --pad-8:  8vw;
+  --pad-6:  6vw;
+  --pad-10: 10vw;
+  --pad-3:  3vw;
+}
+@media (min-width: 1537px) {
+  :root {
+    --pad-8:  123px;
+    --pad-6:  92px;
+    --pad-10: 154px;
+    --pad-3:  46px;
+  }
+}
+html { scroll-behavior: auto; background: var(--black); }
+body {
+  font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  max-width: 1536px;
+  margin: 0 auto;
+}
+
+@keyframes fadeUp  { to { opacity:1; transform:translateY(0); } }
+@keyframes slideUp { to { opacity:1; transform:translateY(0); } }
+@keyframes bounceDown {
+  0%,100% { transform:rotate(45deg) translate(0,0); }
+  50%     { transform:rotate(45deg) translate(4px,4px); }
+}
+@keyframes bgSlide {
+  from { background-position:0 0; }
+  to   { background-position:36px 36px; }
+}
+
+/* ── ts-00-title ── */
+#ts-title {
+  height: 100vh; height: 100dvh; min-height: 720px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 0 var(--pad-8); position: relative; background: var(--black); overflow: hidden;
+  text-align: center;
+}
+#ts-title::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.07) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events: none; z-index: 0;
+}
+#ts-title::after {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 25%, rgba(0,0,0,0.85) 75%);
+  pointer-events:none; z-index:0;
+}
+#ts-title > * { position: relative; z-index: 2; }
+
+.tst-logo {
+  margin-bottom: 36px;
+  opacity:0; transform:translateY(16px);
+  animation: fadeUp .6s ease forwards .3s;
+}
+.tst-logo svg { height: 52px; width: auto; }
+
+.tst-headline {
+  font-size: clamp(48px, 6.8vw, 104px); font-weight: 700;
+  line-height: 1.02; letter-spacing: -0.03em; color: var(--white);
+  max-width: 1200px; margin-bottom: 24px;
+  opacity:0; transform:translateY(16px);
+  animation: fadeUp .6s ease forwards .6s;
+}
+.tst-headline .accent { color: var(--yellow); }
+
+.tst-sub {
+  font-size: clamp(19px, 2vw, 30px);
+  color: #d4d4d4; font-weight: 700;
+  letter-spacing: 8px; line-height: 1.5;
+  margin-bottom: 52px;
+  opacity:0; transform:translateY(16px);
+  animation: fadeUp .5s ease forwards .9s;
+}
+
+/* Loop glyph */
+.tst-loop {
+  display: flex; flex-direction: column; align-items: center;
+  width: min(720px, 76vw);
+  margin-bottom: 48px;
+  opacity:0; transform:translateY(14px);
+  animation: fadeUp .6s ease forwards 1.1s;
+}
+.tst-loop-stages {
+  display: flex; align-items: center; gap: 18px;
+  width: 100%; justify-content: space-between;
+}
+.tst-loop-stages span {
+  font-size: clamp(17px, 1.75vw, 25px);
+  font-weight: 700; text-transform: uppercase;
+  letter-spacing: 2.8px; color: var(--white);
+}
+.tst-loop-arrow { width: 36px; height: 18px; flex-shrink: 0; }
+.tst-loop-return {
+  width: calc(100% - 72px);
+  height: 38px;
+  margin-top: 10px;
+  border-left: 1.5px solid var(--yellow);
+  border-right: 1.5px solid var(--yellow);
+  border-bottom: 1.5px solid var(--yellow);
+  position: relative;
+  opacity: 0; animation: tst-fade .5s ease-out 1.7s forwards;
+}
+.tst-loop-tip {
+  position: absolute;
+  top: -9px; left: -6.75px;
+  width: 0; height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 9px solid var(--yellow);
+}
+@keyframes tst-fade { to { opacity: 1; } }
+.tst-loop-label {
+  margin-top: 9px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--gray); font-weight: 600;
+}
+
+.tst-tag {
+  font-size: clamp(17px, 1.65vw, 25px);
+  color: #b8b8b8; line-height: 1.45; max-width: 960px;
+  margin-bottom: 44px;
+  opacity:0; transform:translateY(14px);
+  animation: fadeUp .5s ease forwards 1.3s;
+}
+.tst-tag-num { color: var(--yellow); font-weight: 700; }
+
+.tst-divider {
+  width: 64px; height: 3px; background: var(--yellow);
+  opacity:0;
+  animation: fadeUp .5s ease forwards 1.4s;
+}
+
+.tst-scroll-hint {
+  margin-top: 48px;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  opacity:0; animation:fadeUp .5s ease forwards 2.1s;
+}
+.tst-scroll-hint span { font-size:9px; text-transform:uppercase; letter-spacing:3px; color:var(--gray); }
+@media (max-height: 820px) { .tst-scroll-hint { display: none; } }
+
+@media (max-width: 820px) {
+  #ts-title {
+    height: auto; min-height: 100vh; min-height: 100dvh;
+    padding-top: 72px; padding-bottom: 56px;
+  }
+  .tst-headline { font-size: clamp(38px, 10vw, 56px); }
+  .tst-sub { letter-spacing: 3px; }
+  .tst-loop { width: 100%; }
+}
+.tst-scroll-arrow {
+  width:18px; height:18px;
+  border-right:1.5px solid var(--yellow); border-bottom:1.5px solid var(--yellow);
+  transform:rotate(45deg); animation:bounceDown 1.6s ease infinite;
+}
+
+
+/* ── tss-01-problem ── */
+#tss1-wrapper {
+  height: 200vh;
+  position: relative;
+}
+#tss1-sticky {
+  position: sticky; top: 0;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#tss1-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#tss1-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; }
+
+[data-tss1] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-tss1].visible { opacity: 1; transform: none; }
+
+.tss1-head { margin-bottom: 40px; }
+.tss1-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.tss1-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.tss1-headline {
+  font-size: clamp(34px, 4.2vw, 58px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.tss1-headline .accent { color: var(--yellow); }
+.tss1-sub {
+  font-size: clamp(15px, 1.35vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1150px;
+}
+.tss1-num { color: var(--yellow); font-weight: 700; white-space: nowrap; }
+
+.tss1-chart { max-width: 940px !important; margin: 0 auto; }
+.tss1-chart-title {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 1.8px;
+  color: #888; font-weight: 600; margin-bottom: 14px;
+}
+.tss1-curve { width: 100%; height: auto; display: block; overflow: visible; }
+.tss1-tick {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px; fill: #555;
+}
+.tss1-series { font-size: 11px; font-weight: 700; letter-spacing: 1.6px; opacity: 0; }
+.tss1-series-tok { fill: var(--yellow); }
+.tss1-series-infra { fill: #999; }
+.tss1-line { stroke-dasharray: 100; stroke-dashoffset: 100; }
+.tss1-chart.visible .tss1-line-infra { animation: tss1-draw .8s ease-out .15s forwards; }
+.tss1-chart.visible .tss1-line-tokens { animation: tss1-draw .9s ease-out .35s forwards; }
+.tss1-chart.visible .tss1-series { animation: tss1-fade .25s ease-out 1.15s forwards; }
+@keyframes tss1-draw { to { stroke-dashoffset: 0; } }
+@keyframes tss1-fade { to { opacity: 1; } }
+.tss1-axis-label {
+  margin-top: 6px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+  color: #555; font-weight: 600; text-align: center;
+}
+
+.tss1-evidence {
+  max-width: 940px !important; margin: 30px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid #1F1F1F;
+}
+.tss1-evidence-body {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #d4d4d4; line-height: 1.5;
+  margin-bottom: 8px;
+}
+.tss1-evidence-src {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px;
+  color: #555; font-weight: 500;
+}
+
+@media (max-width: 820px) {
+  #tss1-wrapper { height: auto; }
+  #tss1-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  .tss1-tick { font-size: 22px; }
+  .tss1-series { font-size: 24px; letter-spacing: 2.4px; }
+}
+
+
+/* ── tss-02-how ── */
+#tss2-wrapper {
+  height: 220vh;
+  position: relative;
+}
+#tss2-sticky {
+  position: sticky; top: 0;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#tss2-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#tss2-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; }
+
+[data-tss2] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-tss2].visible { opacity: 1; transform: none; }
+
+.tss2-head { margin-bottom: 34px; }
+.tss2-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.tss2-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.tss2-headline {
+  font-size: clamp(32px, 4vw, 54px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.tss2-headline .accent { color: var(--yellow); }
+.tss2-sub {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1200px;
+}
+
+/* Loop strip */
+.tss2-loop {
+  display: flex; align-items: center; justify-content: center; gap: 18px;
+  max-width: 860px !important; margin: 0 auto 22px;
+}
+.tss2-step {
+  font-family: inherit; background: none; border: 0;
+  padding: 6px 4px 9px; cursor: pointer;
+  font-size: clamp(14px, 1.3vw, 19px);
+  font-weight: 700; text-transform: uppercase;
+  letter-spacing: 2.4px; color: var(--white);
+  position: relative; transition: color .2s ease;
+}
+.tss2-step::after {
+  content: ''; position: absolute; left: 4px; right: 4px; bottom: 0; height: 2px;
+  background: var(--yellow); border-radius: 2px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .3s cubic-bezier(0.16,1,0.3,1);
+}
+.tss2-step:hover { color: var(--yellow); }
+.tss2-step.active { color: var(--yellow); }
+.tss2-step.active::after { transform: scaleX(1); }
+.tss2-loop svg { width: 26px; height: 14px; flex-shrink: 0; }
+
+/* Click-to-reveal "how Akka runs it" box (grid-stacked so it reserves the
+   tallest card's height — this is what pushes the diagram down, with no jump) */
+.tss2-explain { max-width: 900px !important; margin: 0 auto 38px; }
+.tss2-explain-stack { display: grid; }
+.tss2-explain-stack > * {
+  grid-area: 1 / 1;
+  display: flex; flex-direction: column; justify-content: center;
+  opacity: 0; transition: opacity .3s ease, transform .32s cubic-bezier(0.16,1,0.3,1);
+}
+.tss2-explain-stack > .active { opacity: 1; }
+.tss2-explain-card {
+  transform: translateY(8px);
+  text-align: left; padding: 15px 22px;
+  background: linear-gradient(180deg, #151515, #0f0f0f);
+  border: 1px solid rgba(245,197,24,0.28);
+  border-left: 3px solid var(--yellow);
+  border-radius: 8px;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.45);
+}
+.tss2-explain-card.active { transform: none; }
+.tss2-explain-k {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 2.4px;
+  color: var(--yellow); font-weight: 700; margin-bottom: 7px;
+}
+.tss2-explain-t {
+  font-size: clamp(14px, 1.15vw, 17px); color: #d6d6d6; line-height: 1.5; margin: 0;
+}
+
+/* Staging diagram */
+.tss2-diagram { max-width: 1150px !important; margin: 0 auto; }
+.tss2-diagram svg { width: 100%; height: auto; display: block; overflow: visible; }
+.tss2-nd  { fill: #141414; stroke: #F5C518; stroke-width: 0.75; rx: 5; }
+.tss2-ndy { fill: #1a1700; stroke: #F5C518; stroke-width: 0.75; rx: 5; }
+.tss2-frame { fill: rgba(255,255,255,0.015); stroke: #2A2A2A; stroke-width: 1; }
+.tss2-frame-tag {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 12px; fill: #888; font-weight: 700;
+  letter-spacing: 2.2px;
+}
+.tss2-nl {
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 16px; fill: #ccc; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.2px;
+}
+.tss2-nl-y { fill: #F5C518; }
+.tss2-nls {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 13px; fill: #777;
+}
+.tss2-nls-y { fill: #F5C518; }
+.tss2-dim { fill: #666; font-size: 12px; }
+.tss2-el { stroke: #F5C518; stroke-width: 1; }
+.tss2-el-dash { stroke: #F5C518; stroke-width: 1; stroke-dasharray: 4,3; }
+
+/* Mobile stacked variant of the staging diagram (hidden on desktop) */
+.tss2-m { display: none; }
+
+@media (max-width: 820px) {
+  #tss2-wrapper { height: auto; }
+  #tss2-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  .tss2-loop { flex-wrap: wrap; justify-content: flex-start; gap: 10px; margin-bottom: 30px; }
+  .tss2-diagram { display: none; }
+
+  .tss2-m { display: flex; flex-direction: column; gap: 12px; }
+  .tss2-m-frame {
+    border: 1px solid #2A2A2A;
+    border-radius: 8px;
+    padding: 14px 14px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    background: rgba(255,255,255,0.015);
+  }
+  .tss2-m-tag {
+    font-size: 11px; letter-spacing: 2.2px; text-transform: uppercase;
+    color: #888; font-weight: 700;
+  }
+  .tss2-m-card {
+    background: #141414;
+    border: 1px solid rgba(245,197,24,0.6);
+    border-radius: 5px;
+    padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .tss2-m-card--y { background: #1a1700; }
+  .tss2-m-name {
+    font-size: 14px; color: #ccc; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1.2px;
+  }
+  .tss2-m-name em {
+    font-style: normal; text-transform: none; letter-spacing: 0;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11px; color: #777; margin-left: 8px;
+  }
+  .tss2-m-name--y { color: var(--yellow); }
+  .tss2-m-read {
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px; color: #777;
+  }
+  .tss2-m-read--y { color: var(--yellow); }
+  .tss2-m-promote {
+    align-self: center;
+    background: #141414;
+    border: 1px solid rgba(245,197,24,0.6);
+    border-radius: 5px;
+    padding: 10px 22px;
+    font-size: 13px; color: #ccc; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1.2px;
+  }
+  .tss2-m-note {
+    align-self: center;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11px; color: #666;
+  }
+}
+
+
+/* ── tss-03-where ── */
+#tss3-wrapper {
+  height: 220vh;
+  position: relative;
+}
+#tss3-sticky {
+  position: sticky; top: 0;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#tss3-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#tss3-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1400px; margin-left: auto; margin-right: auto; }
+
+[data-tss3] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-tss3].visible { opacity: 1; transform: none; }
+
+.tss3-head { margin-bottom: 58px; }
+.tss3-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 12px;
+}
+.tss3-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.tss3-headline {
+  font-size: clamp(30px, 3.6vw, 50px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 10px;
+}
+.tss3-headline .accent { color: var(--yellow); }
+.tss3-sub {
+  font-size: clamp(14px, 1.2vw, 18px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1250px;
+}
+/* Fixed-aspect stage */
+.tss3-stagepan { width: 100%; }
+.tss3-stage {
+  position: relative;
+  width: min(100%, calc((100vh - 285px) * 2.258));
+  aspect-ratio: 1400 / 620;
+  margin: 0 auto;
+}
+.tss3-wires { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
+.tss3-w-cluster {
+  fill: rgba(255,255,255,0.012);
+  stroke: #3F3F3F; stroke-width: 1.6;
+  stroke-dasharray: 10 8;
+}
+.tss3-w-serve { stroke: var(--yellow); stroke-width: 2.4; }
+.tss3-w-serve-head { fill: var(--yellow); }
+.tss3-w-train { stroke: #8A8A8A; stroke-width: 1.8; stroke-dasharray: 8 7; fill: none; }
+.tss3-w-train-head { fill: #8A8A8A; }
+.tss3-w-cylbody { fill: rgba(255,255,255,0.02); stroke: #4A4A4A; stroke-width: 1.5; }
+.tss3-w-cyltop { fill: #0C0C0C; stroke: #4A4A4A; stroke-width: 1.5; }
+
+/* Labels */
+.tss3-entrylbl {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: var(--black); padding: 2px 10px;
+  white-space: nowrap;
+}
+.tss3-entrylbl b {
+  font-size: clamp(10px, 0.95vw, 13px);
+  text-transform: uppercase; letter-spacing: 1.8px;
+  color: #d4d4d4; font-weight: 700;
+}
+.tss3-entrylbl span {
+  font-size: clamp(8px, 0.75vw, 10px);
+  text-transform: uppercase; letter-spacing: 1.6px;
+  color: #888; font-weight: 600;
+}
+.tss3-lbl {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: clamp(9px, 0.85vw, 12px);
+  text-transform: uppercase; letter-spacing: 1.8px;
+  color: #888; font-weight: 600; white-space: nowrap;
+  background: var(--black); padding: 2px 8px;
+}
+.tss3-lbl--serve { color: #d4d4d4; font-weight: 700; }
+.tss3-lbl--side { transform: none; }
+.tss3-lbl--2l { white-space: normal; text-align: center; line-height: 1.6; }
+.tss3-lbl--sub {
+  font-size: clamp(8px, 0.75vw, 10px);
+  letter-spacing: 1.6px;
+  color: #888; font-weight: 600;
+}
+
+.tss3-legend { position: absolute; right: 2.9%; top: 83%; display: flex; gap: 22px; }
+.tss3-leg {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: clamp(9px, 0.85vw, 11px);
+  text-transform: uppercase; letter-spacing: 1.6px;
+  color: #888; font-weight: 600;
+}
+.tss3-leg-serve { width: 26px; height: 0; border-top: 2px solid var(--yellow); }
+.tss3-leg-train { width: 26px; height: 0; border-top: 2px dashed #8A8A8A; }
+
+.tss3-k8s-head { position: absolute; display: flex; align-items: center; gap: 8px; color: #b8b8b8; }
+.tss3-k8s-head svg { width: clamp(14px, 1.2vw, 18px); height: clamp(14px, 1.2vw, 18px); }
+.tss3-k8s-head span {
+  font-size: clamp(10px, 0.9vw, 12px);
+  text-transform: uppercase; letter-spacing: 2.2px;
+  font-weight: 700;
+}
+
+/* Boxes */
+.tss3-box {
+  position: absolute;
+  border-radius: 8px;
+  padding: clamp(10px, 1.2vw, 20px) clamp(14px, 1.5vw, 24px);
+  display: flex; flex-direction: column; justify-content: center;
+}
+.tss3-runtime {
+  background: rgba(245,197,24,0.055);
+  border: 1px solid rgba(245,197,24,0.28);
+  gap: 8px;
+}
+.tss3-vllm { background: rgba(255,255,255,0.025); border: 1px solid #2A2A2A; gap: 10px; justify-content: flex-start; }
+.tss3-training { background: rgba(255,255,255,0.025); border: 1px solid #2A2A2A; gap: 8px; justify-content: flex-start; }
+.tss3-box-title {
+  font-size: clamp(13px, 1.25vw, 18px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.6px;
+  color: var(--white);
+}
+.tss3-box-title em {
+  font-style: normal; text-transform: none; letter-spacing: 0.4px;
+  font-size: 0.76em; color: #999; font-weight: 500;
+  margin-left: 10px;
+}
+.tss3-runtime-items {
+  font-size: clamp(18px, 1.9vw, 27px);
+  color: var(--white); font-weight: 600; letter-spacing: -0.01em;
+}
+.tss3-runtime-items i { font-style: normal; color: #777; margin: 0 8px; }
+
+.tss3-adapters { display: flex; flex-wrap: nowrap; gap: 6px; align-items: center; }
+.tss3-adapter {
+  display: inline-flex; align-items: center;
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: clamp(9px, 0.85vw, 12px);
+  padding: 4px 9px;
+  color: #d4d4d4; font-weight: 500;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #2A2A2A;
+  border-radius: 999px;
+  line-height: 1.1; white-space: nowrap;
+}
+.tss3-adapter--more { color: #999; border-color: transparent; background: transparent; padding: 4px 2px; }
+.tss3-base {
+  padding: 7px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #2A2A2A;
+  border-radius: 4px;
+  font-size: clamp(11px, 1.05vw, 15px);
+  color: var(--white); font-weight: 700;
+  text-align: center;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.tss3-base em {
+  font-style: normal;
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  color: var(--yellow);
+}
+.tss3-training-desc { font-size: clamp(11px, 1.05vw, 15px); color: #aaa; line-height: 1.4; }
+
+.tss3-log-body {
+  position: absolute;
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  text-align: center;
+}
+.tss3-log-body b {
+  font-size: clamp(13px, 1.25vw, 18px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--white);
+}
+.tss3-log-body span {
+  font-size: clamp(10px, 0.9vw, 12px);
+  text-transform: uppercase; letter-spacing: 1.4px;
+  color: #888; font-weight: 500;
+}
+
+.tss3-nodes { position: absolute; display: flex; align-items: center; gap: 8px; }
+.tss3-node {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: clamp(8px, 0.75vw, 10px); letter-spacing: 1px;
+  padding: 6px 11px;
+  color: #999;
+  border: 1px solid #2A2A2A;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.03);
+}
+.tss3-node--gpu {
+  color: #d4d4d4;
+  border-color: rgba(245,197,24,0.35);
+  background: rgba(245,197,24,0.05);
+}
+
+/* Mobile reflow helpers (invisible on desktop) */
+.tss3-m { display: none; }
+.tss3-plat { display: contents; }
+
+@media (max-width: 820px) {
+  #tss3-wrapper { height: auto; }
+  #tss3-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+    overflow: visible;
+  }
+  .tss3-stagepan { overflow: visible; }
+  .tss3-stage {
+    width: 100%; max-width: none; margin: 0;
+    aspect-ratio: auto;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .tss3-wires, .tss3-legend, .tss3-lbl, .tss3-entrylbl { display: none !important; }
+  .tss3-box, .tss3-log-body, .tss3-nodes, .tss3-k8s-head {
+    position: static !important;
+    left: auto !important; top: auto !important;
+    width: auto !important; height: auto !important;
+  }
+
+  .tss3-m {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    padding-bottom: 2px;
+  }
+  .tss3-m b {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 1.8px;
+    color: #d4d4d4; font-weight: 700;
+  }
+  .tss3-m span {
+    font-size: 9px; text-transform: uppercase; letter-spacing: 1.6px;
+    color: #888; font-weight: 600;
+  }
+  .tss3-m svg { width: 13px; height: 28px; }
+
+  .tss3-plat {
+    display: flex; flex-direction: column; gap: 14px;
+    border: 1.5px dashed #3F3F3F;
+    border-radius: 14px;
+    padding: 16px 14px 18px;
+  }
+  .tss3-box { padding: 16px 18px; }
+  .tss3-runtime-items { font-size: 18px; }
+  .tss3-adapters { flex-wrap: wrap; }
+  .tss3-log-body {
+    border: 1px solid #4A4A4A;
+    border-radius: 14px;
+    padding: 16px;
+    align-items: flex-start; text-align: left;
+  }
+  .tss3-nodes { flex-wrap: wrap; }
+}
+
+
+/* ── tss-04-capabilities ── */
+#tss3b-wrapper {
+  height: 220vh;
+  position: relative;
+}
+#tss3b-sticky {
+  position: sticky; top: 0;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#tss3b-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#tss3b-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1400px; margin-left: auto; margin-right: auto; }
+
+[data-tss3b] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-tss3b].visible { opacity: 1; transform: none; }
+
+.tss3b-head { margin-bottom: 36px; }
+.tss3b-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.tss3b-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.tss3b-headline {
+  font-size: clamp(32px, 4vw, 54px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+}
+.tss3b-headline .accent { color: var(--yellow); }
+
+/* Stage rail + tiles */
+.tss3b-main {
+  display: grid;
+  grid-template-columns: minmax(190px, 250px) 1fr;
+  gap: 30px;
+  align-items: start;
+}
+.tss3b-tabs {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.tss3b-tab {
+  appearance: none; cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: clamp(16px, 1.5vw, 22px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2.2px;
+  text-align: left;
+  color: #888;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid #2A2A2A;
+  border-radius: 8px;
+  padding: 18px 24px;
+  transition: color .2s ease, border-color .2s ease, background .2s ease;
+}
+.tss3b-tab:hover { color: #d4d4d4; }
+.tss3b-tab.active {
+  color: var(--black);
+  background: var(--yellow);
+  border-color: var(--yellow);
+}
+
+/* Panels */
+.tss3b-panel { display: none; }
+.tss3b-panel.active {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  animation: tss3b-in .35s ease;
+}
+@keyframes tss3b-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.tss3b-tile {
+  display: flex; flex-direction: column;
+  padding: 20px 22px 22px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid #1F1F1F;
+  border-radius: 6px;
+}
+.tss3b-icon {
+  width: clamp(20px, 1.8vw, 26px);
+  height: clamp(20px, 1.8vw, 26px);
+  color: var(--yellow);
+  margin-bottom: 12px;
+}
+.tss3b-tile-title {
+  font-size: clamp(15px, 1.35vw, 20px); font-weight: 700;
+  letter-spacing: -0.01em; color: var(--white);
+  margin-bottom: 10px;
+}
+.tss3b-tile-desc {
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: #b8b8b8; line-height: 1.45;
+  margin-bottom: 16px;
+}
+.tss3b-tile-caps { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+.tss3b-cap {
+  font-size: clamp(11.5px, 1vw, 14px);
+  color: #999; line-height: 1.4;
+  padding-left: 14px; position: relative;
+}
+.tss3b-cap::before {
+  content: '\203A'; position: absolute; left: 0; top: 0;
+  color: var(--yellow); font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+  .tss3b-main { grid-template-columns: 1fr; }
+  .tss3b-tabs { flex-direction: row; }
+}
+
+@media (max-width: 820px) {
+  #tss3b-wrapper { height: auto; }
+  #tss3b-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+}
+
+@media (max-width: 600px) {
+  .tss3b-panel.active { grid-template-columns: 1fr; }
+  .tss3b-tabs { flex-wrap: wrap; gap: 8px; }
+  .tss3b-tab { padding: 10px 18px; font-size: 14px; letter-spacing: 1.6px; }
+}
+
+
+/* ── tss-05-results ── */
+#tss4-wrapper {
+  height: 200vh;
+  position: relative;
+}
+#tss4-sticky {
+  position: sticky; top: 0;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 0 var(--pad-6);
+  background: var(--black);
+  overflow: hidden;
+}
+#tss4-sticky::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.04) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events:none; z-index:0;
+}
+#tss4-sticky > * { position: relative; z-index: 1; width: 100%; max-width: 1500px; }
+
+[data-tss4] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s ease, transform .55s cubic-bezier(0.16,1,0.3,1);
+}
+[data-tss4].visible { opacity: 1; transform: none; }
+
+.tss4-head { margin-bottom: 44px; }
+.tss4-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
+  color: var(--yellow); font-weight: 600; margin-bottom: 14px;
+}
+.tss4-eyebrow::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 2px; background: var(--yellow);
+  margin-right: 10px; vertical-align: middle;
+}
+.tss4-headline {
+  font-size: clamp(32px, 4vw, 54px); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em; color: var(--white);
+  margin-bottom: 12px;
+}
+.tss4-headline .accent { color: var(--yellow); }
+.tss4-sub {
+  font-size: clamp(15px, 1.3vw, 19px);
+  color: #b8b8b8; line-height: 1.45; max-width: 1150px;
+}
+.tss4-num { color: var(--white); font-weight: 700; }
+.tss4-src { color: #777; font-size: 0.9em; }
+
+.tss4-body { max-width: 1020px !important; margin: 0 auto; }
+.tss4-table { width: 100%; border-collapse: collapse; }
+.tss4-table th {
+  font-size: 13px; text-transform: uppercase; letter-spacing: 2px;
+  color: #888; font-weight: 600; text-align: left;
+  padding: 0 16px 12px 0;
+  border-bottom: 1px solid #2A2A2A;
+}
+.tss4-table td {
+  font-size: clamp(17px, 1.6vw, 24px);
+  color: #d4d4d4;
+  padding: 18px 16px 18px 0;
+  border-bottom: 1px solid #1A1A1A;
+}
+.tss4-row-slm td { border-bottom: none; }
+.tss4-row-slm td:first-child { color: var(--white); font-weight: 600; }
+.tss4-mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
+.tss4-y { color: var(--yellow) !important; font-weight: 700; }
+
+.tss4-supports {
+  max-width: 1020px !important;
+  margin: 30px auto 0;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.tss4-support {
+  font-size: clamp(13px, 1.15vw, 16.5px);
+  color: #b8b8b8; line-height: 1.5;
+  padding-left: 16px; position: relative;
+}
+.tss4-support::before {
+  content: '\203A'; position: absolute; left: 0; top: 0;
+  color: var(--yellow); font-weight: 700;
+}
+
+@media (max-width: 820px) {
+  #tss4-wrapper { height: auto; }
+  #tss4-sticky {
+    position: static; height: auto;
+    padding-top: 64px; padding-bottom: 64px;
+  }
+  .tss4-table th { font-size: 10px; letter-spacing: 1.2px; padding: 0 10px 8px 0; }
+  .tss4-table td { font-size: 15px; padding: 12px 10px 12px 0; }
+}
+
+
+/* ── ts-10-close ── */
+#ts-closing {
+  height: 100vh; height: 100dvh; min-height: 760px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 0 var(--pad-8); position: relative; background: var(--black); overflow: hidden;
+  text-align: center;
+}
+#ts-closing::before {
+  content:''; position:absolute; inset:0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.07) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events: none; z-index: 0;
+}
+#ts-closing::after {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 25%, rgba(0,0,0,0.85) 75%);
+  pointer-events:none; z-index:0;
+}
+
+.tsc-reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .6s ease, transform .6s cubic-bezier(0.16,1,0.3,1);
+  position: relative; z-index: 2;
+}
+.tsc-reveal.visible { opacity: 1; transform: none; }
+.tsc-reveal.visible:nth-child(1) { transition-delay: 0s; }
+.tsc-reveal.visible:nth-child(2) { transition-delay: .1s; }
+.tsc-reveal.visible:nth-child(3) { transition-delay: .18s; }
+.tsc-reveal.visible:nth-child(4) { transition-delay: .26s; }
+.tsc-reveal.visible:nth-child(5) { transition-delay: .34s; }
+.tsc-reveal.visible:nth-child(6) { transition-delay: .5s; }
+
+.tsc-logo { margin-bottom: 34px; }
+.tsc-logo svg { height: 42px; width: auto; }
+
+.tsc-headline {
+  font-size: clamp(40px, 5.5vw, 80px); font-weight: 700;
+  line-height: 1.02; letter-spacing: -0.03em; color: var(--white);
+  max-width: 1000px; margin-bottom: 20px;
+}
+.tsc-headline .accent { color: var(--yellow); }
+
+.tsc-sub {
+  font-size: clamp(12px, 1.2vw, 16px);
+  color: var(--gray); font-weight: 600;
+  letter-spacing: 4px; line-height: 1.5;
+  margin-bottom: 34px;
+}
+
+.tsc-divider {
+  width: 56px; height: 3px; background: var(--yellow); margin-bottom: 36px;
+}
+
+.tsc-cta-block {
+  max-width: 980px; width: 100%;
+  margin-bottom: 40px;
+}
+.tsc-cta-label {
+  font-size: 13px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--yellow); font-weight: 700; margin-bottom: 8px;
+}
+.tsc-cta-line {
+  font-size: clamp(14px, 1.25vw, 18px);
+  color: #b8b8b8; margin-bottom: 26px;
+}
+
+.tsc-phases {
+  display: flex; align-items: flex-start; gap: 14px;
+  margin-bottom: 26px;
+}
+.tsc-phase { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.tsc-phase-node {
+  padding: 8px 22px;
+  border: 1px solid var(--yellow);
+  background: rgba(245,197,24,0.06);
+  border-radius: 999px;
+  font-size: clamp(13px, 1.15vw, 16px); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--white);
+}
+.tsc-phase-days {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px; color: var(--yellow); font-weight: 600;
+}
+.tsc-phase-desc {
+  font-size: clamp(11px, 0.95vw, 13px);
+  color: #999; line-height: 1.45; max-width: 260px;
+}
+.tsc-phase-line {
+  flex: 0 0 34px; height: 1px;
+  background: rgba(245,197,24,0.45);
+  margin-top: 18px;
+}
+
+.tsc-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 32px;
+  background: var(--yellow); color: var(--black);
+  font-size: 14px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 2px; border-radius: 6px;
+  text-decoration: none;
+  transition: background .2s ease;
+}
+.tsc-cta:hover { background: #e0b416; }
+
+@media (max-width: 820px) {
+  #ts-closing {
+    height: auto; min-height: 100vh; min-height: 100dvh;
+    padding-top: 72px; padding-bottom: 56px;
+  }
+  .tsc-sub { letter-spacing: 2.5px; }
+  .tsc-phases { flex-direction: column; align-items: center; gap: 18px; }
+  .tsc-phase-line { display: none; }
+  .tsc-cta-block { max-width: 100%; }
+}
+
+<!-- DEMO_CSS_MARKER -->
+</style>
+</head>
+<body>
+<section id="ts-title">
+  <div class="tst-logo">
+    <svg width="109" height="25" viewBox="0 0 109 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#tst)">
+        <path d="M72.158 0 63.105 10.133V0h-6.199v24.98h6.199V14.847l9.053 10.133h8.277L69.277 12.49 80.435 0h-8.277Z" fill="#fff"/>
+        <path d="m13.78 8.287 3.485 8.123h-6.968l3.485-8.123h-.002ZM11.336.062 0 25h6.552l1.561-3.436h11.336L21.113 25h6.45L16.275.062h-4.94Z" fill="#fff"/>
+        <path d="m95.22 8.287 3.484 8.123h-6.968l3.485-8.123h-.001ZM92.775.062 81.44 25h6.551l1.561-3.436h11.336L102.552 25H109L97.715.062h-4.94Z" fill="#fff"/>
+        <path d="M45.283.062 36.246 10.179V.062H30.057V25h6.189V14.883l9.037 10.117h8.264L42.408 12.53 53.547.062h-8.264Z" fill="#fff"/>
+      </g>
+      <defs><clipPath id="tst"><rect width="109" height="25" fill="#fff"/></clipPath></defs>
+    </svg>
+  </div>
+
+  <h1 class="tst-headline">AI that lowers its <span class="accent">own bill.</span></h1>
+  <div class="tst-sub">AKKA TOKEN SHREDDER</div>
+
+  <div class="tst-loop">
+    <div class="tst-loop-stages">
+      <span>Adapt</span>
+      <svg class="tst-loop-arrow" viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
+      <span>Evaluate</span>
+      <svg class="tst-loop-arrow" viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
+      <span>Serve</span>
+    </div>
+    <div class="tst-loop-return" aria-hidden="true"><i class="tst-loop-tip"></i></div>
+    <div class="tst-loop-label">production feedback</div>
+  </div>
+
+  <div class="tst-tag">Cut token costs up to <span class="tst-tag-num">80%</span> with SLMs.</div>
+  <div class="tst-divider"></div>
+
+  <div class="tst-scroll-hint">
+    <span>scroll to explore</span>
+    <div class="tst-scroll-arrow"></div>
+  </div>
+</section>
+
+
+<div id="tss1-wrapper">
+  <div id="tss1-sticky">
+    <div class="tss1-head">
+      <div class="tss1-eyebrow" data-tss1="0">AI cost control</div>
+      <div class="tss1-headline" data-tss1="0">Token spend grows with <span class="accent">every agent you ship</span>.</div>
+    </div>
+
+    <div class="tss1-chart" data-tss1="1">
+      <div class="tss1-chart-title">AI spend as agent fleets grow</div>
+      <svg class="tss1-curve" viewBox="0 0 640 300" aria-label="Token spend rises steeply with agents in production while Akka infrastructure cost stays flat">
+        <line x1="40" y1="270" x2="620" y2="270" stroke="#2A2A2A" stroke-width="1"/>
+        <line x1="40" y1="270" x2="40" y2="30" stroke="#2A2A2A" stroke-width="1"/>
+        <text x="140" y="290" class="tss1-tick" text-anchor="middle">5</text>
+        <text x="280" y="290" class="tss1-tick" text-anchor="middle">15</text>
+        <text x="430" y="290" class="tss1-tick" text-anchor="middle">40</text>
+        <text x="590" y="290" class="tss1-tick" text-anchor="middle">100</text>
+        <path class="tss1-line tss1-line-infra" pathLength="100" d="M40,258 C220,242 420,226 592,212" fill="none" stroke="#8A8A8A" stroke-width="2" stroke-linecap="round"/>
+        <path class="tss1-line tss1-line-tokens" pathLength="100" d="M40,254 C230,240 420,168 592,44" fill="none" stroke="#F5C518" stroke-width="2.5" stroke-linecap="round"/>
+        <text x="592" y="32" class="tss1-series tss1-series-tok" text-anchor="end">TOKEN SPEND</text>
+        <text x="592" y="200" class="tss1-series tss1-series-infra" text-anchor="end">INFRA ON AKKA</text>
+      </svg>
+      <div class="tss1-axis-label">Agents in production &rarr;</div>
+    </div>
+
+    <div class="tss1-evidence" data-tss1="2">
+      <div class="tss1-evidence-body">Most agent traffic is narrow and repetitive. A specialized 4B open-weight model handles that work at frontier-level quality and up to <span class="tss1-num">12&times;</span> lower inference cost.</div>
+      <div class="tss1-evidence-src">Google DeepMind Gemmaverse case study &mdash; Gemma 3 4B scored 0.80 vs GPT-4o 0.76 in production content moderation</div>
+    </div>
+  </div>
+</div>
+
+
+<div id="tss2-wrapper">
+  <div id="tss2-sticky">
+    <div class="tss2-head">
+      <div class="tss2-eyebrow" data-tss2="0">How it works</div>
+      <div class="tss2-headline" data-tss2="0">A smaller model, <span class="accent">trained on your traffic</span>.</div>
+      <div class="tss2-sub" data-tss2="0">Akka runs evaluations in the same runtime as your agents, grading live traffic as it flows. It uses those grades to identify the agents suited to a small model, trains one with reinforcement learning, and tests it in staging before promotion.</div>
+    </div>
+
+    <div class="tss2-loop" data-tss2="1" role="tablist" aria-label="Pipeline steps — click to see how Akka runs each">
+      <button type="button" class="tss2-step active" data-step="target" role="tab" aria-selected="true">Target</button>
+      <svg viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
+      <button type="button" class="tss2-step" data-step="grade" role="tab" aria-selected="false">Grade</button>
+      <svg viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
+      <button type="button" class="tss2-step" data-step="train" role="tab" aria-selected="false">Train</button>
+      <svg viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
+      <button type="button" class="tss2-step" data-step="prove" role="tab" aria-selected="false">Prove</button>
+      <svg viewBox="0 0 26 14" aria-hidden="true"><line x1="0" y1="7" x2="18" y2="7" stroke="#F5C518" stroke-width="1.5"/><polygon points="26,7 18,2 18,12" fill="#F5C518"/></svg>
+      <button type="button" class="tss2-step" data-step="promote" role="tab" aria-selected="false">Promote</button>
+    </div>
+
+    <div class="tss2-explain" data-tss2="1">
+      <div class="tss2-explain-stack">
+        <div class="tss2-explain-card active" data-for="target">
+          <div class="tss2-explain-k">Target</div>
+          <p class="tss2-explain-t">Akka runs evaluations to score and grade your agents, identifying the high-volume, well-scoped tasks where an SLM can improve cost or accuracy.</p>
+        </div>
+        <div class="tss2-explain-card" data-for="grade">
+          <div class="tss2-explain-k">Grade</div>
+          <p class="tss2-explain-t">LLM judges and deterministic checks score production traffic without requiring a separate eval pipeline to manage.</p>
+        </div>
+        <div class="tss2-explain-card" data-for="train">
+          <div class="tss2-explain-k">Train</div>
+          <p class="tss2-explain-t">Akka fine-tunes an open-weight model with reinforcement learning &mdash; PPO, GRPO, or DPO &mdash; using the grades as the reward signal, and synthesizes training data when real examples are scarce.</p>
+        </div>
+        <div class="tss2-explain-card" data-for="prove">
+          <div class="tss2-explain-k">Prove</div>
+          <p class="tss2-explain-t">Optionally, you can run the SLM candidate against production traffic to compare quality and token cost against the existing model.</p>
+        </div>
+        <div class="tss2-explain-card" data-for="promote">
+          <div class="tss2-explain-k">Promote</div>
+          <p class="tss2-explain-t">Akka will serve the base model and the SLM adapter behind an OpenAI-compatible endpoint. Multiple SLMs can share the same GPU allocation.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tss2-diagram" data-tss2="1">
+      <svg viewBox="0 0 1050 300" aria-label="In staging, the candidate SLM shadows live traffic; promotion happens only on improvement">
+        <rect x="20" y="125" width="130" height="40" class="tss2-nd"/>
+        <text x="85" y="149" text-anchor="middle" class="tss2-nl">live traffic</text>
+
+        <line x1="150" y1="138" x2="315" y2="121" class="tss2-el"/>
+        <line x1="150" y1="152" x2="315" y2="196" class="tss2-el-dash"/>
+
+        <rect x="290" y="55" width="480" height="190" rx="8" class="tss2-frame"/>
+        <text x="312" y="82" class="tss2-frame-tag">STAGING</text>
+
+        <rect x="315" y="95" width="430" height="52" class="tss2-nd"/>
+        <text x="335" y="126" class="tss2-nl">Incumbent</text>
+        <text x="725" y="126" text-anchor="end" class="tss2-nls">quality 0.87 &middot; 100% tokens</text>
+
+        <rect x="315" y="170" width="430" height="52" class="tss2-ndy"/>
+        <text x="335" y="201" class="tss2-nl tss2-nl-y">Candidate</text>
+        <text x="725" y="201" text-anchor="end" class="tss2-nls tss2-nls-y">quality 0.89 &middot; 21% tokens</text>
+
+        <line x1="770" y1="150" x2="820" y2="150" class="tss2-el"/>
+        <polygon points="832,150 820,144 820,156" fill="#F5C518"/>
+        <rect x="832" y="118" width="160" height="64" class="tss2-nd"/>
+        <text x="912" y="145" text-anchor="middle" class="tss2-nl">Promote</text>
+        <text x="912" y="164" text-anchor="middle" class="tss2-nls">canary &rarr; fleet</text>
+
+        <text x="530" y="274" text-anchor="middle" class="tss2-nls tss2-dim">do not promote if no improvement</text>
+      </svg>
+    </div>
+
+    <div class="tss2-m" data-tss2="1">
+      <div class="tss2-m-frame">
+        <div class="tss2-m-tag">Staging</div>
+        <div class="tss2-m-card">
+          <div class="tss2-m-name">Incumbent <em>frontier API</em></div>
+          <div class="tss2-m-read">quality 0.87 &middot; 100% tokens</div>
+        </div>
+        <div class="tss2-m-card tss2-m-card--y">
+          <div class="tss2-m-name tss2-m-name--y">Candidate <em>your SLM &middot; shadow traffic</em></div>
+          <div class="tss2-m-read tss2-m-read--y">quality 0.89 &middot; 21% tokens</div>
+        </div>
+      </div>
+      <div class="tss2-m-promote">Promote &mdash; canary &rarr; fleet</div>
+      <div class="tss2-m-note">do not promote if no improvement</div>
+    </div>
+  </div>
+</div>
+
+
+<div id="tss3-wrapper">
+  <div id="tss3-sticky">
+    <div class="tss3-head">
+      <div class="tss3-eyebrow" data-tss3="0">The architecture</div>
+      <div class="tss3-headline" data-tss3="0">A single platform that <span class="accent">adapts, evaluates, and serves</span>.</div>
+      <div class="tss3-sub" data-tss3="0">Your agents call models served from one base open-weight model with hundreds of fine-tuned adapters. Every interaction is traced into petabyte-scale storage, where evaluations grade it and training turns it into new adapters &mdash; on GPUs in your cloud account.</div>
+    </div>
+
+    <div class="tss3-stagepan" data-tss3="1">
+    <div class="tss3-stage">
+
+      <svg class="tss3-wires" viewBox="0 0 1400 620" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <rect x="180" y="54" width="1205" height="490" rx="18" class="tss3-w-cluster"/>
+
+        <line x1="160" y1="390" x2="204" y2="390" class="tss3-w-serve"/>
+        <polygon points="218,390 203,382 203,398" class="tss3-w-serve-head"/>
+
+        <line x1="440" y1="248" x2="440" y2="318" class="tss3-w-serve"/>
+        <polygon points="440,332 432,317 448,317" class="tss3-w-serve-head"/>
+
+        <line x1="1210" y1="30" x2="1210" y2="94" class="tss3-w-train"/>
+        <polygon points="1210,108 1202,93 1218,93" class="tss3-w-train-head"/>
+
+        <line x1="900" y1="170" x2="1046" y2="170" class="tss3-w-train"/>
+        <polygon points="1060,170 1044,162 1044,178" class="tss3-w-train-head"/>
+
+        <path d="M1210,320 V416 H1024" class="tss3-w-train"/>
+        <polygon points="1010,416 1026,408 1026,424" class="tss3-w-train-head"/>
+
+        <line x1="790" y1="400" x2="676" y2="400" class="tss3-w-train"/>
+        <polygon points="662,400 678,392 678,408" class="tss3-w-train-head"/>
+
+        <path d="M1060,135 v160 a150,26 0 0 0 300,0 v-160" class="tss3-w-cylbody"/>
+        <ellipse cx="1210" cy="135" rx="150" ry="26" class="tss3-w-cyltop"/>
+      </svg>
+
+      <div class="tss3-entrylbl" style="left:86.43%; top:-4.5%;">
+        <b>your agents</b>
+        <span>OTEL / OpenInference ingest</span>
+      </div>
+      <div class="tss3-entrylbl" style="left:6%; top:58.5%;">
+        <b>your agents</b>
+        <span>inference calls</span>
+      </div>
+      <div class="tss3-lbl tss3-lbl--sub tss3-lbl--side" style="left:32.5%; top:44.7%;">inference calls</div>
+      <div class="tss3-lbl" style="left:69.5%; top:22.6%;">trace</div>
+      <div class="tss3-lbl" style="left:76.9%; top:61.5%;">training data</div>
+      <div class="tss3-lbl tss3-lbl--2l" style="left:51.9%; top:66.8%;">new<br>adapter</div>
+
+      <div class="tss3-legend">
+        <span class="tss3-leg"><i class="tss3-leg-serve"></i>serving path</span>
+        <span class="tss3-leg"><i class="tss3-leg-train"></i>training path</span>
+      </div>
+
+      <div class="tss3-m">
+        <b>your agents</b>
+        <span>inference calls &middot; traces</span>
+        <svg viewBox="0 0 14 30" aria-hidden="true"><line x1="7" y1="0" x2="7" y2="21" stroke="#F5C518" stroke-width="2"/><polygon points="7,30 1,19 13,19" fill="#F5C518"/></svg>
+      </div>
+
+      <div class="tss3-plat">
+      <div class="tss3-k8s-head" style="left:15%; top:10.6%;">
+        <span>Akka Agentic AI Platform</span>
+      </div>
+
+      <div class="tss3-box tss3-runtime" style="left:15.71%; top:18.06%; width:48.57%; height:21.94%;">
+        <div class="tss3-box-title">Akka runtime</div>
+        <div class="tss3-runtime-items">agents <i>&middot;</i> evaluations <i>&middot;</i> orchestration</div>
+      </div>
+
+      <div class="tss3-box tss3-vllm" style="left:15.71%; top:53.55%; width:31.43%; height:27.1%;">
+        <div class="tss3-box-title">Serve</div>
+        <div class="tss3-adapters">
+          <span class="tss3-adapter">adapter A</span>
+          <span class="tss3-adapter">adapter B</span>
+          <span class="tss3-adapter">adapter C</span>
+          <span class="tss3-adapter tss3-adapter--more">&hellip;</span>
+          <span class="tss3-adapter">adapter N</span>
+        </div>
+        <div class="tss3-base">base open weight model &middot; <em>8 GB</em></div>
+      </div>
+
+      <div class="tss3-box tss3-training" style="left:56.43%; top:53.55%; width:15.71%; height:27.1%;">
+        <div class="tss3-box-title">Train</div>
+        <div class="tss3-training-desc">RL loop &mdash; create SLM adapters with evaluations</div>
+      </div>
+
+      <div class="tss3-log-body" style="left:76.43%; top:31%; width:20%;">
+        <b>Interaction log</b>
+        <span>petabyte-scale storage</span>
+      </div>
+      </div>
+
+      <div class="tss3-nodes" style="left:15.71%; top:90.3%; width:48.57%;">
+        <span class="tss3-node">CPU</span><span class="tss3-node">CPU</span><span class="tss3-node">CPU</span>
+        <span class="tss3-node tss3-node--gpu">GPU</span><span class="tss3-node tss3-node--gpu">GPU</span><span class="tss3-node tss3-node--gpu">GPU</span><span class="tss3-node tss3-node--gpu">GPU</span><span class="tss3-node tss3-node--gpu">GPU</span>
+      </div>
+
+    </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="tss3b-wrapper">
+  <div id="tss3b-sticky">
+    <div class="tss3b-head">
+      <div class="tss3b-eyebrow" data-tss3b="0">Capabilities</div>
+      <div class="tss3b-headline" data-tss3b="0">From grading to serving, <span class="accent">in one platform</span>.</div>
+    </div>
+
+    <div class="tss3b-main" data-tss3b="1">
+      <div class="tss3b-tabs">
+        <button class="tss3b-tab active" data-panel="adapt">Adapt</button>
+        <button class="tss3b-tab" data-panel="evaluate">Evaluate</button>
+        <button class="tss3b-tab" data-panel="serve">Serve</button>
+      </div>
+
+      <div class="tss3b-panels">
+
+        <div class="tss3b-panel active" id="tss3b-adapt">
+          <div class="tss3b-tile">
+            <svg class="tss3b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+            <div class="tss3b-tile-title">Reinforcement fine-tuning</div>
+            <div class="tss3b-tile-desc">Tune open-weight models against your own reward signals.</div>
+            <div class="tss3b-tile-caps">
+              <div class="tss3b-cap">PPO, GRPO, and DPO training recipes</div>
+              <div class="tss3b-cap">full-model or adapter-based tuning</div>
+            </div>
+          </div>
+          <div class="tss3b-tile">
+            <svg class="tss3b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <div class="tss3b-tile-title">Synthetic data</div>
+            <div class="tss3b-tile-desc">Generate training data when production examples are scarce.</div>
+            <div class="tss3b-tile-caps">
+              <div class="tss3b-cap">pre-built generation recipes</div>
+              <div class="tss3b-cap">seeded from your real traffic</div>
+            </div>
+          </div>
+          <div class="tss3b-tile">
+            <svg class="tss3b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M9 10l2 2 4-4"/></svg>
+            <div class="tss3b-tile-title">Learn from feedback</div>
+            <div class="tss3b-tile-desc">Use AI and human feedback as the training signal.</div>
+            <div class="tss3b-tile-caps">
+              <div class="tss3b-cap">evaluation verdicts as rewards</div>
+              <div class="tss3b-cap">human preference labels</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tss3b-panel" id="tss3b-evaluate">
+          <div class="tss3b-tile">
+            <svg class="tss3b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <div class="tss3b-tile-title">AI judges</div>
+            <div class="tss3b-tile-desc">Score responses with evaluators built for your task.</div>
+            <div class="tss3b-tile-caps">
+              <div class="tss3b-cap">LLM judges with custom guidelines</div>
+              <div class="tss3b-cap">deterministic checks where outcomes are verifiable</div>
+            </div>
+          </div>
+          <div class="tss3b-tile">
+            <svg class="tss3b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <div class="tss3b-tile-title">Model comparison</div>
+            <div class="tss3b-tile-desc">Measure candidate models against what runs today.</div>
+            <div class="tss3b-tile-caps">
+              <div class="tss3b-cap">frontier APIs and open models side by side</div>
+              <div class="tss3b-cap">same prompts, same evaluations</div>
+            </div>
+          </div>
+          <div class="tss3b-tile">
+            <svg class="tss3b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+            <div class="tss3b-tile-title">A/B testing</div>
+            <div class="tss3b-tile-desc">Validate with real users before full rollout.</div>
+            <div class="tss3b-tile-caps">
+              <div class="tss3b-cap">online preference testing</div>
+              <div class="tss3b-cap">canary traffic splits</div>
+            </div>
+          </div>
+          <div class="tss3b-tile">
+            <svg class="tss3b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <div class="tss3b-tile-title">Monitor in production</div>
+            <div class="tss3b-tile-desc">Inspect the graded traffic behind every score.</div>
+            <div class="tss3b-tile-caps">
+              <div class="tss3b-cap">filter by agent, score, or time</div>
+              <div class="tss3b-cap">custom metrics dashboards</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tss3b-panel" id="tss3b-serve">
+          <div class="tss3b-tile">
+            <svg class="tss3b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            <div class="tss3b-tile-title">Multi-adapter inference</div>
+            <div class="tss3b-tile-desc">Serve hundreds of specialized models on shared GPUs.</div>
+            <div class="tss3b-tile-caps">
+              <div class="tss3b-cap">one base open-weight model</div>
+              <div class="tss3b-cap">~50MB adapters per task</div>
+            </div>
+          </div>
+          <div class="tss3b-tile">
+            <svg class="tss3b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <div class="tss3b-tile-title">OpenAI-compatible endpoint</div>
+            <div class="tss3b-tile-desc">Adopt a specialized model with a base-URL change.</div>
+            <div class="tss3b-tile-caps">
+              <div class="tss3b-cap">drop-in for existing agents</div>
+              <div class="tss3b-cap">per-model routing</div>
+            </div>
+          </div>
+          <div class="tss3b-tile">
+            <svg class="tss3b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+            <div class="tss3b-tile-title">In your cloud, or ours</div>
+            <div class="tss3b-tile-desc">Deploy in your VPC or air-gapped on-premises, or run on Akka&rsquo;s cloud.</div>
+            <div class="tss3b-tile-caps">
+              <div class="tss3b-cap">your data stays where you want it</div>
+              <div class="tss3b-cap">same platform in every environment</div>
+            </div>
+          </div>
+          <div class="tss3b-tile">
+            <svg class="tss3b-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+            <div class="tss3b-tile-title">Actor-based concurrency</div>
+            <div class="tss3b-tile-desc">Actors are lightweight compute that can reduce infra up to 90% vs. Python.</div>
+            <div class="tss3b-tile-caps">
+              <div class="tss3b-cap">shared compute for streams, agents, memory, &amp; APIs</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="tss4-wrapper">
+  <div id="tss4-sticky">
+    <div class="tss4-head">
+      <div class="tss4-eyebrow" data-tss4="0">The results</div>
+      <div class="tss4-headline" data-tss4="0">Fewer tokens. <span class="accent">Better GPU efficiency.</span></div>
+      <div class="tss4-sub" data-tss4="0">SLMs do less work per task, dropping consumption costs. Multiple SLM adapters sharing one base model improves GPU utilization.</div>
+    </div>
+
+    <div class="tss4-body" data-tss4="1">
+      <table class="tss4-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Token spend / mo</th>
+            <th>Evaluation pass rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>frontier model</td>
+            <td class="tss4-mono">$58K</td>
+            <td class="tss4-mono">93%</td>
+          </tr>
+          <tr class="tss4-row-slm">
+            <td>optimized SLM</td>
+            <td class="tss4-mono tss4-y">$12K</td>
+            <td class="tss4-mono tss4-y">95%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tss4-supports" data-tss4="2">
+      <div class="tss4-support">Evaluations grade quality continuously. A change that lowers quality is caught and rolled back.</div>
+      <div class="tss4-support"><span class="tss4-num">Tubi (Fox)</span> 150,000 CPUs + 5,000 GPUs down to 22,000 + 1,000.</div>
+      <div class="tss4-support"><span class="tss4-num">Verizon</span> reduced cloud infrastructure spend 70% on Akka.</div>
+      <div class="tss4-support"><span class="tss4-num">Manulife</span> improved agent latency 70% and concurrency by 300%.</div>
+    </div>
+  </div>
+</div>
+
+
+<section id="ts-closing">
+  <div class="tsc-logo tsc-reveal">
+    <svg width="109" height="25" viewBox="0 0 109 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#tsc)">
+        <path d="M72.158 0 63.105 10.133V0h-6.199v24.98h6.199V14.847l9.053 10.133h8.277L69.277 12.49 80.435 0h-8.277Z" fill="#fff"/>
+        <path d="m13.78 8.287 3.485 8.123h-6.968l3.485-8.123h-.002ZM11.336.062 0 25h6.552l1.561-3.436h11.336L21.113 25h6.45L16.275.062h-4.94Z" fill="#fff"/>
+        <path d="m95.22 8.287 3.484 8.123h-6.968l3.485-8.123h-.001ZM92.775.062 81.44 25h6.551l1.561-3.436h11.336L102.552 25H109L97.715.062h-4.94Z" fill="#fff"/>
+        <path d="M45.283.062 36.246 10.179V.062H30.057V25h6.189V14.883l9.037 10.117h8.264L42.408 12.53 53.547.062h-8.264Z" fill="#fff"/>
+      </g>
+      <defs><clipPath id="tsc"><rect width="109" height="25" fill="#fff"/></clipPath></defs>
+    </svg>
+  </div>
+
+  <h1 class="tsc-headline tsc-reveal">AI that lowers its <span class="accent">own bill.</span></h1>
+  <div class="tsc-sub tsc-reveal">AKKA TOKEN SHREDDER</div>
+  <div class="tsc-divider tsc-reveal"></div>
+
+  <div class="tsc-cta-block tsc-reveal">
+    <div class="tsc-cta-label">The 90-day Optimization Assessment</div>
+
+    <div class="tsc-phases">
+      <div class="tsc-phase">
+        <div class="tsc-phase-node">Install</div>
+        <div class="tsc-phase-days">days 1&ndash;30</div>
+        <div class="tsc-phase-desc">deploy in your VPC &middot; pass InfoSec &middot; connect trace sources</div>
+      </div>
+      <div class="tsc-phase-line"></div>
+      <div class="tsc-phase">
+        <div class="tsc-phase-node">Observe</div>
+        <div class="tsc-phase-days">days 31&ndash;60</div>
+        <div class="tsc-phase-desc">targeting scores live traffic &middot; ranked plan + quality baselines</div>
+      </div>
+      <div class="tsc-phase-line"></div>
+      <div class="tsc-phase">
+        <div class="tsc-phase-node">Witness</div>
+        <div class="tsc-phase-days">days 61&ndash;90</div>
+        <div class="tsc-phase-desc">first SLM trained, staged, shadow-tested &middot; before/after benchmark on your traffic</div>
+      </div>
+    </div>
+
+  </div>
+
+  <a href="https://akka.io" class="tsc-cta tsc-reveal">Start the assessment &rarr;</a>
+</section>
+
+<!-- DEMO_HTML_MARKER -->
+<script>
+/* ── tss-01-problem ── */
+/* ── tss-01-problem reveals ───────────────────────── */
+const tss1Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-tss1]').forEach(el => tss1Obs.observe(el));
+
+
+/* ── tss-02-how ── */
+/* ── tss-02-how reveals ───────────────────────────── */
+const tss2Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-tss2]').forEach(el => tss2Obs.observe(el));
+
+/* ── click a step → reveal how Akka runs it ───────── */
+(() => {
+  const steps = document.querySelectorAll('.tss2-step');
+  const cards = document.querySelectorAll('.tss2-explain-card');
+  if (!steps.length) return;
+
+  const select = id => {
+    steps.forEach(s => {
+      const on = s.dataset.step === id;
+      s.classList.toggle('active', on);
+      s.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    cards.forEach(c => c.classList.toggle('active', c.dataset.for === id));
+  };
+
+  // Target starts selected (set in markup); one step is always active.
+  steps.forEach(btn => btn.addEventListener('click', () => select(btn.dataset.step)));
+})();
+
+
+/* ── tss-03-where ── */
+/* ── tss-03-where reveals ─────────────────────────── */
+const tss3Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-tss3]').forEach(el => tss3Obs.observe(el));
+
+
+/* ── tss-04-capabilities ── */
+/* ── tss-03b-capabilities reveals + tabs ──────────── */
+const tss3bObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-tss3b]').forEach(el => tss3bObs.observe(el));
+
+document.querySelectorAll('.tss3b-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tss3b-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tss3b-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tss3b-' + tab.dataset.panel).classList.add('active');
+  });
+});
+
+
+/* ── tss-05-results ── */
+/* ── tss-04-results reveals ───────────────────────── */
+const tss4Obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('[data-tss4]').forEach(el => tss4Obs.observe(el));
+
+
+/* ── ts-10-close ── */
+/* ── ts-10-close reveals ──────────────────────────── */
+const tscObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.2 });
+document.querySelectorAll('.tsc-reveal').forEach(el => tscObs.observe(el));
+
+
+(function(){
+  var views = [
+    'ts-title','tss1-wrapper','tss2-wrapper','tss3-wrapper','tss3b-wrapper',
+    'tss4-wrapper','ts-closing'
+  ].map(function(id){ return document.getElementById(id); }).filter(Boolean);
+
+  function docTop(el){
+    return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset);
+  }
+  function currentIndex() {
+    var y = (window.scrollY || window.pageYOffset) + 4;
+    var best = 0;
+    for (var i = 0; i < views.length; i++) {
+      if (docTop(views[i]) <= y) best = i;
+    }
+    return best;
+  }
+  function goTo(i) {
+    if (i < 0 || i >= views.length) return;
+    window.scrollTo({ top: docTop(views[i]), behavior: 'smooth' });
+  }
+  function navNext() { goTo(currentIndex() + 1); }
+  function navPrev() { goTo(currentIndex() - 1); }
+  function handleNavKey(key) {
+    if (key === 'ArrowRight' || key === 'PageDown') navNext();
+    else if (key === 'ArrowLeft' || key === 'PageUp') navPrev();
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' ||
+        e.key === 'ArrowLeft'  || e.key === 'PageUp') {
+      e.preventDefault();
+      handleNavKey(e.key);
+    }
+  });
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'akka-deck-nav' && e.data.key) {
+      handleNavKey(e.data.key);
+    }
+  });
+})();
+
+
+/* ── KIOSK MODE (?kiosk in URL) ── */
+(function() {
+  if (!new URLSearchParams(location.search).has('kiosk')) return;
+
+  var kioskParam = new URLSearchParams(location.search).get('kiosk');
+  var SLIDE_MS = (kioskParam && !isNaN(kioskParam) ? parseInt(kioskParam) : 30) * 1000;
+  var TAB_MS   = Math.round(SLIDE_MS / 6);
+
+  const SECTION_IDS = [
+    'hero-wrapper','st-wrapper','s2-wrapper','s4-wrapper',
+    's5-wrapper','s6-wrapper','s7-problem','cust-wrapper',
+    'pkg-wrapper','s9-wrapper'
+  ];
+
+  function scrollMid(el) {
+    return el.offsetTop + Math.max(0, (el.offsetHeight - window.innerHeight) * 0.4);
+  }
+
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+
+      /* Build ordered stop list */
+      var stops = [];
+      SECTION_IDS.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) stops.push({ type: 'slide', el: el });
+      });
+      var demoEl    = document.getElementById('demo-section');
+      var closingEl = document.getElementById('closing');
+      if (demoEl)    stops.push({ type: 'demo',  el: demoEl });
+      if (closingEl) stops.push({ type: 'slide', el: closingEl });
+      stops.sort(function(a,b){ return a.el.offsetTop - b.el.offsetTop; });
+
+      /* Progress bar */
+      var bar = document.createElement('div');
+      bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;height:3px;z-index:99999;background:#111;pointer-events:none';
+      var fill = document.createElement('div');
+      fill.style.cssText = 'height:100%;width:0%;background:#F5C518';
+      bar.appendChild(fill);
+      document.body.appendChild(bar);
+
+      var badge = document.createElement('div');
+      badge.textContent = '⏵ KIOSK';
+      badge.style.cssText = 'position:fixed;bottom:8px;right:14px;z-index:99999;font-family:monospace;font-size:10px;color:#444;letter-spacing:2px;pointer-events:none';
+      document.body.appendChild(badge);
+
+      var idx = 0, timer = null;
+
+      function startFill(ms) {
+        fill.style.transition = 'none';
+        fill.style.width = '0%';
+        requestAnimationFrame(function() {
+          fill.style.transition = 'width ' + ms + 'ms linear';
+          fill.style.width = '100%';
+        });
+      }
+
+      function advance() {
+        idx = (idx + 1) % stops.length;
+        if (idx === 0) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          timer = setTimeout(function(){ show(0); }, 2000);
+        } else {
+          show(idx);
+        }
+      }
+
+      function show(i) {
+        idx = i;
+        var stop = stops[i];
+        var y = stop.type === 'demo' ? stop.el.offsetTop : scrollMid(stop.el);
+        window.scrollTo({ top: y, behavior: 'smooth' });
+
+        if (stop.type === 'demo') {
+          var tabs = document.querySelectorAll('#demo-section .tab-btn');
+          if (!tabs.length) { startFill(SLIDE_MS); timer = setTimeout(advance, SLIDE_MS); return; }
+          var t = 0;
+          tabs[0].click();
+          startFill(TAB_MS * tabs.length);
+          function nextTab() {
+            t++;
+            if (t < tabs.length) { tabs[t].click(); timer = setTimeout(nextTab, TAB_MS); }
+            else { timer = setTimeout(advance, TAB_MS); }
+          }
+          timer = setTimeout(nextTab, TAB_MS);
+        } else {
+          startFill(SLIDE_MS);
+          timer = setTimeout(advance, SLIDE_MS);
+        }
+      }
+
+      /* Pause/resume on click */
+      var paused = false;
+      document.addEventListener('click', function() {
+        if (!paused) {
+          clearTimeout(timer);
+          fill.style.transition = 'none';
+          badge.textContent = '⏸ KIOSK';
+          paused = true;
+        } else {
+          badge.textContent = '⏵ KIOSK';
+          paused = false;
+          advance();
+        }
+      });
+
+      show(0);
+
+    }, 800);
+  });
+})();
+
+/* DEMO_JS_MARKER */
+</script>
+</body>
+</html>

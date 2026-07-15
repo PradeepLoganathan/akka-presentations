@@ -2,5 +2,7 @@
 generated/*
 !generated/overview/
 !generated/specify/
+!generated/token-shredder/
+!generated/token-shredder-6/
 __pycache__/
 *.pyc
