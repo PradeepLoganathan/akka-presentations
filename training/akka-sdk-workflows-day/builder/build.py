@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -8,10 +9,13 @@ ROOT = Path(__file__).resolve().parent.parent
 BASE = ROOT / 'builder'
 SHELL = ROOT / 'shell'
 GEN = ROOT / 'generated'
+PRESENTERS = ROOT / 'presenters'
 
-parser = argparse.ArgumentParser(description='Build dev presentation')
+parser = argparse.ArgumentParser(description='Build training deck')
 parser.add_argument('--mode', default='overview', choices=['overview', 'shareable'])
 parser.add_argument('--out', default=None)
+parser.add_argument('--presenter', default=None,
+    help='Presenter JSON file stem in presenters/ (omit for an unpersonalised build)')
 args = parser.parse_args()
 
 out_path = Path(args.out) if args.out else GEN / args.mode / 'index.html'
@@ -20,6 +24,14 @@ shell = (SHELL / 'shell.html').read_text(encoding='utf-8')
 shared_css = (SHELL / 'shared.css').read_text(encoding='utf-8')
 nav_js = (SHELL / 'nav.js').read_text(encoding='utf-8')
 kiosk_js = (SHELL / 'kiosk.js').read_text(encoding='utf-8')
+
+presenter = {}
+if args.presenter:
+    pfile = PRESENTERS / f'{args.presenter}.json'
+    if pfile.exists():
+        presenter = json.loads(pfile.read_text(encoding='utf-8'))
+    else:
+        print(f'Warning: presenter file not found: {pfile}')
 
 css_parts = []
 html_parts = []
@@ -35,9 +47,24 @@ for entry in registry['slides']:
     if js.strip():
         js_parts.append('/* ' + entry['id'] + ' */\n' + js)
 
+slides_html_combined = '\n\n'.join(html_parts)
+
+if presenter:
+    # Keep the block, strip the marker comments, then substitute placeholders.
+    slides_html_combined = re.sub(
+        r'<!--\s*PRESENTER-BLOCK\s*-->|<!--\s*/PRESENTER-BLOCK\s*-->', '', slides_html_combined)
+    for key, value in presenter.items():
+        slides_html_combined = slides_html_combined.replace(f'{{{{PRESENTER_{key.upper()}}}}}', value)
+else:
+    # No presenter: strip the entire block (markers and their content) so nothing leaks.
+    slides_html_combined = re.sub(
+        r'<!--\s*PRESENTER-BLOCK\s*-->.*?<!--\s*/PRESENTER-BLOCK\s*-->',
+        '', slides_html_combined, flags=re.DOTALL)
+    slides_html_combined = re.sub(r'\{\{PRESENTER_[A-Z_]+\}\}', '', slides_html_combined)
+
 result = shell.replace('{{SHARED_CSS}}', shared_css)
 result = result.replace('{{SLIDES_CSS}}', '\n\n'.join(css_parts))
-result = result.replace('{{SLIDES_HTML}}', '\n\n'.join(html_parts))
+result = result.replace('{{SLIDES_HTML}}', slides_html_combined)
 result = result.replace('{{SLIDES_JS}}', '\n\n'.join(js_parts))
 result = result.replace('{{NAV_JS}}', nav_js)
 result = result.replace('{{KIOSK_JS}}', kiosk_js)
@@ -55,5 +82,7 @@ if assets.exists():
                 shutil.rmtree(dst)
             shutil.copytree(src, dst)
 
-print(f'Output: {out_path}')
-print(f'Size:   {out_path.stat().st_size // 1024} KB')
+print(f'Output:    {out_path}')
+print(f'Size:      {out_path.stat().st_size // 1024} KB')
+if presenter:
+    print(f'Presenter: {presenter.get("name", args.presenter)}')

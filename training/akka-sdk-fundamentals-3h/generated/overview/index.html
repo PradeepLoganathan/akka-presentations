@@ -400,6 +400,28 @@ body {
 .lifecycle-step small { color: #cfd1d8; font-size: 14px; line-height: 1.35; }
 @media (max-width: 1000px) { .lifecycle { grid-template-columns: 1fr 1fr; } }
 
+/* Presenter block on title / thanks slides */
+.title-presenter {
+  margin-top: 34px;
+  color: #d7d7dc;
+  line-height: 1.5;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards 1.15s;
+  text-align: center;
+}
+.title-presenter a { color: var(--yellow); text-decoration: none; font-weight: 700; }
+.title-presenter a:hover { text-decoration: underline; }
+.title-presenter-name { font-size: 22px; font-weight: 800; }
+.title-presenter-title {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 6px;
+}
+.title-presenter-email { margin-top: 8px; font-size: 14px; }
+
 
 
 /* 00-title */
@@ -536,6 +558,7 @@ body {
     <span>Follow along in your IDE</span>
     <span>Java 21 &middot; Akka SDK 3.4</span>
   </div>
+  
 </section>
 
 
@@ -1334,6 +1357,7 @@ akka services list</pre>
     <span>github.com/PradeepLoganathan/akka-workshop</span>
     <span>docs.akka.io</span>
   </div>
+  
 </section>
 
 <script>
