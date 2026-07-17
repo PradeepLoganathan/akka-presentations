@@ -1,0 +1,34 @@
+<section id="slide-33" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Hands-on &middot; 30 minutes</div>
+    <h2>Check out the <span class="accent">consumers</span> branch.</h2>
+    <p>Adds <span class="accent">CustomerAuditConsumer</span> + <span class="accent">AuditLogEntity</span> on top of workflows.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block">git checkout consumers
+mvn compile exec:java
+
+<span class="cmt"># create a customer</span>
+curl -XPOST http://localhost:9000/api/customers \
+  -H <span class="str">'Content-Type: application/json'</span> \
+  -d <span class="str">'{"customerId":"c-audit","FirstName":"Grace","LastName":"Hopper"}'</span>
+
+<span class="cmt"># delete them</span>
+curl -XDELETE http://localhost:9000/api/customers/c-audit
+
+<span class="cmt"># see both actions in the audit log</span>
+curl http://localhost:9000/api/audit/customers/c-audit</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Notice: no direct call to the audit from the endpoint</li>
+        <li>Consumer sees the event and appends asynchronously</li>
+        <li>Try: add an OrderAuditConsumer subscribing to OrderEvents</li>
+        <li>Try: publish audit events to a topic via <span class="accent">produce()</span></li>
+        <li>Try: kill the JVM between create and delete &mdash; consumer still catches up</li>
+      </ul>
+    </div>
+  </div>
+</section>

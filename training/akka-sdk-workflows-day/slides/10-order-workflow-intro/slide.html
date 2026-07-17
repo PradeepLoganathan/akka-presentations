@@ -1,0 +1,43 @@
+<section id="slide-10" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">OrderWorkflow</div>
+    <h2>A workflow, at first glance.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">domain/workflows/OrderWorkflow.java (top)</div>
+      <pre class="code-block"><span class="anno">@ComponentId</span>(<span class="str">"order-workflow"</span>)
+<span class="kw">public class</span> OrderWorkflow
+    <span class="kw">extends</span> Workflow&lt;OrderWorkflow.State&gt; {
+
+  <span class="kw">public record</span> State(
+      String orderId, String customerId,
+      List&lt;OrderLine&gt; lines, <span class="kw">long</span> totalCents) {}
+
+  <span class="kw">private final</span> ComponentClient client;
+
+  <span class="kw">public</span> OrderWorkflow(ComponentClient client) {
+    <span class="kw">this</span>.client = client;
+  }
+
+  <span class="anno">@Override</span>
+  <span class="kw">public</span> WorkflowDef&lt;State&gt; definition() {
+    <span class="kw">return</span> workflow()
+        .addStep(reserveStep())
+        .addStep(chargeStep())
+        .addStep(shipStep())
+        .addStep(compensateStep());
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">@ComponentId</span> like any component</li>
+        <li><span class="accent">Workflow&lt;State&gt;</span> &mdash; typed on the workflow's own state</li>
+        <li>Constructor accepts <span class="accent">ComponentClient</span> to call entities</li>
+        <li><span class="accent">definition()</span> lists the steps in scope</li>
+        <li>Method references keep the code shape narrow</li>
+      </ul>
+    </div>
+  </div>
+</section>

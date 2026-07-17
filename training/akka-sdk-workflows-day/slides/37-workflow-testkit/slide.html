@@ -1,0 +1,31 @@
+<section id="slide-37" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Testing &amp; ops</div>
+    <h2>WorkflowTestKit: <span class="accent">walk the steps</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">OrderWorkflowTest.java (excerpt)</div>
+      <pre class="code-block"><span class="kw">var</span> testKit = WorkflowTestKit.of(OrderWorkflow::<span class="kw">new</span>);
+
+<span class="kw">var</span> started = testKit.method(OrderWorkflow::start)
+    .invoke(<span class="kw">new</span> StartOrder(<span class="str">"c1"</span>,
+        List.of(<span class="kw">new</span> OrderLine(<span class="str">"sku-1"</span>, 1, 100))));
+
+assertThat(started.getReply()).startsWith(<span class="str">"order-"</span>);
+assertThat(testKit.currentState().totalCents()).isEqualTo(100L);
+
+<span class="kw">var</span> transition = testKit.getTransition();
+assertThat(transition.stepName()).isEqualTo(<span class="str">"reserve"</span>);</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>In-JVM. No cluster, no runtime.</li>
+        <li>Feed commands; inspect state after each</li>
+        <li>Assert step transitions and timer schedules</li>
+        <li>Mock component clients via testkit config &mdash; or use real ones for integration-style tests</li>
+        <li>Fast: whole saga in milliseconds</li>
+      </ul>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,33 @@
+<section id="slide-20" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Hands-on &middot; 20 minutes</div>
+    <h2>Check out the <span class="accent">workflows</span> branch.</h2>
+    <p>Everything above is already in the sample. Get it running and prod at it.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block">git checkout workflows
+mvn compile exec:java
+
+<span class="cmt"># happy path (SHIPPED)</span>
+curl -XPOST http://localhost:9000/api/orders \
+  -H <span class="str">'Content-Type: application/json'</span> \
+  -d <span class="str">'{"customerId":"c1","lines":[{"sku":"sku-1","qty":2,"unitPriceCents":500}]}'</span>
+
+<span class="cmt"># compensation path (FAILED)</span>
+curl -XPOST http://localhost:9000/api/orders \
+  -H <span class="str">'Content-Type: application/json'</span> \
+  -d <span class="str">'{"customerId":"c2","lines":[{"sku":"sku-999","qty":1,"unitPriceCents":100}]}'</span></pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Watch the log while orders run &mdash; step transitions are logged</li>
+        <li>Try shortening the workflow timeout; see failover fire</li>
+        <li>Try adding a fourth step; add it to <span class="accent">definition()</span> too</li>
+        <li>Try removing the guard in <span class="accent">markPaid</span> and observe replay</li>
+        <li>Break something on purpose. That's the point.</li>
+      </ul>
+    </div>
+  </div>
+</section>

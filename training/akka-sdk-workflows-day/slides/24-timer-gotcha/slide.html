@@ -1,0 +1,38 @@
+<section id="slide-24" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Timers &middot; war story</div>
+    <h2>Timer ops belong in <span class="accent">call</span>, never in <span class="accent">andThen</span>.</h2>
+    <p>A real bug we hit building this sample. Cost of learning: about 30 minutes of head-scratching.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Broken (chargeStep, first attempt)</div>
+      <pre class="code-block">.andThen(String.<span class="kw">class</span>, result -&gt; {
+  <span class="kw">if</span> (<span class="str">"OK"</span>.equals(result)) {
+    client.forEventSourcedEntity(orderId)
+        .method(OrderEntity::markPaid)
+        .invoke(<span class="kw">new</span> MarkPaid());
+    <span class="cmt">// throws IllegalStateException</span>
+    timers().delete(ABANDON_TIMER_PREFIX + orderId);
+    <span class="kw">return</span> effects().transitionTo(<span class="str">"ship"</span>);
+  }
+  ...
+});</pre>
+    </div>
+    <div>
+      <div class="file-tag">Fixed &mdash; move it into call()</div>
+      <pre class="code-block">.call(() -&gt; {
+  String result = client.forKeyValueEntity(orderId)
+      .method(PaymentEntity::charge).invoke(...);
+  <span class="kw">if</span> (<span class="str">"OK"</span>.equals(result)) {
+    timers().delete(ABANDON_TIMER_PREFIX + orderId);
+  }
+  <span class="kw">return</span> result;
+})
+.andThen(String.<span class="kw">class</span>, result -&gt; {
+  ...
+});</pre>
+    </div>
+  </div>
+  <div class="callout"><span class="accent">Rule:</span> timer scheduling/cancellation is only valid inside a command handler or a step's call action. Not in andThen. Not in the reducer.</div>
+</section>

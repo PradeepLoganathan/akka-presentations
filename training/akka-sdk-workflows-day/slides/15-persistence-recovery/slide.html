@@ -1,0 +1,16 @@
+<section id="slide-15" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">The durability guarantee</div>
+    <h2>Kill the JVM. Then start it again.</h2>
+    <p>Workflow state is persisted after every transition. On restart, the runtime looks up the last known step and resumes from there.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>1</b><small>start() persists State, transitions to "reserve"</small></div>
+    <div class="lifecycle-step"><b>2</b><small>reserveStep calls Inventory, succeeds</small></div>
+    <div class="lifecycle-step"><b>3</b><small>andThen writes "transition to charge"</small></div>
+    <div class="lifecycle-step"><b>4</b><small>JVM crashes here</small></div>
+    <div class="lifecycle-step"><b>5</b><small>JVM starts; runtime sees last step = charge</small></div>
+    <div class="lifecycle-step"><b>6</b><small>chargeStep runs. Order completes.</small></div>
+  </div>
+  <div class="callout">You get this <span class="accent">for free</span>. The runtime does the checkpointing. You write the steps.</div>
+</section>

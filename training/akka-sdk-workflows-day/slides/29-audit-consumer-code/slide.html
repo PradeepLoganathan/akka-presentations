@@ -1,0 +1,39 @@
+<section id="slide-29" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Consumers</div>
+    <h2>CustomerAuditConsumer, <span class="accent">in full</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">consumers/CustomerAuditConsumer.java</div>
+      <pre class="code-block"><span class="anno">@ComponentId</span>(<span class="str">"customer-audit-consumer"</span>)
+<span class="anno">@Consume</span>.FromEventSourcedEntity(CustomerEntity.<span class="kw">class</span>)
+<span class="kw">public class</span> CustomerAuditConsumer <span class="kw">extends</span> Consumer {
+
+  <span class="kw">private final</span> ComponentClient client;
+
+  <span class="kw">public</span> CustomerAuditConsumer(ComponentClient client) {
+    <span class="kw">this</span>.client = client;
+  }
+
+  <span class="kw">public</span> Effect onEvent(CustomerEvents event) {
+    <span class="kw">return switch</span> (event) {
+      <span class="kw">case</span> customerCreated e -&gt; record(e.customerId(),
+          <span class="str">"customer.created"</span>, e.FirstName() + <span class="str">" "</span> + e.LastName());
+      <span class="kw">case</span> customerDeleted e -&gt; record(e.customerId(),
+          <span class="str">"customer.deleted"</span>, e.FirstName() + <span class="str">" "</span> + e.LastName());
+    };
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>One <span class="accent">onEvent</span> for the sealed interface; switch on subtype</li>
+        <li>Or one <span class="accent">onEvent(subtype)</span> per event type &mdash; both work</li>
+        <li>Handler calls the <span class="accent">AuditLogEntity</span> to append</li>
+        <li>Returns an <span class="accent">Effect</span> to say "processed"</li>
+        <li>Consumer is stateless &mdash; state lives in the entities it calls</li>
+      </ul>
+    </div>
+  </div>
+</section>

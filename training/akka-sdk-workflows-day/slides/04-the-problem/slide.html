@@ -1,0 +1,13 @@
+<section id="slide-04" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Motivation</div>
+    <h2>"Place an order" isn't <span class="accent">one thing</span>.</h2>
+    <p>It's at least three: reserve inventory, charge payment, mark shipped. Any of them can fail. All of them can succeed on retry.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Reserve</div><p>Inventory service must set aside the SKUs before we charge.</p></div>
+    <div class="locus"><div class="locus-title">Charge</div><p>Payment gateway takes the money. Might decline. Might time out.</p></div>
+    <div class="locus"><div class="locus-title">Ship</div><p>Fulfilment gets the order. Depends on both of the above.</p></div>
+  </div>
+  <div class="callout">If step 2 fails after step 1 succeeded, we need to <span class="accent">release the inventory</span>. That's the whole game.</div>
+</section>

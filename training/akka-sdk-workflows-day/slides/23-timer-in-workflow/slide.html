@@ -1,0 +1,36 @@
+<section id="slide-23" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Timers</div>
+    <h2>Where the abandon timer <span class="accent">lives in Order</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">OrderWorkflow.start() (excerpt)</div>
+      <pre class="code-block"><span class="kw">public</span> Effect&lt;String&gt; start(StartOrder cmd) {
+  String orderId = commandContext().workflowId();
+  ...
+
+  timers().createSingleTimer(
+      ABANDON_TIMER_PREFIX + orderId,
+      ABANDON_TIMEOUT,   <span class="cmt">// Duration.ofSeconds(30) for demo</span>
+      client.forEventSourcedEntity(orderId)
+          .method(OrderEntity::cancelIfNotPaid)
+          .deferred(<span class="kw">new</span> CancelIfNotPaid()));
+
+  <span class="kw">return</span> effects()
+      .updateState(<span class="kw">new</span> State(...))
+      .transitionTo(<span class="str">"reserve"</span>)
+      .thenReply(orderId);
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Scheduled when the workflow starts</li>
+        <li>Deleted on success in <span class="accent">chargeStep</span></li>
+        <li>Deleted on failure in <span class="accent">compensateStep</span></li>
+        <li>Fires only if the order never reaches a terminal state</li>
+        <li>Entity's <span class="accent">cancelIfNotPaid</span> guards against races</li>
+      </ul>
+    </div>
+  </div>
+</section>

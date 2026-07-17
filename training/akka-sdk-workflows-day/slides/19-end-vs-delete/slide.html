@@ -1,0 +1,27 @@
+<section id="slide-19" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Advanced: finishing</div>
+    <h2><span class="accent">end()</span> vs <span class="accent">delete()</span>.</h2>
+    <p>Both terminate the workflow. They differ in what remains queryable and how downstream consumers observe closure.</p>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-col active">
+      <div class="compare-label">effects().end()</div>
+      <ul>
+        <li>Workflow stops. State stays.</li>
+        <li><span class="accent">GET</span> the workflow still returns its final state</li>
+        <li>No more transitions accepted</li>
+        <li>Default choice for "finished successfully"</li>
+      </ul>
+    </div>
+    <div class="compare-col blue">
+      <div class="compare-label">effects().delete()</div>
+      <ul>
+        <li>Workflow stops. State scheduled for deletion.</li>
+        <li>Delay is configurable so downstream consumers can observe the deletion</li>
+        <li>After the delay, the workflow instance is gone</li>
+        <li>Use for "one-shot, no need to look up later"</li>
+      </ul>
+    </div>
+  </div>
+</section>

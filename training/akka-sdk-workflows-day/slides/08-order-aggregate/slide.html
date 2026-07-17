@@ -1,0 +1,29 @@
+<section id="slide-08" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">The workflow needs a subject</div>
+    <h2>Introducing the <span class="accent">Order</span> aggregate.</h2>
+    <p>Second event-sourced entity in the sample. Six events cover the full lifecycle: placed, reserved, paid, shipped, failed, cancelled.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">domain/events/OrderEvents.java</div>
+      <pre class="code-block"><span class="kw">public sealed interface</span> OrderEvents {
+  <span class="kw">record</span> orderPlaced(...)         <span class="kw">implements</span> OrderEvents {}
+  <span class="kw">record</span> inventoryReserved(...)   <span class="kw">implements</span> OrderEvents {}
+  <span class="kw">record</span> paymentRecorded(...)     <span class="kw">implements</span> OrderEvents {}
+  <span class="kw">record</span> orderShipped(...)         <span class="kw">implements</span> OrderEvents {}
+  <span class="kw">record</span> orderFailed(...)          <span class="kw">implements</span> OrderEvents {}
+  <span class="kw">record</span> orderCancelled(...)       <span class="kw">implements</span> OrderEvents {}
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Each event = a step in the lifecycle</li>
+        <li>Terminal states: <span class="accent">SHIPPED</span>, <span class="accent">FAILED</span>, <span class="accent">CANCELLED</span></li>
+        <li>Sealed = compiler-checked reducer</li>
+        <li>OrderEntity has command handlers to persist each event</li>
+        <li>The workflow decides <span class="accent">which</span> events fire, in what order</li>
+      </ul>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,27 @@
+<section id="slide-38" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Testing &amp; ops</div>
+    <h2>Consumers: <span class="accent">feed an event, assert a call</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Consumer test shape</div>
+      <pre class="code-block"><span class="kw">var</span> testKit = ConsumerTestKit.of(CustomerAuditConsumer::<span class="kw">new</span>);
+
+<span class="kw">var</span> result = testKit.onEvent(
+    <span class="kw">new</span> customerCreated(<span class="str">"c-1"</span>, <span class="str">"Ada"</span>, <span class="str">"Lovelace"</span>));
+
+assertThat(result.getSideEffects()).hasSize(1);
+<span class="cmt">// side effect = the AuditLogEntity.append call</span></pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Same shape as EventSourcedTestKit: instantiate, feed, assert</li>
+        <li>Side effects captured &mdash; you assert on the deferred calls</li>
+        <li>Nothing actually calls the network</li>
+        <li>Test idempotency by feeding the same event twice</li>
+        <li>Combine with a WorkflowTestKit for end-to-end scenarios</li>
+      </ul>
+    </div>
+  </div>
+</section>

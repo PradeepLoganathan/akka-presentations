@@ -1,0 +1,13 @@
+<section id="slide-35" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Putting it together</div>
+    <h2>What survives a <span class="accent">kill -9</span>?</h2>
+    <p>The interesting question isn't "does it work?" It's "what happens when it doesn't?"</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Workflow crash mid-step</div><p>Runtime restarts the step from the last committed transition. Idempotent step design pays off here.</p></div>
+    <div class="locus"><div class="locus-title">Consumer crash mid-event</div><p>Event redelivered on restart. Idempotent target handler pays off.</p></div>
+    <div class="locus"><div class="locus-title">Cluster node loss</div><p>Sharding rehomes entities and workflows to surviving nodes. Timers persist.</p></div>
+  </div>
+  <div class="callout">"Durable" is doing a lot of heavy lifting. The runtime is <span class="accent">designed</span> for these failures &mdash; not merely tolerant of them.</div>
+</section>

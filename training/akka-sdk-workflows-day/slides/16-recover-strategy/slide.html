@@ -1,0 +1,32 @@
+<section id="slide-16" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Advanced: retries per step</div>
+    <h2>RecoverStrategy: <span class="accent">retries, then failover</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">definition() with recovery</div>
+      <pre class="code-block"><span class="anno">@Override</span>
+<span class="kw">public</span> WorkflowDef&lt;State&gt; definition() {
+  <span class="kw">var</span> retryThenCompensate = RecoverStrategy
+      .maxRetries(3)
+      .failoverTo(<span class="str">"compensate"</span>);
+
+  <span class="kw">return</span> workflow()
+      .addStep(reserveStep(), retryThenCompensate)
+      .addStep(chargeStep(),  retryThenCompensate)
+      .addStep(shipStep())
+      .addStep(compensateStep());
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Default: retry with <span class="accent">exponential backoff</span>, forever</li>
+        <li><span class="accent">maxRetries(n)</span> &mdash; give up after n</li>
+        <li><span class="accent">.failoverTo("stepName")</span> &mdash; on give-up, jump here</li>
+        <li>Applied per step via <span class="accent">addStep(step, strategy)</span></li>
+        <li>Combine with a compensate step for saga-style rollback</li>
+      </ul>
+    </div>
+  </div>
+</section>

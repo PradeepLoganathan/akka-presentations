@@ -1,0 +1,33 @@
+<section id="slide-09" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">OrderEntity</div>
+    <h2>Same event-sourced pattern, <span class="accent">richer statuses</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">domain/entities/OrderEntity.java (excerpt)</div>
+      <pre class="code-block"><span class="anno">@ComponentId</span>(<span class="str">"Order"</span>)
+<span class="kw">public class</span> OrderEntity
+    <span class="kw">extends</span> EventSourcedEntity&lt;OrderState, OrderEvents&gt; {
+
+  <span class="kw">public</span> Effect&lt;String&gt; markReserved(MarkReserved cmd) {
+    <span class="kw">if</span> (currentState().status() != OrderStatus.PLACED)
+      <span class="kw">return</span> effects().error(
+          <span class="str">"Cannot reserve from status "</span> + currentState().status());
+    <span class="kw">return</span> effects()
+        .persist(<span class="kw">new</span> inventoryReserved(currentState().orderId()))
+        .thenReply(__ -&gt; <span class="str">"OK"</span>);
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Command handlers enforce the state machine at the entity level</li>
+        <li>Illegal transitions rejected as errors, not silently ignored</li>
+        <li>The workflow drives the calls but the entity <span class="accent">guards</span> its own invariants</li>
+        <li>Two layers of safety: workflow logic + entity validation</li>
+        <li>Even a buggy workflow can't put the order in an invalid state</li>
+      </ul>
+    </div>
+  </div>
+</section>

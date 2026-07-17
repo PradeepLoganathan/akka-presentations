@@ -1,0 +1,16 @@
+<section id="slide-32" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Consumers &middot; sharp edge</div>
+    <h2>Feed-style views need a <span class="accent">topic</span> in between.</h2>
+    <p>A view that consumes an event-sourced entity's events collapses to one row per entity id. If you want one row per event, you need a hop.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>1</b><small>Entity emits events</small></div>
+    <div class="lifecycle-step"><b>2</b><small>Consumer subscribes to events</small></div>
+    <div class="lifecycle-step"><b>3</b><small>Consumer produce()s to a topic</small></div>
+    <div class="lifecycle-step"><b>4</b><small>View subscribes to that topic</small></div>
+    <div class="lifecycle-step"><b>5</b><small>View writes a row per message</small></div>
+    <div class="lifecycle-step"><b>6</b><small>Query returns the feed</small></div>
+  </div>
+  <div class="callout">This is why the sample's <span class="accent">AuditLogEntity</span> holds the log itself &mdash; a feed view is out of scope for today.</div>
+</section>

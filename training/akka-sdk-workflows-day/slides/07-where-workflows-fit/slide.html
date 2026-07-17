@@ -1,0 +1,14 @@
+<section id="slide-07" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">In the family of patterns</div>
+    <h2>Workflow vs. saga vs. choreography.</h2>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Pattern</span><span>How steps coordinate</span></div>
+    <div class="matrix-row"><span>Orchestration<br>(Akka workflow)</span><span>Central coordinator drives each step. Explicit compensation. Easy to reason about.</span></div>
+    <div class="matrix-row"><span>Choreography</span><span>Each service reacts to events. No coordinator. Emergent flow. Great for loose coupling.</span></div>
+    <div class="matrix-row"><span>Saga</span><span>Umbrella term for either. Focus is on compensation across distributed steps.</span></div>
+    <div class="matrix-row"><span>Step functions (cloud)</span><span>Like orchestration, but the coordinator is proprietary infra.</span></div>
+  </div>
+  <div class="callout">Workflows here = orchestration, in-process, portable, testable.</div>
+</section>

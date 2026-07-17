@@ -1,0 +1,27 @@
+<section id="slide-18" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Advanced: budgets</div>
+    <h2>Two clocks: <span class="accent">step</span> and <span class="accent">workflow</span>.</h2>
+    <p>Step timeouts guard against one call hanging. Workflow timeout guards against the whole business process stalling.</p>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-col active">
+      <div class="compare-label">Step timeout</div>
+      <ul>
+        <li>Applies to a single step's <span class="accent">.call()</span> action</li>
+        <li>Set via <span class="accent">step(...).timeout(Duration.ofSeconds(10))</span></li>
+        <li>Or a workflow-wide default via <span class="accent">defaultStepTimeout()</span></li>
+        <li>Hitting it triggers the step's RecoverStrategy</li>
+      </ul>
+    </div>
+    <div class="compare-col blue">
+      <div class="compare-label">Workflow timeout</div>
+      <ul>
+        <li>Applies to the whole workflow's lifetime</li>
+        <li>Set via <span class="accent">workflow().timeout(Duration.ofMinutes(30))</span></li>
+        <li>Hitting it triggers workflow-level failover (or ends)</li>
+        <li>Use for "abandoned checkout after N minutes"</li>
+      </ul>
+    </div>
+  </div>
+</section>

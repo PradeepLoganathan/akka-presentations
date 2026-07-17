@@ -1,0 +1,13 @@
+<section id="slide-36" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Putting it together</div>
+    <h2>The saga pattern, in one screen.</h2>
+    <p>You've now implemented one. Here's what to name and explain when someone asks.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Orchestrated saga</div><p>A workflow drives each step. Central place for decision logic.</p></div>
+    <div class="locus"><div class="locus-title">Compensation, not rollback</div><p>You cannot undo a charged card. You issue a refund. Compensation is business-visible.</p></div>
+    <div class="locus"><div class="locus-title">Idempotent participants</div><p>Each step's target must tolerate replay. Payment providers offer idempotency keys for this.</p></div>
+  </div>
+  <div class="callout">Two-phase commit doesn't survive real networks. Sagas do &mdash; because they were designed <span class="accent">for</span> failure.</div>
+</section>

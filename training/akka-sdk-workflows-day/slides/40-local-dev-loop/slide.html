@@ -1,0 +1,32 @@
+<section id="slide-40" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Testing &amp; ops</div>
+    <h2>The dev loop, <span class="accent">day-long edition</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal habits</div>
+      <pre class="code-block"><span class="cmt"># start</span>
+mvn compile exec:java
+
+<span class="cmt"># reload on code change: Ctrl+C, re-run</span>
+mvn compile exec:java
+
+<span class="cmt"># run tests without spinning up the runtime</span>
+mvn test
+
+<span class="cmt"># deploy the same code to the managed runtime</span>
+akka services deploy customers \
+    ghcr.io/pradeepl/akka-workshop:1.0</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>No DB. No Kafka. No Kubernetes to warm up.</li>
+        <li>Console at <span class="accent">localhost:9000/akka/console</span></li>
+        <li>Logs to stdout. Tail with your favourite tool.</li>
+        <li>Same code deploys unchanged to the managed runtime</li>
+        <li>Workflows survive restarts even in dev &mdash; the local journal is real</li>
+      </ul>
+    </div>
+  </div>
+</section>

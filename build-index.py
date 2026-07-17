@@ -36,6 +36,7 @@ PRESENTATIONS = [
 # Training decks — same per-slide-folder shape as PRESENTATIONS.
 TRAININGS = [
     {"dir": "training/akka-sdk-fundamentals-3h", "link": "training/akka-sdk-fundamentals-3h/generated/overview/"},
+    {"dir": "training/akka-sdk-workflows-day",   "link": "training/akka-sdk-workflows-day/generated/overview/"},
 ]
 
 # Standalone competitive briefs (single HTML files at the repo root).

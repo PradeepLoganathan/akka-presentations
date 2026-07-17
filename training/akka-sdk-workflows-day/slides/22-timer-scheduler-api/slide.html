@@ -1,0 +1,31 @@
+<section id="slide-22" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Timers</div>
+    <h2>TimerScheduler in three calls.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">The API</div>
+      <pre class="code-block"><span class="cmt">// schedule</span>
+timers().createSingleTimer(
+    <span class="str">"abandon-order-42"</span>,
+    Duration.ofSeconds(30),
+    client.forEventSourcedEntity(<span class="str">"order-42"</span>)
+        .method(OrderEntity::cancelIfNotPaid)
+        .deferred(<span class="kw">new</span> CancelIfNotPaid())
+);
+
+<span class="cmt">// cancel</span>
+timers().delete(<span class="str">"abandon-order-42"</span>);</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">timers()</span> &mdash; available in workflows, entities, consumers</li>
+        <li><span class="accent">createSingleTimer(name, delay, deferredCall)</span></li>
+        <li><span class="accent">.deferred(cmd)</span> &mdash; describes the future call but doesn't run it</li>
+        <li>Re-registering the same name replaces the pending timer</li>
+        <li><span class="accent">delete(name)</span> cancels a pending timer</li>
+      </ul>
+    </div>
+  </div>
+</section>

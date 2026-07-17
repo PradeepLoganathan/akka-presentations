@@ -1,0 +1,13 @@
+<section id="slide-31" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Consumers</div>
+    <h2>At-least-once means "sometimes twice."</h2>
+    <p>Consumers can see the same event twice if a failure happens between processing and acknowledgement. Design for idempotency.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Idempotent keys</div><p>Use the event's unique offset or subject as part of the row/entity id.</p></div>
+    <div class="locus"><div class="locus-title">Check before write</div><p>"If already appended, skip." Guard the target entity's command handler.</p></div>
+    <div class="locus"><div class="locus-title">Idempotent side effects</div><p>PUTs &gt; POSTs. Upserts &gt; inserts. Named calls &gt; anonymous.</p></div>
+  </div>
+  <div class="callout">If you can't make it idempotent, at least make the duplicate harmless. Log twice; don't email twice.</div>
+</section>

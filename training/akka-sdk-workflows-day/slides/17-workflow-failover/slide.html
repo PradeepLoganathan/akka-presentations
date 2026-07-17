@@ -1,0 +1,29 @@
+<section id="slide-17" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Advanced: whole-workflow failover</div>
+    <h2>When the entire workflow gives up.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Workflow-level failover</div>
+      <pre class="code-block"><span class="kw">return</span> workflow()
+    .addStep(reserveStep())
+    .addStep(chargeStep())
+    .addStep(shipStep())
+    .addStep(compensateStep())
+    .timeout(Duration.ofMinutes(30))
+    .failoverTo(<span class="str">"compensate"</span>,
+                <span class="str">"workflow timeout"</span>,
+                MaxRetries.of(0));</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Applies when the <span class="accent">whole workflow</span> exceeds its budget</li>
+        <li>Runtime transitions to the failover step with the given input</li>
+        <li>You typically point this at your compensate step</li>
+        <li>Different from step-level recovery: catches "we're just stuck"</li>
+        <li>maxRetries here bounds retries of the <em>failover</em> step</li>
+      </ul>
+    </div>
+  </div>
+</section>

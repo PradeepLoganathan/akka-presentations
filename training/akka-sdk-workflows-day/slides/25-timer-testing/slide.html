@@ -1,0 +1,12 @@
+<section id="slide-25" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Timers</div>
+    <h2>Testing time-based logic.</h2>
+    <p>You don't want a 30-second sleep in your test suite. You also don't want to mock the whole scheduler.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Shrink the delay</div><p>Make ABANDON_TIMEOUT config-driven. Set 100ms in tests, 30s in demo, 24h in prod.</p></div>
+    <div class="locus"><div class="locus-title">Assert the schedule</div><p>WorkflowTestKit exposes scheduled timers so you can assert "yes, a timer named X was set for Y."</p></div>
+    <div class="locus"><div class="locus-title">Fire manually</div><p>Test the target command handler (cancelIfNotPaid) directly. The timer just calls it.</p></div>
+  </div>
+</section>

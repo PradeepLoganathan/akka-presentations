@@ -1,0 +1,13 @@
+<section id="slide-21" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Timers</div>
+    <h2>Send a command to your future self.</h2>
+    <p>Timers schedule a component call for later &mdash; a durable "check back on this in 30 minutes."</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Durable</div><p>Persisted. Fires even if the JVM restarts before the delay elapses.</p></div>
+    <div class="locus"><div class="locus-title">At-least-once</div><p>Retries on transient failure. Your handler should be idempotent.</p></div>
+    <div class="locus"><div class="locus-title">Named</div><p>Reuse the name to overwrite an existing timer. Use it to delete/cancel.</p></div>
+  </div>
+  <div class="callout">Uses: abandoned-cart cancels, session TTLs, "check in after payment provider webhook."</div>
+</section>

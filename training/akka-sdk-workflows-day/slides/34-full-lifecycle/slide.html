@@ -1,0 +1,15 @@
+<section id="slide-34" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Putting it together</div>
+    <h2>One order, <span class="accent">all the moving parts</span>.</h2>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>1 &middot; HTTP</b><small>POST /api/orders arrives at OrderEndpoint</small></div>
+    <div class="lifecycle-step"><b>2 &middot; Workflow</b><small>OrderWorkflow.start; places order; schedules abandon timer</small></div>
+    <div class="lifecycle-step"><b>3 &middot; Reserve</b><small>InventoryEntity.reserve; OrderEntity.markReserved</small></div>
+    <div class="lifecycle-step"><b>4 &middot; Charge</b><small>PaymentEntity.charge; OrderEntity.markPaid; timer cancelled</small></div>
+    <div class="lifecycle-step"><b>5 &middot; Ship</b><small>OrderEntity.markShipped; workflow ends</small></div>
+    <div class="lifecycle-step"><b>6 &middot; View + audit</b><small>OrdersView updated; audit consumer picks up any customer events</small></div>
+  </div>
+  <div class="callout">Each numbered box could span multiple JVMs across a cluster. You wrote none of that.</div>
+</section>

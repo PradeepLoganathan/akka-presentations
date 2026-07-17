@@ -1,0 +1,34 @@
+<section id="slide-28" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Consumers</div>
+    <h2>Where events come from: <span class="accent">@Consume</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Subscription options</div>
+      <pre class="code-block"><span class="anno">@Consume</span>.FromEventSourcedEntity(CustomerEntity.<span class="kw">class</span>)
+<span class="kw">public class</span> CustomerAuditConsumer <span class="kw">extends</span> Consumer {
+  <span class="cmt">// receives CustomerEvents</span>
+}
+
+<span class="anno">@Consume</span>.FromKeyValueEntity(CustomerPreferencesEntity.<span class="kw">class</span>)
+<span class="kw">public class</span> PreferencesConsumer <span class="kw">extends</span> Consumer {
+  <span class="cmt">// receives state snapshots</span>
+}
+
+<span class="anno">@Consume</span>.FromTopic(<span class="str">"external-events"</span>)
+<span class="kw">public class</span> ExternalConsumer <span class="kw">extends</span> Consumer {
+  <span class="cmt">// receives messages from a topic</span>
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">FromEventSourcedEntity</span> &mdash; the event log</li>
+        <li><span class="accent">FromKeyValueEntity</span> &mdash; state-change stream</li>
+        <li><span class="accent">FromTopic</span> &mdash; external pub-sub</li>
+        <li><span class="accent">FromServiceStream</span> &mdash; another Akka service's stream</li>
+        <li>One consumer = one subscription</li>
+      </ul>
+    </div>
+  </div>
+</section>

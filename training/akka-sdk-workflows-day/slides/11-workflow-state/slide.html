@@ -1,0 +1,28 @@
+<section id="slide-11" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Two states, distinguished</div>
+    <h2>Workflow state <span class="accent">is not</span> entity state.</h2>
+    <p>The workflow tracks orchestration context. The Order entity tracks domain truth. Same orderId, different concerns.</p>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-col active">
+      <div class="compare-label">OrderWorkflow.State</div>
+      <ul>
+        <li>What is this workflow instance working on?</li>
+        <li>orderId + customerId + lines + total</li>
+        <li>Persisted per workflow instance</li>
+        <li>Lost when workflow ends or is deleted</li>
+      </ul>
+    </div>
+    <div class="compare-col blue">
+      <div class="compare-label">OrderState (entity)</div>
+      <ul>
+        <li>What is the truth of this order?</li>
+        <li>orderId + lines + total + <span class="accent">status</span></li>
+        <li>Persisted as an event log; never deleted</li>
+        <li>Answers "what happened to this order?"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">Workflow state = what the orchestrator needs to keep going. Entity state = what history demands to be true.</div>
+</section>

@@ -1,0 +1,13 @@
+<section id="slide-06" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">The alternative</div>
+    <h2>Workflows: <span class="accent">durable orchestrators</span>.</h2>
+    <p>A workflow is a component that models a multi-step process. State is persisted, steps are journaled, transitions are explicit.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Durable</div><p>State survives crashes. On restart, the workflow resumes from its last step.</p></div>
+    <div class="locus"><div class="locus-title">Explicit</div><p>Steps are named. Transitions are decisions, not implicit control flow.</p></div>
+    <div class="locus"><div class="locus-title">Compensable</div><p>Failed step? Transition to a compensate step that undoes the earlier work.</p></div>
+  </div>
+  <div class="callout">Think "state machine + persistence + retry + observability," not "async/await."</div>
+</section>

@@ -1,0 +1,13 @@
+<section id="slide-26" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Consumers</div>
+    <h2>Reactive processing of <span class="accent">someone else's events</span>.</h2>
+    <p>A consumer subscribes to an entity's event stream. Each event fires a handler you write. Great for side effects that aren't projections.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Audit log</div><p>Persist every domain event to a searchable audit trail.</p></div>
+    <div class="locus"><div class="locus-title">Notifications</div><p>Order shipped? Consumer emails the customer.</p></div>
+    <div class="locus"><div class="locus-title">Integration</div><p>Republish events to Kafka, another Akka service, an external webhook.</p></div>
+  </div>
+  <div class="callout">Rule of thumb: <span class="accent">if it's not a query projection</span>, it's a consumer.</div>
+</section>

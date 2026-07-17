@@ -1,0 +1,39 @@
+<section id="slide-12" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">A step, dissected</div>
+    <h2>Every step is <span class="accent">call &rarr; andThen</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">reserveStep()</div>
+      <pre class="code-block"><span class="kw">private</span> Step reserveStep() {
+  <span class="kw">return</span> step(<span class="str">"reserve"</span>)
+      .call(() -&gt;
+          client.forKeyValueEntity(INVENTORY_ID)
+              .method(InventoryEntity::reserve)
+              .invoke(<span class="kw">new</span> ReserveInventory(
+                  currentState().orderId(),
+                  currentState().lines())))
+      .andThen(String.<span class="kw">class</span>, result -&gt; {
+        <span class="kw">if</span> (<span class="str">"OK"</span>.equals(result)) {
+          client.forEventSourcedEntity(currentState().orderId())
+              .method(OrderEntity::markReserved)
+              .invoke(<span class="kw">new</span> MarkReserved());
+          <span class="kw">return</span> effects().transitionTo(<span class="str">"charge"</span>);
+        }
+        <span class="kw">return</span> effects().transitionTo(
+            <span class="str">"compensate"</span>, <span class="str">"inventory:"</span> + result);
+      });
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">step("name")</span> &mdash; unique, referenced in transitions</li>
+        <li><span class="accent">.call(Supplier)</span> &mdash; the action the step performs</li>
+        <li><span class="accent">.andThen(Class, Function)</span> &mdash; decide the next step from the call's result</li>
+        <li><span class="accent">transitionTo("name")</span> &mdash; where to go next</li>
+        <li>Call retries on failure; andThen only runs on success</li>
+      </ul>
+    </div>
+  </div>
+</section>

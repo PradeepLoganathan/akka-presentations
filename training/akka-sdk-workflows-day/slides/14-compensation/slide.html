@@ -1,0 +1,36 @@
+<section id="slide-14" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">The saga move</div>
+    <h2>Compensation is <span class="accent">just another step</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">compensateStep()</div>
+      <pre class="code-block"><span class="kw">private</span> Step compensateStep() {
+  <span class="kw">return</span> step(<span class="str">"compensate"</span>)
+      .call(String.<span class="kw">class</span>, reason -&gt; {
+        client.forKeyValueEntity(INVENTORY_ID)
+            .method(InventoryEntity::release)
+            .invoke(<span class="kw">new</span> ReleaseInventory(currentState().orderId()));
+
+        client.forEventSourcedEntity(currentState().orderId())
+            .method(OrderEntity::markFailed)
+            .invoke(<span class="kw">new</span> MarkFailed(reason));
+
+        timers().delete(ABANDON_TIMER_PREFIX + currentState().orderId());
+        <span class="kw">return</span> reason;
+      })
+      .andThen(String.<span class="kw">class</span>, __ -&gt; effects().end());
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Any step can transition here with a <span class="accent">reason string</span></li>
+        <li>Releases the inventory reservation (the earlier work)</li>
+        <li>Marks the order failed &mdash; entity records the fact</li>
+        <li>Cancels the abandon timer &mdash; no ghost cancellations later</li>
+        <li>Ends the workflow &mdash; no more transitions</li>
+      </ul>
+    </div>
+  </div>
+</section>
