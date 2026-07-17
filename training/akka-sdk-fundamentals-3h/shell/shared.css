@@ -412,3 +412,17 @@ body {
 }
 .title-presenter-email { margin-top: 8px; font-size: 14px; }
 
+/* Slide number in bottom right — injected by nav.js */
+.slide-number {
+  position: absolute;
+  bottom: 24px;
+  right: 32px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  z-index: 2;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+

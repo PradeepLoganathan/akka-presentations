@@ -422,6 +422,20 @@ body {
 }
 .title-presenter-email { margin-top: 8px; font-size: 14px; }
 
+/* Slide number in bottom right — injected by nav.js */
+.slide-number {
+  position: absolute;
+  bottom: 24px;
+  right: 32px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  z-index: 2;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+
 
 
 /* 00-title */
@@ -1725,6 +1739,15 @@ akka services deploy customers \
 
 
 (function() {
+  const slides = document.querySelectorAll('.deck-slide');
+  const total = slides.length;
+  slides.forEach(function(slide, i) {
+    const num = document.createElement('div');
+    num.className = 'slide-number';
+    num.textContent = (i + 1) + ' / ' + total;
+    slide.appendChild(num);
+  });
+
   const views = Array.from(document.querySelectorAll('[data-view]'));
   function top(el) { return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset); }
   function current() {

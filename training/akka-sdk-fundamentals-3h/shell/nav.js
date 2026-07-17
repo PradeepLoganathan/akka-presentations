@@ -1,4 +1,13 @@
 (function() {
+  const slides = document.querySelectorAll('.deck-slide');
+  const total = slides.length;
+  slides.forEach(function(slide, i) {
+    const num = document.createElement('div');
+    num.className = 'slide-number';
+    num.textContent = (i + 1) + ' / ' + total;
+    slide.appendChild(num);
+  });
+
   const views = Array.from(document.querySelectorAll('[data-view]'));
   function top(el) { return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset); }
   function current() {
