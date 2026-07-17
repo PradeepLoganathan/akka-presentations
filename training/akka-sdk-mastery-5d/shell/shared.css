@@ -369,7 +369,17 @@ body {
 }
 .two-code { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 @media (max-width: 1000px) { .two-code { grid-template-columns: 1fr; } }
-.bullets { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 6px; }
+.bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* margin-top clears the .file-tag row above the code column so the first bullet
+     aligns with the top of the .code-block, not the top of its column */
+  margin-top: 27px;
+  /* padding-left gives breathing room between the code column and the > markers */
+  padding-left: 22px;
+}
 .bullets li { color: #d2d3da; font-size: 20px; line-height: 1.4; padding-left: 22px; position: relative; }
 .bullets li::before { content: '>'; color: var(--yellow); font-weight: 800; position: absolute; left: 0; top: 0; }
 .callout {
