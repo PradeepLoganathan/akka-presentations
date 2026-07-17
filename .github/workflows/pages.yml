@@ -26,6 +26,20 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build training decks with presenter byline
+        run: |
+          python3 training/akka-sdk-fundamentals-3h/builder/build.py --presenter pradeep
+          python3 training/akka-sdk-workflows-day/builder/build.py   --presenter pradeep
+          python3 training/akka-sdk-mastery-5d/builder/build.py      --presenter pradeep
+
+      - name: Regenerate landing page
+        run: python3 build-index.py
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
