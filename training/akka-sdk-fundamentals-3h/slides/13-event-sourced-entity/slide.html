@@ -1,0 +1,39 @@
+<section id="slide-13" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Entities</div>
+    <h2>Event-sourced entity: <span class="accent">the log is the truth</span>.</h2>
+    <p>Command handlers <span class="accent">persist events</span>; state is rebuilt by folding them.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">domain/entities/CustomerEntity.java</div>
+      <pre class="code-block"><span class="anno">@ComponentId</span>(<span class="str">"Customer"</span>)
+<span class="kw">public class</span> CustomerEntity
+    <span class="kw">extends</span> EventSourcedEntity&lt;CustomerState, CustomerEvents&gt; {
+
+  <span class="anno">@Override</span>
+  <span class="kw">public</span> CustomerState emptyState() {
+    <span class="kw">return</span> CustomerState.empty();
+  }
+
+  <span class="kw">public</span> Effect&lt;String&gt; create(CreateCustomer cmd) {
+    <span class="kw">if</span> (currentState().customerId() != <span class="kw">null</span>)
+      <span class="kw">return</span> effects().error(<span class="str">"Customer already exists"</span>);
+
+    <span class="kw">var</span> id = commandContext().entityId();
+    <span class="kw">var</span> ev = <span class="kw">new</span> customerCreated(id, cmd.firstName(), cmd.lastName());
+    <span class="kw">return</span> effects().persist(ev).thenReply(__ -&gt; id);
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Extends <span class="accent">EventSourcedEntity&lt;State, Event&gt;</span></li>
+        <li><span class="accent">@ComponentId</span> = stable identifier used for storage</li>
+        <li>Validate first, then <span class="accent">.persist(event)</span></li>
+        <li><span class="accent">commandContext().entityId()</span> = which instance this is</li>
+        <li>State is not mutated here &mdash; the reducer does that</li>
+      </ul>
+    </div>
+  </div>
+</section>

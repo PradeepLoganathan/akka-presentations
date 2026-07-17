@@ -1,0 +1,17 @@
+<section id="slide-06" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Event sourcing</div>
+    <h2>What the log <span class="accent">buys you</span>.</h2>
+    <p>Once the source of truth is the event stream, several capabilities fall out for free.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Audit</div><p>Every change is a durable fact. Compliance stories write themselves.</p></div>
+    <div class="locus"><div class="locus-title">Replay</div><p>Reconstruct any past state by folding events up to a point in time.</p></div>
+    <div class="locus"><div class="locus-title">New projections</div><p>Ship a new read model tomorrow by replaying yesterday's events into it.</p></div>
+  </div>
+  <div class="loci-grid" style="margin-top: 18px;">
+    <div class="locus"><div class="locus-title">Debugging</div><p>Bug reports say "at 14:03". You have the event that fired at 14:03.</p></div>
+    <div class="locus"><div class="locus-title">Domain fit</div><p>Business folks already speak in events: "shipped", "cancelled", "paid".</p></div>
+    <div class="locus"><div class="locus-title">Integration</div><p>Events are a natural fan-out to downstream systems &amp; analytics.</p></div>
+  </div>
+</section>

@@ -1,0 +1,27 @@
+<section id="slide-22" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Endpoints</div>
+    <h2>How this differs from a <span class="accent">Spring controller</span>.</h2>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-col muted">
+      <div class="compare-label">Spring MVC / Boot</div>
+      <ul>
+        <li>@RestController &rarr; @Service &rarr; @Repository &rarr; DB</li>
+        <li>Transactions span layers; state is in the DB</li>
+        <li>Concurrency is your problem</li>
+        <li>Distribution is your problem</li>
+      </ul>
+    </div>
+    <div class="compare-col active">
+      <div class="compare-label">Akka SDK</div>
+      <ul>
+        <li>Endpoint &rarr; ComponentClient &rarr; entity or view</li>
+        <li>State lives in the entity; the runtime persists it</li>
+        <li>Single-writer per entity ID &mdash; no locking</li>
+        <li>Sharding, replication, retries: runtime concerns</li>
+      </ul>
+    </div>
+  </div>
+  <div class="bottom-line">Same three-layer feel. Different guarantees underneath.</div>
+</section>

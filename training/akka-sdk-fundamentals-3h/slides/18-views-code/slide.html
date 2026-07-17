@@ -1,0 +1,45 @@
+<section id="slide-18" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Views</div>
+    <h2>CustomerView, <span class="accent">annotated</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">views/CustomerView.java</div>
+      <pre class="code-block"><span class="anno">@ComponentId</span>(<span class="str">"customerview"</span>)
+<span class="kw">public class</span> CustomerView <span class="kw">extends</span> View {
+
+  <span class="kw">public record</span> customerEntry(
+      String customerId, String firstName,
+      String lastName, <span class="kw">boolean</span> deleted) {}
+
+  <span class="anno">@Query</span>(<span class="str">"SELECT * FROM customers_table"</span>)
+  <span class="kw">public</span> QueryEffect&lt;customerEntry&gt; getAll() {
+    <span class="kw">return</span> queryResult();
+  }
+
+  <span class="anno">@Table</span>(<span class="str">"customers_table"</span>)
+  <span class="anno">@Consume</span>.FromEventSourcedEntity(CustomerEntity.<span class="kw">class</span>)
+  <span class="kw">public static class</span> CustomersUpdater
+      <span class="kw">extends</span> TableUpdater&lt;customerEntry&gt; {
+
+    <span class="kw">public</span> Effect&lt;customerEntry&gt; onEvent(customerCreated e) {
+      <span class="kw">return</span> effects().updateRow(
+          <span class="kw">new</span> customerEntry(e.customerId(),
+              e.firstName(), e.lastName(), <span class="kw">false</span>));
+    }
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">@Table</span> names the queryable table</li>
+        <li><span class="accent">@Consume.FromEventSourcedEntity</span> wires the subscription</li>
+        <li>One <span class="accent">onEvent(&hellip;)</span> per event type</li>
+        <li><span class="accent">effects().updateRow(&hellip;)</span> writes into the table</li>
+        <li><span class="accent">@Query</span> is a SQL-like DSL &mdash; parameters bind to method args</li>
+        <li>No JPA, no repository &mdash; the runtime <em>is</em> your storage</li>
+      </ul>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,31 @@
+<section id="slide-26" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Ops</div>
+    <h2>From laptop to <span class="accent">managed runtime</span>.</h2>
+    <p>Akka runs your service. You don't stand up a cluster.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">akka CLI</div>
+      <pre class="code-block">akka auth login
+
+akka projects new my-project
+akka config set project my-project
+
+akka services deploy customers \
+    ghcr.io/pradeepl/akka-workshop:1.0
+
+akka services list</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Container-image based deploy</li>
+        <li>Rolling upgrades by default</li>
+        <li>Autoscale on request rate</li>
+        <li>Multi-region if you want it</li>
+        <li>No YAML mountain, no Helm charts</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">The code you wrote in the sample is <span class="accent">deployable without change</span>.</div>
+</section>

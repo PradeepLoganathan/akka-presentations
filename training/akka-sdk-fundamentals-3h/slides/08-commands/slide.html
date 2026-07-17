@@ -1,0 +1,30 @@
+<section id="slide-08" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Commands &amp; events</div>
+    <h2>Commands are <span class="accent">intent</span>.</h2>
+    <p>A command is a request to change state. The entity decides whether to accept it.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">domain/commands/CustomerCommands.java</div>
+      <pre class="code-block"><span class="kw">public final class</span> CustomerCommands {
+
+  <span class="kw">public record</span> <span class="anno">CreateCustomer</span>(
+      String firstName,
+      String lastName
+  ) {}
+
+  <span class="kw">public record</span> <span class="anno">DeleteCustomer</span>() {}
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Named in the imperative &mdash; <span class="accent">CreateCustomer</span>, not CustomerCreated</li>
+        <li>Present tense: "do this"</li>
+        <li>Plain Java records: the field list is the contract</li>
+        <li>Can be rejected: <span class="accent">"Customer already exists"</span></li>
+        <li>Never stored. They produce events, then vanish.</li>
+      </ul>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,46 @@
+<section id="slide-21" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Endpoints</div>
+    <h2>CustomerEndpoint <span class="accent">walkthrough</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">api/CustomerEndpoint.java</div>
+      <pre class="code-block"><span class="anno">@HttpEndpoint</span>(<span class="str">"/api"</span>)
+<span class="anno">@Acl</span>(allow = <span class="anno">@Acl</span>.Matcher(principal = Acl.Principal.INTERNET))
+<span class="kw">public class</span> CustomerEndpoint {
+
+  <span class="kw">private final</span> ComponentClient client;
+
+  <span class="kw">public</span> CustomerEndpoint(ComponentClient client) {
+    <span class="kw">this</span>.client = client;
+  }
+
+  <span class="anno">@Post</span>(<span class="str">"/customers"</span>)
+  <span class="kw">public</span> CreateCustomerResponse create(CreateCustomerRequest req) {
+    <span class="kw">var</span> cmd = <span class="kw">new</span> CreateCustomer(req.firstName, req.lastName);
+    client.forEventSourcedEntity(req.customerId)
+        .method(CustomerEntity::create)
+        .invoke(cmd);
+    <span class="kw">return new</span> CreateCustomerResponse(
+        req.customerId, req.firstName, req.lastName);
+  }
+
+  <span class="anno">@Get</span>(<span class="str">"/customers"</span>)
+  <span class="kw">public</span> customerEntry list() {
+    <span class="kw">return</span> client.forView().method(CustomerView::getAll).invoke();
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">ComponentClient</span> is how endpoints call components</li>
+        <li>Injected by the runtime &mdash; no DI setup</li>
+        <li><span class="accent">forEventSourcedEntity(id)</span> targets one entity instance</li>
+        <li><span class="accent">forView()</span> queries a view</li>
+        <li><span class="accent">.method(&hellip;::&hellip;)</span> is a method reference to the handler</li>
+        <li>Request &amp; response records are plain Java</li>
+      </ul>
+    </div>
+  </div>
+</section>

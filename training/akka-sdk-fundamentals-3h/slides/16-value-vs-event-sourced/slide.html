@@ -1,0 +1,21 @@
+<section id="slide-16" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Entities</div>
+    <h2>Which flavor for which <span class="accent">problem</span>?</h2>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span></span><span>Value entity</span></div>
+    <div class="matrix-row"><span>Storage model</span><span>Latest state snapshot</span></div>
+    <div class="matrix-row"><span>History</span><span>Not preserved</span></div>
+    <div class="matrix-row"><span>Best for</span><span>Preferences, sessions, feature flags, caches</span></div>
+    <div class="matrix-row"><span>Cost</span><span>Cheapest to write, cheapest to reason about</span></div>
+  </div>
+  <div class="matrix-card" style="margin-top: 18px;">
+    <div class="matrix-row matrix-head"><span></span><span>Event-sourced entity</span></div>
+    <div class="matrix-row"><span>Storage model</span><span>Append-only event log</span></div>
+    <div class="matrix-row"><span>History</span><span>Complete, replayable</span></div>
+    <div class="matrix-row"><span>Best for</span><span>Domain aggregates with real narratives &mdash; orders, accounts, customers</span></div>
+    <div class="matrix-row"><span>Cost</span><span>More design work; schema evolution is a real topic</span></div>
+  </div>
+  <div class="callout">Migration is one-way. For a domain aggregate, start event-sourced when in doubt.</div>
+</section>

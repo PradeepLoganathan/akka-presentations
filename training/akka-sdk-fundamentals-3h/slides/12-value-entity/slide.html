@@ -1,0 +1,38 @@
+<section id="slide-12" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Entities</div>
+    <h2>Value entity: <span class="accent">snapshot in place</span>.</h2>
+    <p>Simplest flavor. Handlers replace the whole state. No event log.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">domain/entities/CustomerPreferencesEntity.java</div>
+      <pre class="code-block"><span class="anno">@ComponentId</span>(<span class="str">"customer-preferences"</span>)
+<span class="kw">public class</span> CustomerPreferencesEntity
+    <span class="kw">extends</span> KeyValueEntity&lt;CustomerPreferences&gt; {
+
+  <span class="anno">@Override</span>
+  <span class="kw">public</span> CustomerPreferences emptyState() {
+    <span class="kw">return</span> CustomerPreferences.defaults();
+  }
+
+  <span class="kw">public</span> Effect&lt;String&gt; set(SetPreferences cmd) {
+    <span class="kw">var</span> next = <span class="kw">new</span> CustomerPreferences(
+        cmd.theme(), cmd.locale(), cmd.marketingOptIn());
+    <span class="kw">return</span> effects()
+        .updateState(next)
+        .thenReply(__ -&gt; <span class="str">"OK"</span>);
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Extends <span class="accent">KeyValueEntity&lt;State&gt;</span></li>
+        <li>No events, no reducer &mdash; just <span class="accent">updateState(next)</span></li>
+        <li>Runtime persists the latest state atomically</li>
+        <li>Great for preferences, sessions, feature flags</li>
+        <li>Loses history &mdash; last write wins</li>
+      </ul>
+    </div>
+  </div>
+</section>

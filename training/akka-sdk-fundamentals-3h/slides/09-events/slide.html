@@ -1,0 +1,35 @@
+<section id="slide-09" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Commands &amp; events</div>
+    <h2>Events are <span class="accent">facts</span>.</h2>
+    <p>An event describes something that already happened. Never rejected, never edited.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">domain/events/CustomerEvents.java</div>
+      <pre class="code-block"><span class="kw">public sealed interface</span> CustomerEvents {
+
+  <span class="kw">record</span> <span class="anno">customerCreated</span>(
+      String customerId,
+      String firstName,
+      String lastName
+  ) <span class="kw">implements</span> CustomerEvents {}
+
+  <span class="kw">record</span> <span class="anno">customerDeleted</span>(
+      String customerId,
+      String firstName,
+      String lastName
+  ) <span class="kw">implements</span> CustomerEvents {}
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Past tense &mdash; <span class="accent">customerCreated</span></li>
+        <li>Immutable. Journaled forever.</li>
+        <li><span class="accent">sealed interface</span> &rarr; the reducer's switch is exhaustive</li>
+        <li>Serialized to storage &mdash; treat schema changes with care</li>
+        <li>Downstream views &amp; consumers subscribe to them</li>
+      </ul>
+    </div>
+  </div>
+</section>

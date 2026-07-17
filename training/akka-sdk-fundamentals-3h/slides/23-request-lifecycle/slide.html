@@ -1,0 +1,16 @@
+<section id="slide-23" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Wiring</div>
+    <h2>One <span class="accent">POST</span>, end to end.</h2>
+    <p>Every hop is in one JVM at dev time, and distributed transparently in prod.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>1 &middot; HTTP</b><small>POST /api/customers arrives</small></div>
+    <div class="lifecycle-step"><b>2 &middot; Endpoint</b><small>CustomerEndpoint.create() runs</small></div>
+    <div class="lifecycle-step"><b>3 &middot; Client</b><small>ComponentClient targets customer-42</small></div>
+    <div class="lifecycle-step"><b>4 &middot; Entity</b><small>CustomerEntity.create() validates, persists event</small></div>
+    <div class="lifecycle-step"><b>5 &middot; View</b><small>CustomersUpdater sees customerCreated, writes row</small></div>
+    <div class="lifecycle-step"><b>6 &middot; GET</b><small>GET /api/customers returns the row</small></div>
+  </div>
+  <div class="callout">Steps 4 and 5 happen in parallel from the caller's perspective &mdash; the 200 returns after step 4.</div>
+</section>

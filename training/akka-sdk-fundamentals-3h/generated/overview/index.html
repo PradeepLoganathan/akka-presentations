@@ -1,0 +1,1382 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akka SDK Fundamentals &mdash; Akka</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --yellow: #F5C518;
+  --black: #000;
+  --panel: #101116;
+  --line: #27282f;
+  --muted: #8b8d98;
+  --white: #fff;
+  --green: #3fb950;
+  --blue: #7EC8E3;
+  --red: #ff5f57;
+  --pad: 96px;
+}
+@media (max-width: 900px) { :root { --pad: 28px; } }
+html { background: var(--black); scroll-behavior: smooth; }
+body {
+  font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  max-width: 1536px;
+  margin: 0 auto;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.deck-slide {
+  min-height: 100vh;
+  padding: 88px var(--pad);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--black);
+}
+.deck-slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+.deck-slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(0,0,0,0.95), rgba(0,0,0,0.78) 55%, rgba(0,0,0,0.98));
+  pointer-events: none;
+}
+.deck-slide > * { position: relative; z-index: 1; }
+.accent { color: var(--yellow); }
+.brand-mark {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 7px;
+  color: var(--white);
+  margin-bottom: 44px;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards .15s;
+}
+.kicker, .eyebrow {
+  color: var(--yellow);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.kicker::before, .eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 30px;
+  height: 2px;
+  background: var(--yellow);
+  margin-right: 12px;
+  vertical-align: middle;
+}
+.title-slide { text-align: center; align-items: center; }
+.title-slide::after { background: radial-gradient(ellipse at 50% 45%, transparent 18%, rgba(0,0,0,.88) 72%); }
+.title-headline {
+  font-size: 84px;
+  line-height: .98;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  max-width: 1080px;
+  margin-top: 22px;
+  opacity: 0;
+  animation: fadeUp .6s ease forwards .35s;
+}
+.title-sub {
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 14px;
+  letter-spacing: 4px;
+  font-weight: 700;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards .55s;
+}
+.rule {
+  width: 58px;
+  height: 3px;
+  background: var(--yellow);
+  margin: 38px auto;
+  opacity: 0;
+  animation: fadeUp .45s ease forwards .7s;
+}
+.title-copy {
+  color: #d7d7dc;
+  font-size: 23px;
+  line-height: 1.35;
+  max-width: 790px;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards .85s;
+}
+.session-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 34px;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards 1s;
+}
+.session-meta span, .proof-strip span, .chip-grid span {
+  border: 1px solid rgba(245,197,24,.28);
+  background: rgba(245,197,24,.06);
+  color: #ece2ad;
+  border-radius: 999px;
+  padding: 8px 13px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .4px;
+}
+.slide-head { max-width: 1050px; margin-bottom: 58px; }
+.slide-head.compact { margin-bottom: 38px; }
+.slide-head h2 {
+  font-size: 58px;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  margin-top: 18px;
+  font-weight: 800;
+}
+.slide-head p {
+  margin-top: 18px;
+  max-width: 860px;
+  color: #b9bbc4;
+  font-size: 21px;
+  line-height: 1.42;
+}
+.three-stat, .compare-grid, .output-grid, .loci-grid, .question-grid, .phase-row {
+  display: grid;
+  gap: 18px;
+}
+.three-stat { grid-template-columns: repeat(3, 1fr); }
+.stat-block, .compare-col, .output-col, .locus, .phase, .question, .matrix-card, .rd-boundary {
+  background: rgba(16,17,22,.88);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--yellow);
+  padding: 26px;
+}
+.stat-num, .phase-num {
+  color: var(--yellow);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 2px;
+  margin-bottom: 18px;
+}
+.stat-title, .compare-label, .output-kicker, .locus-title {
+  color: var(--yellow);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.stat-text, .compare-col li, .locus p, .phase p, .question {
+  color: #d2d3da;
+  font-size: 18px;
+  line-height: 1.38;
+}
+.whiteboard-prompt, .bottom-line {
+  margin-top: 30px;
+  color: var(--white);
+  border-top: 1px solid rgba(255,255,255,.12);
+  padding-top: 22px;
+  font-size: 22px;
+  font-weight: 700;
+}
+.compare-grid { grid-template-columns: repeat(2, 1fr); }
+.compare-col { border-left-color: #777; }
+.compare-col.active { border-left-color: var(--yellow); }
+.compare-col.blue { border-left-color: var(--blue); }
+.compare-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.compare-col li::before { content: '-'; color: var(--yellow); margin-right: 10px; }
+.compare-col h3, .output-col h3, .phase h3 {
+  font-size: 28px;
+  margin-bottom: 18px;
+  letter-spacing: -0.02em;
+}
+.loop-diagram, .convergence-diagram, .two-lane, .stack-diagram {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+}
+.loop-node, .lane, .conv-box, .conv-result, .stack-layer, .stack-output {
+  border: 1px solid var(--line);
+  background: rgba(16,17,22,.9);
+  padding: 28px;
+}
+.loop-node { flex: 1; border-top: 3px solid var(--yellow); }
+.loop-node span { display: block; font-size: 34px; font-weight: 800; margin-bottom: 14px; letter-spacing: -0.02em; }
+.loop-node small { color: #c9cad2; font-size: 18px; line-height: 1.35; }
+.loop-arrow, .conv-plus, .conv-arrow {
+  align-self: center;
+  color: var(--yellow);
+  font-size: 44px;
+  font-weight: 800;
+}
+.proof-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 34px; }
+.two-lane { align-items: center; }
+.lane { flex: 1; min-height: 300px; }
+.lane.functional { border-left: 3px solid var(--green); }
+.lane.governance { border-left: 3px solid var(--blue); }
+.lane-title { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+.lane-owner { color: var(--muted); text-transform: uppercase; letter-spacing: 2px; font-size: 11px; font-weight: 800; margin-bottom: 22px; }
+.lane ul { list-style: none; display: grid; gap: 9px; color: #d6d7de; font-size: 18px; }
+.specify-core {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  flex: 0 0 auto;
+}
+.matrix-card { padding: 0; overflow: hidden; }
+.matrix-row { display: grid; grid-template-columns: 260px 1fr; border-top: 1px solid var(--line); }
+.matrix-row:first-child { border-top: 0; }
+.matrix-row span { padding: 15px 20px; color: #d4d5dc; font-size: 17px; line-height: 1.35; }
+.matrix-row span:first-child { color: var(--white); font-weight: 800; border-right: 1px solid var(--line); }
+.matrix-head { background: rgba(245,197,24,.08); }
+.matrix-head span { color: var(--yellow) !important; text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px; }
+.output-grid { grid-template-columns: repeat(2, 1fr); }
+.output-col:first-child { border-left-color: var(--green); }
+.output-col:last-child { border-left-color: var(--blue); }
+.chip-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.convergence-diagram { align-items: center; margin-top: 8px; }
+.conv-box { flex: 1; font-size: 24px; font-weight: 800; min-height: 140px; display: flex; align-items: center; justify-content: center; text-align: center; }
+.conv-result { flex: 1.1; font-size: 32px; font-weight: 900; color: var(--black); background: var(--yellow); display: flex; align-items: center; justify-content: center; text-align: center; }
+.rd-boundary { margin-top: 32px; border-left-color: var(--red); color: #dadbe2; font-size: 19px; line-height: 1.45; }
+.rd-boundary.subtle { border-left-color: var(--yellow); }
+.loci-grid { grid-template-columns: repeat(3, 1fr); }
+.locus { min-height: 170px; }
+.stack-diagram { flex-direction: column; max-width: 920px; }
+.stack-layer { font-size: 27px; font-weight: 850; }
+.stack-layer small { display: block; margin-top: 9px; color: #b9bbc4; font-size: 17px; font-weight: 500; line-height: 1.35; }
+.stack-layer.corporate { border-left: 4px solid var(--red); margin-left: 0; }
+.stack-layer.domain { border-left: 4px solid var(--blue); margin-left: 80px; }
+.stack-layer.project { border-left: 4px solid var(--green); margin-left: 160px; }
+.stack-output { margin-left: 240px; background: var(--yellow); color: var(--black); font-size: 26px; font-weight: 900; }
+.phase-row { grid-template-columns: repeat(3, 1fr); }
+.phase { min-height: 250px; }
+.question-grid { grid-template-columns: repeat(2, 1fr); }
+.question { border-left-color: var(--yellow); min-height: 125px; display: flex; gap: 18px; align-items: flex-start; }
+.question span { color: var(--yellow); font-size: 18px; font-weight: 900; letter-spacing: 2px; }
+@media (max-width: 1000px) {
+  .title-headline { font-size: 54px; }
+  .slide-head h2 { font-size: 40px; }
+  .three-stat, .compare-grid, .output-grid, .loci-grid, .phase-row, .question-grid { grid-template-columns: 1fr; }
+  .two-lane, .convergence-diagram, .loop-diagram { flex-direction: column; }
+  .loop-arrow, .conv-plus, .conv-arrow { transform: rotate(90deg); align-self: center; }
+  .specify-core { width: 112px; height: 112px; }
+  .matrix-row { grid-template-columns: 1fr; }
+  .matrix-row span:first-child { border-right: 0; border-bottom: 1px solid var(--line); }
+  .stack-layer, .stack-output { margin-left: 0 !important; }
+}
+
+/* Consolidated Akka move slide */
+.move-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.move-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.move-card {
+  background: rgba(16,17,22,.9);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--yellow);
+  padding: 24px;
+  min-height: 178px;
+}
+.move-card.functional { border-left-color: var(--green); }
+.move-card.governance { border-left-color: var(--blue); }
+.move-kicker {
+  color: var(--yellow);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+  font-weight: 850;
+  margin-bottom: 12px;
+}
+.move-card h3 {
+  font-size: 27px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.move-card p {
+  color: #c9cad2;
+  font-size: 17px;
+  line-height: 1.38;
+}
+.move-specify,
+.move-converge {
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  border: 1px solid rgba(245,197,24,.38);
+}
+.move-specify {
+  background: var(--yellow);
+  color: var(--black);
+  padding: 18px 20px;
+  font-size: 26px;
+}
+.move-converge {
+  background: rgba(245,197,24,.08);
+  color: var(--white);
+  padding: 20px 24px;
+  font-size: 25px;
+}
+@media (max-width: 1000px) {
+  .move-row { grid-template-columns: 1fr; }
+}
+
+/* Training deck additions */
+.code-block {
+  background: rgba(16,17,22,.92);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--yellow);
+  padding: 20px 24px;
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #e6e7ec;
+  overflow-x: auto;
+  white-space: pre;
+  border-radius: 2px;
+}
+.code-block .cmt { color: #8b8d98; font-style: italic; }
+.code-block .kw  { color: var(--yellow); }
+.code-block .str { color: var(--blue); }
+.code-block .anno { color: #b0e88a; }
+.file-tag {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.two-code { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 1000px) { .two-code { grid-template-columns: 1fr; } }
+.bullets { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 6px; }
+.bullets li { color: #d2d3da; font-size: 20px; line-height: 1.4; padding-left: 22px; position: relative; }
+.bullets li::before { content: '>'; color: var(--yellow); font-weight: 800; position: absolute; left: 0; top: 0; }
+.callout {
+  margin-top: 26px;
+  padding: 18px 22px;
+  border: 1px solid rgba(126,200,227,.35);
+  background: rgba(126,200,227,.06);
+  color: #cfe6f4;
+  font-size: 17px;
+  line-height: 1.45;
+  border-left: 3px solid var(--blue);
+}
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.pill-row span { border: 1px solid rgba(245,197,24,.28); background: rgba(245,197,24,.06); color: #ece2ad; border-radius: 999px; padding: 8px 13px; font-size: 12px; font-weight: 700; letter-spacing: .4px; }
+.lifecycle { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; align-items: stretch; margin-top: 8px; }
+.lifecycle-step { background: rgba(16,17,22,.9); border: 1px solid var(--line); border-top: 3px solid var(--yellow); padding: 18px 16px; }
+.lifecycle-step b { display: block; color: var(--yellow); font-size: 11px; letter-spacing: 2px; margin-bottom: 8px; }
+.lifecycle-step small { color: #cfd1d8; font-size: 14px; line-height: 1.35; }
+@media (max-width: 1000px) { .lifecycle { grid-template-columns: 1fr 1fr; } }
+
+
+
+/* 00-title */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 01-agenda */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 02-what-is-akka-sdk */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 03-sample-repo */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 04-mental-model */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 05-state-vs-events */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 06-event-sourcing-fundamentals */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 07-when-to-use */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 08-commands */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 09-events */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 10-commands-vs-events */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 11-entities-overview */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 12-value-entity */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 13-event-sourced-entity */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 14-effects-api */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 15-apply-event */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 16-value-vs-event-sourced */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 17-views-what */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 18-views-code */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 19-views-eventual-consistency */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 20-endpoints-overview */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 21-endpoint-code */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 22-endpoints-vs-controllers */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 23-request-lifecycle */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 24-testkit */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 25-local-run */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 26-deploy */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 27-what-we-skipped */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 28-next-steps */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 29-thanks */
+/* Slide-specific overrides intentionally minimal. */
+
+</style>
+</head>
+<body>
+<section id="slide-00" class="deck-slide title-slide" data-view>
+  <div class="brand-mark" aria-label="Akka">AKKA</div>
+  <div class="kicker">Developer training &middot; 3 hours</div>
+  <h1 class="title-headline"><span class="accent">Akka SDK Fundamentals</span></h1>
+  <div class="title-sub">EVENT SOURCING, ENTITIES, VIEWS &amp; ENDPOINTS &mdash; IN JAVA</div>
+  <div class="rule"></div>
+  <p class="title-copy">Build one small Akka service end&#8209;to&#8209;end. By the end, you can read, run, and extend the sample repo.</p>
+  <div class="session-meta">
+    <span>Sample: akka-workshop</span>
+    <span>Follow along in your IDE</span>
+    <span>Java 21 &middot; Akka SDK 3.4</span>
+  </div>
+</section>
+
+
+<section id="slide-01" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agenda</div>
+    <h2>Three hours, six <span class="accent">short blocks</span>.</h2>
+    <p>Each block ends with a hands-on prompt against the sample repo. Breaks between blocks; questions any time.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>0:00 &middot; 20m</b><small>What is the Akka SDK &mdash; and the sample</small></div>
+    <div class="lifecycle-step"><b>0:20 &middot; 25m</b><small>Event sourcing, from first principles</small></div>
+    <div class="lifecycle-step"><b>0:45 &middot; 25m</b><small>Commands &amp; events</small></div>
+    <div class="lifecycle-step"><b>1:10 &middot; 50m</b><small>Entities: value + event-sourced</small></div>
+    <div class="lifecycle-step"><b>2:00 &middot; 30m</b><small>Views &amp; eventual consistency</small></div>
+    <div class="lifecycle-step"><b>2:30 &middot; 30m</b><small>Endpoints, run, deploy, wrap</small></div>
+  </div>
+</section>
+
+
+<section id="slide-02" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Positioning</div>
+    <h2>Not a library. A <span class="accent">runtime with an SDK</span>.</h2>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-col active">
+      <div class="compare-label">You write</div>
+      <ul>
+        <li>Components: entities, views, endpoints, workflows, timers, consumers, agents</li>
+        <li>Plain Java records &amp; classes with a few annotations</li>
+        <li>Maven module &mdash; nothing exotic</li>
+      </ul>
+    </div>
+    <div class="compare-col blue">
+      <div class="compare-label">Akka runs</div>
+      <ul>
+        <li>Persistence, sharding, cluster membership</li>
+        <li>Message delivery guarantees &amp; back-pressure</li>
+        <li>HTTP surface, ACLs, observability</li>
+        <li>Rolling deploys, autoscale, multi-region</li>
+      </ul>
+    </div>
+  </div>
+  <div class="bottom-line">The SDK's job is to keep distribution invisible while you write domain logic.</div>
+</section>
+
+
+<section id="slide-03" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">The sample</div>
+    <h2>akka-workshop &mdash; <span class="accent">one entity, one view, one endpoint</span>.</h2>
+    <p>Everything we cover today maps to a file in this repo. Clone it now &mdash; we'll come back to it after every block.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Clone &amp; run</div>
+      <pre class="code-block">git clone https://github.com/PradeepLoganathan/akka-workshop.git
+cd akka-workshop
+mvn compile exec:java</pre>
+      <ul class="bullets">
+        <li>Local console: <span class="accent">http://localhost:9000/akka/console</span></li>
+        <li>Endpoint: <span class="accent">http://localhost:9000/api/customers</span></li>
+        <li>Java 21 &middot; Akka SDK 3.4</li>
+      </ul>
+    </div>
+    <div>
+      <div class="file-tag">Tree</div>
+      <pre class="code-block">src/main/java/com/pradeepl/akkakata/
+├── domain/
+│   ├── commands/   <span class="cmt">// intent</span>
+│   ├── events/     <span class="cmt">// facts</span>
+│   ├── model/      <span class="cmt">// state records</span>
+│   └── entities/   <span class="cmt">// value + event-sourced</span>
+├── views/          <span class="cmt">// projections</span>
+└── api/            <span class="cmt">// HTTP endpoints</span></pre>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-04" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Mental model</div>
+    <h2>Five nouns for the next three hours.</h2>
+    <p>Every component you write is one of these. Keep this vocabulary loaded.</p>
+  </div>
+  <div class="three-stat">
+    <div class="stat-block"><div class="stat-num">01</div><div class="stat-title">Command</div><div class="stat-text">A request to change something. Can be rejected.</div></div>
+    <div class="stat-block"><div class="stat-num">02</div><div class="stat-title">Event</div><div class="stat-text">A fact that already happened. Immutable, journaled.</div></div>
+    <div class="stat-block"><div class="stat-num">03</div><div class="stat-title">Entity</div><div class="stat-text">A stateful thing addressed by an ID.</div></div>
+  </div>
+  <div class="three-stat" style="margin-top: 18px;">
+    <div class="stat-block"><div class="stat-num">04</div><div class="stat-title">View</div><div class="stat-text">A read-optimized projection over entity data.</div></div>
+    <div class="stat-block"><div class="stat-num">05</div><div class="stat-title">Endpoint</div><div class="stat-text">The HTTP surface. Talks to entities &amp; views via a client.</div></div>
+    <div class="stat-block" style="border-left-color: var(--blue);"><div class="stat-num" style="color: var(--blue);">+</div><div class="stat-title" style="color: var(--blue);">Later</div><div class="stat-text">Workflows, timers, consumers, agents &mdash; same shape.</div></div>
+  </div>
+</section>
+
+
+<section id="slide-05" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Event sourcing</div>
+    <h2>Two ways to <span class="accent">remember</span>.</h2>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-col muted">
+      <div class="compare-label">CRUD / row overwrite</div>
+      <ul>
+        <li>Table row holds the current state</li>
+        <li>UPDATE erases what was there</li>
+        <li>History exists only if you built it (audit tables, triggers)</li>
+        <li>Answers "what is X now?"</li>
+      </ul>
+    </div>
+    <div class="compare-col active">
+      <div class="compare-label">Event sourced</div>
+      <ul>
+        <li>Append-only log of things that happened</li>
+        <li>Current state = fold over past events</li>
+        <li>History is the storage model, not an add-on</li>
+        <li>Answers "what is X now, and how did it get there?"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="bottom-line">Your bank shows you a statement (events), not just a balance (state).</div>
+</section>
+
+
+<section id="slide-06" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Event sourcing</div>
+    <h2>What the log <span class="accent">buys you</span>.</h2>
+    <p>Once the source of truth is the event stream, several capabilities fall out for free.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Audit</div><p>Every change is a durable fact. Compliance stories write themselves.</p></div>
+    <div class="locus"><div class="locus-title">Replay</div><p>Reconstruct any past state by folding events up to a point in time.</p></div>
+    <div class="locus"><div class="locus-title">New projections</div><p>Ship a new read model tomorrow by replaying yesterday's events into it.</p></div>
+  </div>
+  <div class="loci-grid" style="margin-top: 18px;">
+    <div class="locus"><div class="locus-title">Debugging</div><p>Bug reports say "at 14:03". You have the event that fired at 14:03.</p></div>
+    <div class="locus"><div class="locus-title">Domain fit</div><p>Business folks already speak in events: "shipped", "cancelled", "paid".</p></div>
+    <div class="locus"><div class="locus-title">Integration</div><p>Events are a natural fan-out to downstream systems &amp; analytics.</p></div>
+  </div>
+</section>
+
+
+<section id="slide-07" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Event sourcing</div>
+    <h2>Great tool. Not the <span class="accent">only tool</span>.</h2>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-col active">
+      <div class="compare-label">Reach for it when</div>
+      <ul>
+        <li>History matters &mdash; audit, compliance, disputes</li>
+        <li>Multiple read models over the same domain</li>
+        <li>"What did X look like on Tuesday?" is a real question</li>
+        <li>Domain has a natural event vocabulary</li>
+      </ul>
+    </div>
+    <div class="compare-col blue">
+      <div class="compare-label">Skip it when</div>
+      <ul>
+        <li>State is a settings page &mdash; latest is all you need</li>
+        <li>You have no domain narrative, just CRUD</li>
+        <li>Aggregate would grow an unbounded event stream you'll never trim</li>
+        <li>Team hasn't internalized eventual consistency yet</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">Rule of thumb: if <span class="accent">who changed what, when, and why</span> matters &mdash; event source it.</div>
+</section>
+
+
+<section id="slide-08" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Commands &amp; events</div>
+    <h2>Commands are <span class="accent">intent</span>.</h2>
+    <p>A command is a request to change state. The entity decides whether to accept it.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">domain/commands/CustomerCommands.java</div>
+      <pre class="code-block"><span class="kw">public final class</span> CustomerCommands {
+
+  <span class="kw">public record</span> <span class="anno">CreateCustomer</span>(
+      String firstName,
+      String lastName
+  ) {}
+
+  <span class="kw">public record</span> <span class="anno">DeleteCustomer</span>() {}
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Named in the imperative &mdash; <span class="accent">CreateCustomer</span>, not CustomerCreated</li>
+        <li>Present tense: "do this"</li>
+        <li>Plain Java records: the field list is the contract</li>
+        <li>Can be rejected: <span class="accent">"Customer already exists"</span></li>
+        <li>Never stored. They produce events, then vanish.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-09" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Commands &amp; events</div>
+    <h2>Events are <span class="accent">facts</span>.</h2>
+    <p>An event describes something that already happened. Never rejected, never edited.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">domain/events/CustomerEvents.java</div>
+      <pre class="code-block"><span class="kw">public sealed interface</span> CustomerEvents {
+
+  <span class="kw">record</span> <span class="anno">customerCreated</span>(
+      String customerId,
+      String firstName,
+      String lastName
+  ) <span class="kw">implements</span> CustomerEvents {}
+
+  <span class="kw">record</span> <span class="anno">customerDeleted</span>(
+      String customerId,
+      String firstName,
+      String lastName
+  ) <span class="kw">implements</span> CustomerEvents {}
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Past tense &mdash; <span class="accent">customerCreated</span></li>
+        <li>Immutable. Journaled forever.</li>
+        <li><span class="accent">sealed interface</span> &rarr; the reducer's switch is exhaustive</li>
+        <li>Serialized to storage &mdash; treat schema changes with care</li>
+        <li>Downstream views &amp; consumers subscribe to them</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-10" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Commands &amp; events</div>
+    <h2>The contrast that <span class="accent">matters</span>.</h2>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span></span><span>Command</span></div>
+    <div class="matrix-row"><span>Direction</span><span>Into the entity</span></div>
+    <div class="matrix-row"><span>Semantics</span><span>Intent &mdash; "please do this"</span></div>
+    <div class="matrix-row"><span>Tense</span><span>Present, imperative</span></div>
+    <div class="matrix-row"><span>Can be rejected?</span><span>Yes</span></div>
+    <div class="matrix-row"><span>Stored?</span><span>No &mdash; transient</span></div>
+  </div>
+  <div class="matrix-card" style="margin-top: 18px;">
+    <div class="matrix-row matrix-head"><span></span><span>Event</span></div>
+    <div class="matrix-row"><span>Direction</span><span>Out of the entity</span></div>
+    <div class="matrix-row"><span>Semantics</span><span>Fact &mdash; "this already happened"</span></div>
+    <div class="matrix-row"><span>Tense</span><span>Past</span></div>
+    <div class="matrix-row"><span>Can be rejected?</span><span>Never</span></div>
+    <div class="matrix-row"><span>Stored?</span><span>Yes &mdash; forever</span></div>
+  </div>
+</section>
+
+
+<section id="slide-11" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Entities</div>
+    <h2>An entity is <span class="accent">the actor model, tamed</span>.</h2>
+    <p>Each entity instance is an actor under the hood. The SDK hides sharding, mailbox, and lifecycle so you write plain Java.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Addressable</div><p>Reached by an ID string. <span class="accent">customer-42</span> is one instance.</p></div>
+    <div class="locus"><div class="locus-title">Single-writer</div><p>One instance handles its commands serially. No locking, no races.</p></div>
+    <div class="locus"><div class="locus-title">Sharded</div><p>The runtime places instances across the cluster. You don't manage that.</p></div>
+  </div>
+  <div class="loci-grid" style="margin-top: 18px;">
+    <div class="locus"><div class="locus-title">Persistent</div><p>State (value) or events (event-sourced) are durable. Restarts don't lose data.</p></div>
+    <div class="locus"><div class="locus-title">Passivated</div><p>Idle instances swap out of memory. Rehydrated on next command.</p></div>
+    <div class="locus"><div class="locus-title">Two flavors</div><p><span class="accent">Value</span> = latest snapshot. <span class="accent">Event-sourced</span> = event log.</p></div>
+  </div>
+</section>
+
+
+<section id="slide-12" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Entities</div>
+    <h2>Value entity: <span class="accent">snapshot in place</span>.</h2>
+    <p>Simplest flavor. Handlers replace the whole state. No event log.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">domain/entities/CustomerPreferencesEntity.java</div>
+      <pre class="code-block"><span class="anno">@ComponentId</span>(<span class="str">"customer-preferences"</span>)
+<span class="kw">public class</span> CustomerPreferencesEntity
+    <span class="kw">extends</span> KeyValueEntity&lt;CustomerPreferences&gt; {
+
+  <span class="anno">@Override</span>
+  <span class="kw">public</span> CustomerPreferences emptyState() {
+    <span class="kw">return</span> CustomerPreferences.defaults();
+  }
+
+  <span class="kw">public</span> Effect&lt;String&gt; set(SetPreferences cmd) {
+    <span class="kw">var</span> next = <span class="kw">new</span> CustomerPreferences(
+        cmd.theme(), cmd.locale(), cmd.marketingOptIn());
+    <span class="kw">return</span> effects()
+        .updateState(next)
+        .thenReply(__ -&gt; <span class="str">"OK"</span>);
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Extends <span class="accent">KeyValueEntity&lt;State&gt;</span></li>
+        <li>No events, no reducer &mdash; just <span class="accent">updateState(next)</span></li>
+        <li>Runtime persists the latest state atomically</li>
+        <li>Great for preferences, sessions, feature flags</li>
+        <li>Loses history &mdash; last write wins</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-13" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Entities</div>
+    <h2>Event-sourced entity: <span class="accent">the log is the truth</span>.</h2>
+    <p>Command handlers <span class="accent">persist events</span>; state is rebuilt by folding them.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">domain/entities/CustomerEntity.java</div>
+      <pre class="code-block"><span class="anno">@ComponentId</span>(<span class="str">"Customer"</span>)
+<span class="kw">public class</span> CustomerEntity
+    <span class="kw">extends</span> EventSourcedEntity&lt;CustomerState, CustomerEvents&gt; {
+
+  <span class="anno">@Override</span>
+  <span class="kw">public</span> CustomerState emptyState() {
+    <span class="kw">return</span> CustomerState.empty();
+  }
+
+  <span class="kw">public</span> Effect&lt;String&gt; create(CreateCustomer cmd) {
+    <span class="kw">if</span> (currentState().customerId() != <span class="kw">null</span>)
+      <span class="kw">return</span> effects().error(<span class="str">"Customer already exists"</span>);
+
+    <span class="kw">var</span> id = commandContext().entityId();
+    <span class="kw">var</span> ev = <span class="kw">new</span> customerCreated(id, cmd.firstName(), cmd.lastName());
+    <span class="kw">return</span> effects().persist(ev).thenReply(__ -&gt; id);
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Extends <span class="accent">EventSourcedEntity&lt;State, Event&gt;</span></li>
+        <li><span class="accent">@ComponentId</span> = stable identifier used for storage</li>
+        <li>Validate first, then <span class="accent">.persist(event)</span></li>
+        <li><span class="accent">commandContext().entityId()</span> = which instance this is</li>
+        <li>State is not mutated here &mdash; the reducer does that</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-14" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Entities</div>
+    <h2>The Effects API: <span class="accent">describe, don't do</span>.</h2>
+    <p>Handlers return an Effect. The runtime performs the persist, the reply, the error. This is what makes distribution invisible.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Effect builders</div>
+      <pre class="code-block">effects()
+    .persist(event)
+    .thenReply(state -&gt; state.id());
+
+effects()
+    .persist(event1, event2)
+    .thenReply(state -&gt; <span class="str">"OK"</span>);
+
+effects().error(<span class="str">"Customer already exists"</span>);
+
+effects().reply(currentState());</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">persist(&hellip;)</span> &mdash; journal one or more events atomically</li>
+        <li><span class="accent">thenReply(state -&gt; &hellip;)</span> &mdash; runs after persistence, with new state</li>
+        <li><span class="accent">error(&hellip;)</span> &mdash; reject the command, nothing persisted</li>
+        <li><span class="accent">reply(&hellip;)</span> &mdash; query-only, no events</li>
+        <li>You never write to storage directly. Ever.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-15" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Entities</div>
+    <h2><span class="accent">applyEvent</span> &mdash; the reducer.</h2>
+    <p>One method. One event in, one new state out. Called on every new event and on every replay.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">CustomerEntity.applyEvent</div>
+      <pre class="code-block"><span class="anno">@Override</span>
+<span class="kw">public</span> CustomerState applyEvent(CustomerEvents event) {
+  <span class="kw">return switch</span> (event) {
+    <span class="kw">case</span> customerCreated e -&gt;
+      <span class="kw">new</span> CustomerState(
+          e.customerId(), e.firstName(), e.lastName(), <span class="kw">false</span>);
+    <span class="kw">case</span> customerDeleted e -&gt;
+      <span class="kw">new</span> CustomerState(
+          e.customerId(), e.firstName(), e.lastName(), <span class="kw">true</span>);
+  };
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Pure function. <span class="accent">No I/O</span>, no side effects.</li>
+        <li>Runs during command handling <span class="accent">and</span> during restart replay</li>
+        <li>Sealed events + switch expression = compiler-checked exhaustive</li>
+        <li>Return a new record &mdash; states are immutable</li>
+        <li>Adding an event? Adding a switch case is required by the compiler.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">If <span class="accent">applyEvent</span> is not pure, replay after a restart will diverge from live behavior.</div>
+</section>
+
+
+<section id="slide-16" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Entities</div>
+    <h2>Which flavor for which <span class="accent">problem</span>?</h2>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span></span><span>Value entity</span></div>
+    <div class="matrix-row"><span>Storage model</span><span>Latest state snapshot</span></div>
+    <div class="matrix-row"><span>History</span><span>Not preserved</span></div>
+    <div class="matrix-row"><span>Best for</span><span>Preferences, sessions, feature flags, caches</span></div>
+    <div class="matrix-row"><span>Cost</span><span>Cheapest to write, cheapest to reason about</span></div>
+  </div>
+  <div class="matrix-card" style="margin-top: 18px;">
+    <div class="matrix-row matrix-head"><span></span><span>Event-sourced entity</span></div>
+    <div class="matrix-row"><span>Storage model</span><span>Append-only event log</span></div>
+    <div class="matrix-row"><span>History</span><span>Complete, replayable</span></div>
+    <div class="matrix-row"><span>Best for</span><span>Domain aggregates with real narratives &mdash; orders, accounts, customers</span></div>
+    <div class="matrix-row"><span>Cost</span><span>More design work; schema evolution is a real topic</span></div>
+  </div>
+  <div class="callout">Migration is one-way. For a domain aggregate, start event-sourced when in doubt.</div>
+</section>
+
+
+<section id="slide-17" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Views</div>
+    <h2>Views are the <span class="accent">read side</span>.</h2>
+    <p>Entities are optimized for writes and single-ID lookups. Views answer "list all customers" without hammering every entity instance.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Subscribes</div><p>To an entity's events (event-sourced) or state (value).</p></div>
+    <div class="locus"><div class="locus-title">Projects</div><p>Each event updates rows in a queryable table.</p></div>
+    <div class="locus"><div class="locus-title">Serves queries</div><p><span class="accent">@Query</span> methods return rows filtered by criteria.</p></div>
+  </div>
+  <div class="callout">Multiple views can subscribe to the same events. Different shape, same source of truth &mdash; classic CQRS.</div>
+</section>
+
+
+<section id="slide-18" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Views</div>
+    <h2>CustomerView, <span class="accent">annotated</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">views/CustomerView.java</div>
+      <pre class="code-block"><span class="anno">@ComponentId</span>(<span class="str">"customerview"</span>)
+<span class="kw">public class</span> CustomerView <span class="kw">extends</span> View {
+
+  <span class="kw">public record</span> customerEntry(
+      String customerId, String firstName,
+      String lastName, <span class="kw">boolean</span> deleted) {}
+
+  <span class="anno">@Query</span>(<span class="str">"SELECT * FROM customers_table"</span>)
+  <span class="kw">public</span> QueryEffect&lt;customerEntry&gt; getAll() {
+    <span class="kw">return</span> queryResult();
+  }
+
+  <span class="anno">@Table</span>(<span class="str">"customers_table"</span>)
+  <span class="anno">@Consume</span>.FromEventSourcedEntity(CustomerEntity.<span class="kw">class</span>)
+  <span class="kw">public static class</span> CustomersUpdater
+      <span class="kw">extends</span> TableUpdater&lt;customerEntry&gt; {
+
+    <span class="kw">public</span> Effect&lt;customerEntry&gt; onEvent(customerCreated e) {
+      <span class="kw">return</span> effects().updateRow(
+          <span class="kw">new</span> customerEntry(e.customerId(),
+              e.firstName(), e.lastName(), <span class="kw">false</span>));
+    }
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">@Table</span> names the queryable table</li>
+        <li><span class="accent">@Consume.FromEventSourcedEntity</span> wires the subscription</li>
+        <li>One <span class="accent">onEvent(&hellip;)</span> per event type</li>
+        <li><span class="accent">effects().updateRow(&hellip;)</span> writes into the table</li>
+        <li><span class="accent">@Query</span> is a SQL-like DSL &mdash; parameters bind to method args</li>
+        <li>No JPA, no repository &mdash; the runtime <em>is</em> your storage</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-19" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Views</div>
+    <h2>Eventual consistency, <span class="accent">made concrete</span>.</h2>
+    <p>The write to the entity is committed the moment it returns. The view catches up <span class="accent">milliseconds later</span>.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>t0</b><small>POST /customers</small></div>
+    <div class="lifecycle-step"><b>t0+2ms</b><small>Entity persists customerCreated</small></div>
+    <div class="lifecycle-step"><b>t0+3ms</b><small>200 returned to caller</small></div>
+    <div class="lifecycle-step"><b>t0+5ms</b><small>View updater sees event</small></div>
+    <div class="lifecycle-step"><b>t0+7ms</b><small>Row appears in customers_table</small></div>
+    <div class="lifecycle-step"><b>t0+8ms</b><small>GET /customers returns it</small></div>
+  </div>
+  <div class="callout">For read-your-write, hit the <span class="accent">entity</span> directly (by ID). Views are for list/search.</div>
+</section>
+
+
+<section id="slide-20" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Endpoints</div>
+    <h2>HTTP endpoints are the <span class="accent">only external door</span> by default.</h2>
+    <p>Entities and views are not directly reachable from the network. Endpoints are the boundary.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">@HttpEndpoint</div><p>Class-level annotation with a base path.</p></div>
+    <div class="locus"><div class="locus-title">@Get / @Post / @Put / @Delete</div><p>Method-level annotations that map to routes.</p></div>
+    <div class="locus"><div class="locus-title">@Acl</div><p>Access control &mdash; who can hit this endpoint.</p></div>
+  </div>
+  <div class="callout">Endpoints are <span class="accent">stateless</span>. All state lives in entities and views. Endpoints just translate HTTP &harr; domain calls.</div>
+</section>
+
+
+<section id="slide-21" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Endpoints</div>
+    <h2>CustomerEndpoint <span class="accent">walkthrough</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">api/CustomerEndpoint.java</div>
+      <pre class="code-block"><span class="anno">@HttpEndpoint</span>(<span class="str">"/api"</span>)
+<span class="anno">@Acl</span>(allow = <span class="anno">@Acl</span>.Matcher(principal = Acl.Principal.INTERNET))
+<span class="kw">public class</span> CustomerEndpoint {
+
+  <span class="kw">private final</span> ComponentClient client;
+
+  <span class="kw">public</span> CustomerEndpoint(ComponentClient client) {
+    <span class="kw">this</span>.client = client;
+  }
+
+  <span class="anno">@Post</span>(<span class="str">"/customers"</span>)
+  <span class="kw">public</span> CreateCustomerResponse create(CreateCustomerRequest req) {
+    <span class="kw">var</span> cmd = <span class="kw">new</span> CreateCustomer(req.firstName, req.lastName);
+    client.forEventSourcedEntity(req.customerId)
+        .method(CustomerEntity::create)
+        .invoke(cmd);
+    <span class="kw">return new</span> CreateCustomerResponse(
+        req.customerId, req.firstName, req.lastName);
+  }
+
+  <span class="anno">@Get</span>(<span class="str">"/customers"</span>)
+  <span class="kw">public</span> customerEntry list() {
+    <span class="kw">return</span> client.forView().method(CustomerView::getAll).invoke();
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">ComponentClient</span> is how endpoints call components</li>
+        <li>Injected by the runtime &mdash; no DI setup</li>
+        <li><span class="accent">forEventSourcedEntity(id)</span> targets one entity instance</li>
+        <li><span class="accent">forView()</span> queries a view</li>
+        <li><span class="accent">.method(&hellip;::&hellip;)</span> is a method reference to the handler</li>
+        <li>Request &amp; response records are plain Java</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-22" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Endpoints</div>
+    <h2>How this differs from a <span class="accent">Spring controller</span>.</h2>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-col muted">
+      <div class="compare-label">Spring MVC / Boot</div>
+      <ul>
+        <li>@RestController &rarr; @Service &rarr; @Repository &rarr; DB</li>
+        <li>Transactions span layers; state is in the DB</li>
+        <li>Concurrency is your problem</li>
+        <li>Distribution is your problem</li>
+      </ul>
+    </div>
+    <div class="compare-col active">
+      <div class="compare-label">Akka SDK</div>
+      <ul>
+        <li>Endpoint &rarr; ComponentClient &rarr; entity or view</li>
+        <li>State lives in the entity; the runtime persists it</li>
+        <li>Single-writer per entity ID &mdash; no locking</li>
+        <li>Sharding, replication, retries: runtime concerns</li>
+      </ul>
+    </div>
+  </div>
+  <div class="bottom-line">Same three-layer feel. Different guarantees underneath.</div>
+</section>
+
+
+<section id="slide-23" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Wiring</div>
+    <h2>One <span class="accent">POST</span>, end to end.</h2>
+    <p>Every hop is in one JVM at dev time, and distributed transparently in prod.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>1 &middot; HTTP</b><small>POST /api/customers arrives</small></div>
+    <div class="lifecycle-step"><b>2 &middot; Endpoint</b><small>CustomerEndpoint.create() runs</small></div>
+    <div class="lifecycle-step"><b>3 &middot; Client</b><small>ComponentClient targets customer-42</small></div>
+    <div class="lifecycle-step"><b>4 &middot; Entity</b><small>CustomerEntity.create() validates, persists event</small></div>
+    <div class="lifecycle-step"><b>5 &middot; View</b><small>CustomersUpdater sees customerCreated, writes row</small></div>
+    <div class="lifecycle-step"><b>6 &middot; GET</b><small>GET /api/customers returns the row</small></div>
+  </div>
+  <div class="callout">Steps 4 and 5 happen in parallel from the caller's perspective &mdash; the 200 returns after step 4.</div>
+</section>
+
+
+<section id="slide-24" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Testing</div>
+    <h2>TestKit &mdash; unit tests for <span class="accent">stateful things</span>.</h2>
+    <p>No cluster, no HTTP. In-JVM, fast, deterministic.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">CustomerEntityTest.java</div>
+      <pre class="code-block"><span class="kw">var</span> testKit = EventSourcedTestKit.of(CustomerEntity::<span class="kw">new</span>);
+
+<span class="kw">var</span> result = testKit.method(CustomerEntity::create)
+    .invoke(<span class="kw">new</span> CreateCustomer(<span class="str">"Ada"</span>, <span class="str">"Lovelace"</span>));
+
+assertThat(result.getReply()).isEqualTo(<span class="str">"customer-1"</span>);
+assertThat(result.getNextEventOfType(customerCreated.<span class="kw">class</span>))
+    .extracting(customerCreated::firstName)
+    .isEqualTo(<span class="str">"Ada"</span>);</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Instantiates the entity in memory</li>
+        <li>Feeds it commands; asserts on <span class="accent">emitted events</span> and <span class="accent">reply</span></li>
+        <li>Chains multiple commands to test evolution</li>
+        <li>No mocking &mdash; the real entity, minus the cluster</li>
+        <li>Views &amp; endpoints have their own testkits too</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-25" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Ops</div>
+    <h2>Running <span class="accent">locally</span>.</h2>
+    <p>Zero-config dev loop. One Maven target, one port, one embedded runtime.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># start the service</span>
+mvn compile exec:java
+
+<span class="cmt"># in another shell</span>
+curl -XPOST http://localhost:9000/api/customers \
+  -H <span class="str">'Content-Type: application/json'</span> \
+  -d <span class="str">'{"customerId":"c-1","FirstName":"Ada","LastName":"Lovelace"}'</span>
+
+curl http://localhost:9000/api/customers</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>No local DB to install</li>
+        <li>No Kubernetes to spin up</li>
+        <li>Console: <span class="accent">localhost:9000/akka/console</span></li>
+        <li>Hot restart on code change: rerun the target</li>
+        <li>The same code will run in the managed Akka runtime</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-26" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Ops</div>
+    <h2>From laptop to <span class="accent">managed runtime</span>.</h2>
+    <p>Akka runs your service. You don't stand up a cluster.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">akka CLI</div>
+      <pre class="code-block">akka auth login
+
+akka projects new my-project
+akka config set project my-project
+
+akka services deploy customers \
+    ghcr.io/pradeepl/akka-workshop:1.0
+
+akka services list</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Container-image based deploy</li>
+        <li>Rolling upgrades by default</li>
+        <li>Autoscale on request rate</li>
+        <li>Multi-region if you want it</li>
+        <li>No YAML mountain, no Helm charts</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">The code you wrote in the sample is <span class="accent">deployable without change</span>.</div>
+</section>
+
+
+<section id="slide-27" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Beyond the fundamentals</div>
+    <h2>What we <span class="accent">didn't</span> cover today.</h2>
+    <p>Same annotation-driven feel. Same runtime. Each of these deserves its own hour.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Workflows</div><p>Long-running, durable, resumable orchestrations. Sagas, checkouts, onboarding.</p></div>
+    <div class="locus"><div class="locus-title">Timers</div><p>Scheduled commands. Reminders, retries, TTLs.</p></div>
+    <div class="locus"><div class="locus-title">Consumers</div><p>Subscribe to external streams &mdash; Kafka, other Akka services.</p></div>
+  </div>
+  <div class="loci-grid" style="margin-top: 18px;">
+    <div class="locus"><div class="locus-title">Agents</div><p>LLM-powered components with tools, memory, evaluations.</p></div>
+    <div class="locus"><div class="locus-title">MCP servers</div><p>Expose your entities as tools to model context.</p></div>
+    <div class="locus"><div class="locus-title">Multi-region</div><p>Same component code, replicated across regions with local reads.</p></div>
+  </div>
+</section>
+
+
+<section id="slide-28" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Next steps</div>
+    <h2>Where to go from <span class="accent">here</span>.</h2>
+    <p>Practice, then build something small of your own before the day-long or 5-day track.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Extend the sample</div><p>Add an <span class="accent">Order</span> event-sourced entity. Wire an OrdersView.</p></div>
+    <div class="locus"><div class="locus-title">Read the docs</div><p><span class="accent">docs.akka.io</span> &mdash; SDK reference, patterns, examples.</p></div>
+    <div class="locus"><div class="locus-title">Coming next</div><p>Day-long: workflows, consumers, deployment. 5-day: agents, multi-region, ops.</p></div>
+  </div>
+  <div class="pill-row">
+    <span>github.com/PradeepLoganathan/akka-workshop</span>
+    <span>docs.akka.io</span>
+    <span>akka.io/community</span>
+  </div>
+</section>
+
+
+<section id="slide-29" class="deck-slide title-slide" data-view>
+  <div class="brand-mark" aria-label="Akka">AKKA</div>
+  <div class="kicker">Thanks for the three hours</div>
+  <h1 class="title-headline"><span class="accent">Questions?</span></h1>
+  <div class="title-sub">STICK AROUND FOR HANDS-ON</div>
+  <div class="rule"></div>
+  <p class="title-copy">Take the sample, add an entity of your own, break something on purpose.</p>
+  <div class="session-meta">
+    <span>github.com/PradeepLoganathan/akka-workshop</span>
+    <span>docs.akka.io</span>
+  </div>
+</section>
+
+<script>
+
+
+(function() {
+  const views = Array.from(document.querySelectorAll('[data-view]'));
+  function top(el) { return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset); }
+  function current() {
+    const y = window.scrollY || window.pageYOffset;
+    let best = 0;
+    for (let i = 0; i < views.length; i++) if (top(views[i]) <= y + 12) best = i;
+    return best;
+  }
+  document.addEventListener('keydown', function(e) {
+    if (['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)) {
+      e.preventDefault();
+      const i = current();
+      if (i < views.length - 1) window.scrollTo({ top: top(views[i + 1]), behavior: 'smooth' });
+    }
+    if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) {
+      e.preventDefault();
+      const i = current();
+      const y = window.scrollY || window.pageYOffset;
+      if (y > top(views[i]) + 12) window.scrollTo({ top: top(views[i]), behavior: 'smooth' });
+      else if (i > 0) window.scrollTo({ top: top(views[i - 1]), behavior: 'smooth' });
+    }
+  });
+})();
+
+
+(function() {
+  if (!new URLSearchParams(location.search).has('kiosk')) return;
+  const views = Array.from(document.querySelectorAll('[data-view]'));
+  const seconds = Number(new URLSearchParams(location.search).get('kiosk')) || 35;
+  let i = 0;
+  function top(el) { return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset); }
+  setInterval(function() {
+    i = (i + 1) % views.length;
+    window.scrollTo({ top: top(views[i]), behavior: 'smooth' });
+  }, seconds * 1000);
+})();
+
+</script>
+</body>
+</html>

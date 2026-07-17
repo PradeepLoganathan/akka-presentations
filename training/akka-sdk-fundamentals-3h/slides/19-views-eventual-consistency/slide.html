@@ -1,0 +1,16 @@
+<section id="slide-19" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Views</div>
+    <h2>Eventual consistency, <span class="accent">made concrete</span>.</h2>
+    <p>The write to the entity is committed the moment it returns. The view catches up <span class="accent">milliseconds later</span>.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>t0</b><small>POST /customers</small></div>
+    <div class="lifecycle-step"><b>t0+2ms</b><small>Entity persists customerCreated</small></div>
+    <div class="lifecycle-step"><b>t0+3ms</b><small>200 returned to caller</small></div>
+    <div class="lifecycle-step"><b>t0+5ms</b><small>View updater sees event</small></div>
+    <div class="lifecycle-step"><b>t0+7ms</b><small>Row appears in customers_table</small></div>
+    <div class="lifecycle-step"><b>t0+8ms</b><small>GET /customers returns it</small></div>
+  </div>
+  <div class="callout">For read-your-write, hit the <span class="accent">entity</span> directly (by ID). Views are for list/search.</div>
+</section>

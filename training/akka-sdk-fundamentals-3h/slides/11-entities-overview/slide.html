@@ -1,0 +1,17 @@
+<section id="slide-11" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Entities</div>
+    <h2>An entity is <span class="accent">the actor model, tamed</span>.</h2>
+    <p>Each entity instance is an actor under the hood. The SDK hides sharding, mailbox, and lifecycle so you write plain Java.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Addressable</div><p>Reached by an ID string. <span class="accent">customer-42</span> is one instance.</p></div>
+    <div class="locus"><div class="locus-title">Single-writer</div><p>One instance handles its commands serially. No locking, no races.</p></div>
+    <div class="locus"><div class="locus-title">Sharded</div><p>The runtime places instances across the cluster. You don't manage that.</p></div>
+  </div>
+  <div class="loci-grid" style="margin-top: 18px;">
+    <div class="locus"><div class="locus-title">Persistent</div><p>State (value) or events (event-sourced) are durable. Restarts don't lose data.</p></div>
+    <div class="locus"><div class="locus-title">Passivated</div><p>Idle instances swap out of memory. Rehydrated on next command.</p></div>
+    <div class="locus"><div class="locus-title">Two flavors</div><p><span class="accent">Value</span> = latest snapshot. <span class="accent">Event-sourced</span> = event log.</p></div>
+  </div>
+</section>

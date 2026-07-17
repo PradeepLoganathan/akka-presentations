@@ -1,0 +1,31 @@
+<section id="slide-03" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">The sample</div>
+    <h2>akka-workshop &mdash; <span class="accent">one entity, one view, one endpoint</span>.</h2>
+    <p>Everything we cover today maps to a file in this repo. Clone it now &mdash; we'll come back to it after every block.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Clone &amp; run</div>
+      <pre class="code-block">git clone https://github.com/PradeepLoganathan/akka-workshop.git
+cd akka-workshop
+mvn compile exec:java</pre>
+      <ul class="bullets">
+        <li>Local console: <span class="accent">http://localhost:9000/akka/console</span></li>
+        <li>Endpoint: <span class="accent">http://localhost:9000/api/customers</span></li>
+        <li>Java 21 &middot; Akka SDK 3.4</li>
+      </ul>
+    </div>
+    <div>
+      <div class="file-tag">Tree</div>
+      <pre class="code-block">src/main/java/com/pradeepl/akkakata/
+├── domain/
+│   ├── commands/   <span class="cmt">// intent</span>
+│   ├── events/     <span class="cmt">// facts</span>
+│   ├── model/      <span class="cmt">// state records</span>
+│   └── entities/   <span class="cmt">// value + event-sourced</span>
+├── views/          <span class="cmt">// projections</span>
+└── api/            <span class="cmt">// HTTP endpoints</span></pre>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,27 @@
+<section id="slide-05" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Event sourcing</div>
+    <h2>Two ways to <span class="accent">remember</span>.</h2>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-col muted">
+      <div class="compare-label">CRUD / row overwrite</div>
+      <ul>
+        <li>Table row holds the current state</li>
+        <li>UPDATE erases what was there</li>
+        <li>History exists only if you built it (audit tables, triggers)</li>
+        <li>Answers "what is X now?"</li>
+      </ul>
+    </div>
+    <div class="compare-col active">
+      <div class="compare-label">Event sourced</div>
+      <ul>
+        <li>Append-only log of things that happened</li>
+        <li>Current state = fold over past events</li>
+        <li>History is the storage model, not an add-on</li>
+        <li>Answers "what is X now, and how did it get there?"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="bottom-line">Your bank shows you a statement (events), not just a balance (state).</div>
+</section>

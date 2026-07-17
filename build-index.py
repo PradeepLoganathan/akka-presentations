@@ -33,6 +33,11 @@ PRESENTATIONS = [
      "sub": "CASE STUDIES", "title_src": None},
 ]
 
+# Training decks — same per-slide-folder shape as PRESENTATIONS.
+TRAININGS = [
+    {"dir": "training/akka-sdk-fundamentals-3h", "link": "training/akka-sdk-fundamentals-3h/generated/overview/"},
+]
+
 # Standalone competitive briefs (single HTML files at the repo root).
 BATTLECARDS = [
     {"link": "battlecard-langchain.html",                 "label": "Akka vs. LangChain"},
@@ -116,6 +121,14 @@ def render_brief(b):
 ordered = sorted(PRESENTATIONS, key=lambda p: last_commit_epoch(p["link"]), reverse=True)
 items = "\n".join(render_item(p) for p in ordered)
 
+ordered_trainings = sorted(TRAININGS, key=lambda t: last_commit_epoch(t["link"]), reverse=True)
+trainings = "\n".join(render_item(t) for t in ordered_trainings)
+trainings_section = ('''
+  <h1 style="margin-top: 40px;">Training</h1>
+  <ul>
+%s
+  </ul>''' % trainings) if TRAININGS else ""
+
 ordered_briefs = sorted(BATTLECARDS, key=lambda b: last_commit_epoch(b["link"]), reverse=True)
 briefs = "\n".join(render_brief(b) for b in ordered_briefs)
 briefs_section = ('''
@@ -151,10 +164,10 @@ PAGE = """<!DOCTYPE html>
   <h1>Presentations</h1>
   <ul>
 %s
-  </ul>%s
+  </ul>%s%s
 </body>
 </html>
-""" % (items, briefs_section)
+""" % (items, trainings_section, briefs_section)
 
 with open(os.path.join(ROOT, "index.html"), "w", encoding="utf-8", newline="\n") as f:
     f.write(PAGE)

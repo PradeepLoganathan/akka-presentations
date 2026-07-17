@@ -1,0 +1,13 @@
+<section id="slide-17" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Views</div>
+    <h2>Views are the <span class="accent">read side</span>.</h2>
+    <p>Entities are optimized for writes and single-ID lookups. Views answer "list all customers" without hammering every entity instance.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Subscribes</div><p>To an entity's events (event-sourced) or state (value).</p></div>
+    <div class="locus"><div class="locus-title">Projects</div><p>Each event updates rows in a queryable table.</p></div>
+    <div class="locus"><div class="locus-title">Serves queries</div><p><span class="accent">@Query</span> methods return rows filtered by criteria.</p></div>
+  </div>
+  <div class="callout">Multiple views can subscribe to the same events. Different shape, same source of truth &mdash; classic CQRS.</div>
+</section>

@@ -1,0 +1,17 @@
+<section id="slide-04" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Mental model</div>
+    <h2>Five nouns for the next three hours.</h2>
+    <p>Every component you write is one of these. Keep this vocabulary loaded.</p>
+  </div>
+  <div class="three-stat">
+    <div class="stat-block"><div class="stat-num">01</div><div class="stat-title">Command</div><div class="stat-text">A request to change something. Can be rejected.</div></div>
+    <div class="stat-block"><div class="stat-num">02</div><div class="stat-title">Event</div><div class="stat-text">A fact that already happened. Immutable, journaled.</div></div>
+    <div class="stat-block"><div class="stat-num">03</div><div class="stat-title">Entity</div><div class="stat-text">A stateful thing addressed by an ID.</div></div>
+  </div>
+  <div class="three-stat" style="margin-top: 18px;">
+    <div class="stat-block"><div class="stat-num">04</div><div class="stat-title">View</div><div class="stat-text">A read-optimized projection over entity data.</div></div>
+    <div class="stat-block"><div class="stat-num">05</div><div class="stat-title">Endpoint</div><div class="stat-text">The HTTP surface. Talks to entities &amp; views via a client.</div></div>
+    <div class="stat-block" style="border-left-color: var(--blue);"><div class="stat-num" style="color: var(--blue);">+</div><div class="stat-title" style="color: var(--blue);">Later</div><div class="stat-text">Workflows, timers, consumers, agents &mdash; same shape.</div></div>
+  </div>
+</section>

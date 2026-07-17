@@ -1,0 +1,6 @@
+{
+  "id": "01-agenda",
+  "nav_id": "slide-01",
+  "section": 0,
+  "include_in": ["overview", "shareable"]
+}

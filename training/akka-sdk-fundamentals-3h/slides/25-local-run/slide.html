@@ -1,0 +1,30 @@
+<section id="slide-25" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Ops</div>
+    <h2>Running <span class="accent">locally</span>.</h2>
+    <p>Zero-config dev loop. One Maven target, one port, one embedded runtime.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># start the service</span>
+mvn compile exec:java
+
+<span class="cmt"># in another shell</span>
+curl -XPOST http://localhost:9000/api/customers \
+  -H <span class="str">'Content-Type: application/json'</span> \
+  -d <span class="str">'{"customerId":"c-1","FirstName":"Ada","LastName":"Lovelace"}'</span>
+
+curl http://localhost:9000/api/customers</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>No local DB to install</li>
+        <li>No Kubernetes to spin up</li>
+        <li>Console: <span class="accent">localhost:9000/akka/console</span></li>
+        <li>Hot restart on code change: rerun the target</li>
+        <li>The same code will run in the managed Akka runtime</li>
+      </ul>
+    </div>
+  </div>
+</section>

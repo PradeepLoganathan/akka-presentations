@@ -1,0 +1,33 @@
+<section id="slide-15" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Entities</div>
+    <h2><span class="accent">applyEvent</span> &mdash; the reducer.</h2>
+    <p>One method. One event in, one new state out. Called on every new event and on every replay.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">CustomerEntity.applyEvent</div>
+      <pre class="code-block"><span class="anno">@Override</span>
+<span class="kw">public</span> CustomerState applyEvent(CustomerEvents event) {
+  <span class="kw">return switch</span> (event) {
+    <span class="kw">case</span> customerCreated e -&gt;
+      <span class="kw">new</span> CustomerState(
+          e.customerId(), e.firstName(), e.lastName(), <span class="kw">false</span>);
+    <span class="kw">case</span> customerDeleted e -&gt;
+      <span class="kw">new</span> CustomerState(
+          e.customerId(), e.firstName(), e.lastName(), <span class="kw">true</span>);
+  };
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Pure function. <span class="accent">No I/O</span>, no side effects.</li>
+        <li>Runs during command handling <span class="accent">and</span> during restart replay</li>
+        <li>Sealed events + switch expression = compiler-checked exhaustive</li>
+        <li>Return a new record &mdash; states are immutable</li>
+        <li>Adding an event? Adding a switch case is required by the compiler.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">If <span class="accent">applyEvent</span> is not pure, replay after a restart will diverge from live behavior.</div>
+</section>
