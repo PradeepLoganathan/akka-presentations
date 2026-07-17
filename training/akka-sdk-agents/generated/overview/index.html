@@ -1,0 +1,1302 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akka SDK Agents &amp; MCP &mdash; Akka</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --yellow: #F5C518;
+  --black: #000;
+  --panel: #101116;
+  --line: #27282f;
+  --muted: #8b8d98;
+  --white: #fff;
+  --green: #3fb950;
+  --blue: #7EC8E3;
+  --red: #ff5f57;
+  --pad: 96px;
+}
+@media (max-width: 900px) { :root { --pad: 28px; } }
+html { background: var(--black); scroll-behavior: smooth; }
+body {
+  font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  max-width: 1536px;
+  margin: 0 auto;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.deck-slide {
+  min-height: 100vh;
+  padding: 88px var(--pad);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--black);
+}
+.deck-slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+.deck-slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(0,0,0,0.95), rgba(0,0,0,0.78) 55%, rgba(0,0,0,0.98));
+  pointer-events: none;
+}
+.deck-slide > * { position: relative; z-index: 1; }
+.accent { color: var(--yellow); }
+.brand-mark {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 7px;
+  color: var(--white);
+  margin-bottom: 44px;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards .15s;
+}
+.kicker, .eyebrow {
+  color: var(--yellow);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.kicker::before, .eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 30px;
+  height: 2px;
+  background: var(--yellow);
+  margin-right: 12px;
+  vertical-align: middle;
+}
+.title-slide { text-align: center; align-items: center; }
+.title-slide::after { background: radial-gradient(ellipse at 50% 45%, transparent 18%, rgba(0,0,0,.88) 72%); }
+.title-headline {
+  font-size: 84px;
+  line-height: .98;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  max-width: 1080px;
+  margin-top: 22px;
+  opacity: 0;
+  animation: fadeUp .6s ease forwards .35s;
+}
+.title-sub {
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 14px;
+  letter-spacing: 4px;
+  font-weight: 700;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards .55s;
+}
+.rule {
+  width: 58px;
+  height: 3px;
+  background: var(--yellow);
+  margin: 38px auto;
+  opacity: 0;
+  animation: fadeUp .45s ease forwards .7s;
+}
+.title-copy {
+  color: #d7d7dc;
+  font-size: 23px;
+  line-height: 1.35;
+  max-width: 790px;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards .85s;
+}
+.session-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 34px;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards 1s;
+}
+.session-meta span, .proof-strip span, .chip-grid span {
+  border: 1px solid rgba(245,197,24,.28);
+  background: rgba(245,197,24,.06);
+  color: #ece2ad;
+  border-radius: 999px;
+  padding: 8px 13px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .4px;
+}
+.slide-head { max-width: 1050px; margin-bottom: 58px; }
+.slide-head.compact { margin-bottom: 38px; }
+.slide-head h2 {
+  font-size: 58px;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  margin-top: 18px;
+  font-weight: 800;
+}
+.slide-head p {
+  margin-top: 18px;
+  max-width: 860px;
+  color: #b9bbc4;
+  font-size: 21px;
+  line-height: 1.42;
+}
+.three-stat, .compare-grid, .output-grid, .loci-grid, .question-grid, .phase-row {
+  display: grid;
+  gap: 18px;
+}
+.three-stat { grid-template-columns: repeat(3, 1fr); }
+.stat-block, .compare-col, .output-col, .locus, .phase, .question, .matrix-card, .rd-boundary {
+  background: rgba(16,17,22,.88);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--yellow);
+  padding: 26px;
+}
+.stat-num, .phase-num {
+  color: var(--yellow);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 2px;
+  margin-bottom: 18px;
+}
+.stat-title, .compare-label, .output-kicker, .locus-title {
+  color: var(--yellow);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.stat-text, .compare-col li, .locus p, .phase p, .question {
+  color: #d2d3da;
+  font-size: 18px;
+  line-height: 1.38;
+}
+.whiteboard-prompt, .bottom-line {
+  margin-top: 30px;
+  color: var(--white);
+  border-top: 1px solid rgba(255,255,255,.12);
+  padding-top: 22px;
+  font-size: 22px;
+  font-weight: 700;
+}
+.compare-grid { grid-template-columns: repeat(2, 1fr); }
+.compare-col { border-left-color: #777; }
+.compare-col.active { border-left-color: var(--yellow); }
+.compare-col.blue { border-left-color: var(--blue); }
+.compare-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.compare-col li::before { content: '-'; color: var(--yellow); margin-right: 10px; }
+.compare-col h3, .output-col h3, .phase h3 {
+  font-size: 28px;
+  margin-bottom: 18px;
+  letter-spacing: -0.02em;
+}
+.loop-diagram, .convergence-diagram, .two-lane, .stack-diagram {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+}
+.loop-node, .lane, .conv-box, .conv-result, .stack-layer, .stack-output {
+  border: 1px solid var(--line);
+  background: rgba(16,17,22,.9);
+  padding: 28px;
+}
+.loop-node { flex: 1; border-top: 3px solid var(--yellow); }
+.loop-node span { display: block; font-size: 34px; font-weight: 800; margin-bottom: 14px; letter-spacing: -0.02em; }
+.loop-node small { color: #c9cad2; font-size: 18px; line-height: 1.35; }
+.loop-arrow, .conv-plus, .conv-arrow {
+  align-self: center;
+  color: var(--yellow);
+  font-size: 44px;
+  font-weight: 800;
+}
+.proof-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 34px; }
+.two-lane { align-items: center; }
+.lane { flex: 1; min-height: 300px; }
+.lane.functional { border-left: 3px solid var(--green); }
+.lane.governance { border-left: 3px solid var(--blue); }
+.lane-title { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+.lane-owner { color: var(--muted); text-transform: uppercase; letter-spacing: 2px; font-size: 11px; font-weight: 800; margin-bottom: 22px; }
+.lane ul { list-style: none; display: grid; gap: 9px; color: #d6d7de; font-size: 18px; }
+.specify-core {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  flex: 0 0 auto;
+}
+.matrix-card { padding: 0; overflow: hidden; }
+.matrix-row { display: grid; grid-template-columns: 260px 1fr; border-top: 1px solid var(--line); }
+.matrix-row:first-child { border-top: 0; }
+.matrix-row span { padding: 15px 20px; color: #d4d5dc; font-size: 17px; line-height: 1.35; }
+.matrix-row span:first-child { color: var(--white); font-weight: 800; border-right: 1px solid var(--line); }
+.matrix-head { background: rgba(245,197,24,.08); }
+.matrix-head span { color: var(--yellow) !important; text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px; }
+.output-grid { grid-template-columns: repeat(2, 1fr); }
+.output-col:first-child { border-left-color: var(--green); }
+.output-col:last-child { border-left-color: var(--blue); }
+.chip-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.convergence-diagram { align-items: center; margin-top: 8px; }
+.conv-box { flex: 1; font-size: 24px; font-weight: 800; min-height: 140px; display: flex; align-items: center; justify-content: center; text-align: center; }
+.conv-result { flex: 1.1; font-size: 32px; font-weight: 900; color: var(--black); background: var(--yellow); display: flex; align-items: center; justify-content: center; text-align: center; }
+.rd-boundary { margin-top: 32px; border-left-color: var(--red); color: #dadbe2; font-size: 19px; line-height: 1.45; }
+.rd-boundary.subtle { border-left-color: var(--yellow); }
+.loci-grid { grid-template-columns: repeat(3, 1fr); }
+.locus { min-height: 170px; }
+.stack-diagram { flex-direction: column; max-width: 920px; }
+.stack-layer { font-size: 27px; font-weight: 850; }
+.stack-layer small { display: block; margin-top: 9px; color: #b9bbc4; font-size: 17px; font-weight: 500; line-height: 1.35; }
+.stack-layer.corporate { border-left: 4px solid var(--red); margin-left: 0; }
+.stack-layer.domain { border-left: 4px solid var(--blue); margin-left: 80px; }
+.stack-layer.project { border-left: 4px solid var(--green); margin-left: 160px; }
+.stack-output { margin-left: 240px; background: var(--yellow); color: var(--black); font-size: 26px; font-weight: 900; }
+.phase-row { grid-template-columns: repeat(3, 1fr); }
+.phase { min-height: 250px; }
+.question-grid { grid-template-columns: repeat(2, 1fr); }
+.question { border-left-color: var(--yellow); min-height: 125px; display: flex; gap: 18px; align-items: flex-start; }
+.question span { color: var(--yellow); font-size: 18px; font-weight: 900; letter-spacing: 2px; }
+@media (max-width: 1000px) {
+  .title-headline { font-size: 54px; }
+  .slide-head h2 { font-size: 40px; }
+  .three-stat, .compare-grid, .output-grid, .loci-grid, .phase-row, .question-grid { grid-template-columns: 1fr; }
+  .two-lane, .convergence-diagram, .loop-diagram { flex-direction: column; }
+  .loop-arrow, .conv-plus, .conv-arrow { transform: rotate(90deg); align-self: center; }
+  .specify-core { width: 112px; height: 112px; }
+  .matrix-row { grid-template-columns: 1fr; }
+  .matrix-row span:first-child { border-right: 0; border-bottom: 1px solid var(--line); }
+  .stack-layer, .stack-output { margin-left: 0 !important; }
+}
+
+/* Consolidated Akka move slide */
+.move-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.move-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.move-card {
+  background: rgba(16,17,22,.9);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--yellow);
+  padding: 24px;
+  min-height: 178px;
+}
+.move-card.functional { border-left-color: var(--green); }
+.move-card.governance { border-left-color: var(--blue); }
+.move-kicker {
+  color: var(--yellow);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+  font-weight: 850;
+  margin-bottom: 12px;
+}
+.move-card h3 {
+  font-size: 27px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.move-card p {
+  color: #c9cad2;
+  font-size: 17px;
+  line-height: 1.38;
+}
+.move-specify,
+.move-converge {
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  border: 1px solid rgba(245,197,24,.38);
+}
+.move-specify {
+  background: var(--yellow);
+  color: var(--black);
+  padding: 18px 20px;
+  font-size: 26px;
+}
+.move-converge {
+  background: rgba(245,197,24,.08);
+  color: var(--white);
+  padding: 20px 24px;
+  font-size: 25px;
+}
+@media (max-width: 1000px) {
+  .move-row { grid-template-columns: 1fr; }
+}
+
+/* Training deck additions */
+.code-block {
+  background: rgba(16,17,22,.92);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--yellow);
+  padding: 20px 24px;
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #e6e7ec;
+  overflow-x: auto;
+  white-space: pre;
+  border-radius: 2px;
+}
+.code-block .cmt { color: #8b8d98; font-style: italic; }
+.code-block .kw  { color: var(--yellow); }
+.code-block .str { color: var(--blue); }
+.code-block .anno { color: #b0e88a; }
+.file-tag {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.two-code { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 1000px) { .two-code { grid-template-columns: 1fr; } }
+.bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* margin-top clears the .file-tag row above the code column so the first bullet
+     aligns with the top of the .code-block, not the top of its column */
+  margin-top: 27px;
+  /* padding-left gives breathing room between the code column and the > markers */
+  padding-left: 22px;
+}
+.bullets li { color: #d2d3da; font-size: 20px; line-height: 1.4; padding-left: 22px; position: relative; }
+.bullets li::before { content: '>'; color: var(--yellow); font-weight: 800; position: absolute; left: 0; top: 0; }
+.callout {
+  margin-top: 26px;
+  padding: 18px 22px;
+  border: 1px solid rgba(126,200,227,.35);
+  background: rgba(126,200,227,.06);
+  color: #cfe6f4;
+  font-size: 17px;
+  line-height: 1.45;
+  border-left: 3px solid var(--blue);
+}
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.pill-row span { border: 1px solid rgba(245,197,24,.28); background: rgba(245,197,24,.06); color: #ece2ad; border-radius: 999px; padding: 8px 13px; font-size: 12px; font-weight: 700; letter-spacing: .4px; }
+.lifecycle { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; align-items: stretch; margin-top: 8px; }
+.lifecycle-step { background: rgba(16,17,22,.9); border: 1px solid var(--line); border-top: 3px solid var(--yellow); padding: 18px 16px; }
+.lifecycle-step b { display: block; color: var(--yellow); font-size: 11px; letter-spacing: 2px; margin-bottom: 8px; }
+.lifecycle-step small { color: #cfd1d8; font-size: 14px; line-height: 1.35; }
+@media (max-width: 1000px) { .lifecycle { grid-template-columns: 1fr 1fr; } }
+
+/* Presenter block on title / thanks slides */
+.title-presenter {
+  margin-top: 34px;
+  color: #d7d7dc;
+  line-height: 1.5;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards 1.15s;
+  text-align: center;
+}
+.title-presenter a { color: var(--yellow); text-decoration: none; font-weight: 700; }
+.title-presenter a:hover { text-decoration: underline; }
+.title-presenter-name { font-size: 22px; font-weight: 800; }
+.title-presenter-title {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 6px;
+}
+.title-presenter-email { margin-top: 8px; font-size: 14px; }
+
+/* Vertical-timeline agenda */
+.agenda-timeline {
+  max-width: 920px;
+  margin: 0;
+  padding: 8px 0 8px 30px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.agenda-timeline::before {
+  content: '';
+  position: absolute;
+  left: 25px;
+  top: 24px;
+  bottom: 24px;
+  width: 2px;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    var(--yellow) 8%,
+    var(--yellow) 92%,
+    transparent 100%);
+  opacity: 0.45;
+  z-index: 0;
+}
+.agenda-step {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  align-items: center;
+  gap: 28px;
+  position: relative;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards;
+}
+.agenda-step::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--yellow);
+  border: 4px solid var(--black);
+  box-sizing: content-box;
+  z-index: 2;
+  box-shadow: 0 0 0 1px rgba(245, 197, 24, 0.35);
+}
+.agenda-step-num {
+  color: var(--yellow);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.agenda-step-body {
+  color: var(--white);
+  font-size: 22px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+.agenda-step:nth-child(1) { animation-delay: 0.30s; }
+.agenda-step:nth-child(2) { animation-delay: 0.40s; }
+.agenda-step:nth-child(3) { animation-delay: 0.50s; }
+.agenda-step:nth-child(4) { animation-delay: 0.60s; }
+.agenda-step:nth-child(5) { animation-delay: 0.70s; }
+.agenda-step:nth-child(6) { animation-delay: 0.80s; }
+.agenda-step:nth-child(7) { animation-delay: 0.90s; }
+.agenda-step:nth-child(8) { animation-delay: 1.00s; }
+.agenda-step:nth-child(9) { animation-delay: 1.10s; }
+@media (max-width: 700px) {
+  .agenda-timeline { padding-left: 24px; }
+  .agenda-timeline::before { left: 19px; }
+  .agenda-step { grid-template-columns: 56px 1fr; gap: 18px; }
+  .agenda-step-num { font-size: 20px; }
+  .agenda-step-body { font-size: 18px; }
+}
+
+/* Slide number in bottom right — injected by nav.js */
+.slide-number {
+  position: absolute;
+  bottom: 24px;
+  right: 32px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  z-index: 2;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+
+
+
+/* 01-where-we-are */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 02-sample-repo-state */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 04-day3-opener */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 05-why-agents */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 06-what-is-an-agent */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 07-agent-lifecycle */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 08-model-providers */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 09-configuration */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 10-support-agent-intro */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 11-agent-effect-builder */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 12-system-message */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 13-function-tool */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 14-tools-walkthrough */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 15-memory-providers */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 16-limited-window */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 17-sessions */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 18-structured-responses */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 19-agent-errors */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 20-multi-agent */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 21-mcp-what */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 22-mcp-server-code */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 23-mcp-clients */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 24-handson-agents */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 67-resources */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 68-thanks */
+/* Slide-specific overrides intentionally minimal. */
+
+</style>
+</head>
+<body>
+<section id="slide-01" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Where we've been</div>
+    <h2>Two days in, <span class="accent">six components</span>.</h2>
+    <p>A quick map for anyone joining fresh. Days 1&ndash;2 covered these; today we build on them.</p>
+  </div>
+  <div class="three-stat">
+    <div class="stat-block"><div class="stat-num">Day 1</div><div class="stat-title">Fundamentals</div><div class="stat-text">Entities (value + event-sourced), views, endpoints. Sample built the Customer aggregate.</div></div>
+    <div class="stat-block"><div class="stat-num">Day 2 &middot; AM</div><div class="stat-title">Workflows</div><div class="stat-text">Second aggregate (Order), OrderWorkflow with compensation, abandon-cart timer.</div></div>
+    <div class="stat-block"><div class="stat-num">Day 2 &middot; PM</div><div class="stat-title">Consumers</div><div class="stat-text">CustomerAuditConsumer, AuditLogEntity. Reactive processing that isn't a view.</div></div>
+  </div>
+  <div class="callout">If any of that is fuzzy, ask &mdash; today's material builds on it directly.</div>
+</section>
+
+
+<section id="slide-02" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Sample repo state</div>
+    <h2>Where we <span class="accent">check out from</span> today.</h2>
+    <p>Four branches, each a teaching checkpoint. Today's work happens on <span class="accent">agents</span>.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Branch progression</div>
+      <pre class="code-block">git clone https://github.com/PradeepLoganathan/akka-workshop.git
+cd akka-workshop
+git branch -a
+
+  main       <span class="cmt">// Customer + Preferences (day 1)</span>
+  workflows  <span class="cmt">// + Order aggregate, workflow, timer (day 2 AM)</span>
+  consumers  <span class="cmt">// + audit consumer + AuditLogEntity (day 2 PM)</span>
+  agents     <span class="cmt">// + SupportAgent + CustomerMcpServer (today)</span>
+
+git checkout agents
+export OPENAI_API_KEY=sk-...
+mvn compile exec:java</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">git diff main agents</span> shows the whole three-day journey</li>
+        <li>Each branch compiles + runs on its own</li>
+        <li>Bug fixes on <span class="accent">main</span> merge forward</li>
+        <li>OPENAI_API_KEY is only needed on <span class="accent">agents</span></li>
+        <li>Day 5 deploys the same code &mdash; unchanged</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-04" class="deck-slide title-slide" data-view>
+  <div class="brand-mark" aria-label="Akka">AKKA</div>
+  <div class="kicker">Day 3</div>
+  <h1 class="title-headline"><span class="accent">Agentic</span></h1>
+  <div class="title-sub">AGENTS, TOOLS, MEMORY, MCP</div>
+  <div class="rule"></div>
+  <p class="title-copy">Add an LLM to the mix &mdash; not as a wrapper, as a component that participates in the same runtime.</p>
+  <div class="session-meta">
+    <span>Sample branch: agents</span>
+    <span>OpenAI gpt-4o-mini</span>
+    <span>Hands-on lab: 90 min</span>
+  </div>
+</section>
+
+
+<section id="slide-05" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Why agents belong here</div>
+    <h2>An agent is a <span class="accent">stateful, addressable, reactive</span> LLM caller.</h2>
+    <p>That's a mouthful. Look at each word &mdash; you already have infrastructure for it.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Stateful</div><p>Session memory persists across turns. Same runtime the entities use.</p></div>
+    <div class="locus"><div class="locus-title">Addressable</div><p>Session id routes you to the same agent instance. Same sharding as entities.</p></div>
+    <div class="locus"><div class="locus-title">Reactive</div><p>Agents can be called from workflows, consumers, endpoints &mdash; anywhere a component can.</p></div>
+  </div>
+  <div class="callout">You don't bolt an LLM onto Akka. You <span class="accent">host</span> it as a component and get the whole runtime for free.</div>
+</section>
+
+
+<section id="slide-06" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>An Akka agent, <span class="accent">anatomically</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Minimum viable agent</div>
+      <pre class="code-block"><span class="anno">@ComponentId</span>(<span class="str">"support-agent"</span>)
+<span class="kw">public class</span> SupportAgent <span class="kw">extends</span> Agent {
+
+  <span class="kw">public</span> Effect&lt;String&gt; ask(String question) {
+    <span class="kw">return</span> effects()
+        .systemMessage(<span class="str">"You are a helpful assistant."</span>)
+        .userMessage(question)
+        .thenReply();
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">extends Agent</span> &mdash; component base class</li>
+        <li><span class="accent">@ComponentId</span> gives it identity for storage &amp; routing</li>
+        <li><span class="accent">effects()</span> builds an LLM interaction description</li>
+        <li><span class="accent">systemMessage / userMessage</span> mirror the OpenAI chat contract</li>
+        <li><span class="accent">.thenReply()</span> hands the model's answer back to the caller</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">No SDK setup, no HTTP wiring, no client library. The runtime handles model calls the same way it handles persistence.</div>
+</section>
+
+
+<section id="slide-07" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>What actually happens when you <span class="accent">.thenReply()</span>?</h2>
+    <p>The runtime turns your effect into a bounded loop with tool calls, memory reads, and error handling.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>1</b><small>Load session memory (if enabled)</small></div>
+    <div class="lifecycle-step"><b>2</b><small>Build chat: system + memory + user</small></div>
+    <div class="lifecycle-step"><b>3</b><small>Call the model provider (OpenAI)</small></div>
+    <div class="lifecycle-step"><b>4</b><small>If tool calls: execute, feed results, repeat</small></div>
+    <div class="lifecycle-step"><b>5</b><small>Persist new turn to memory</small></div>
+    <div class="lifecycle-step"><b>6</b><small>Return the final response</small></div>
+  </div>
+  <div class="callout">Step 4 loops up to <span class="accent">max-tool-call-steps</span> (default 100). Beyond that the runtime stops even if the model wants more.</div>
+</section>
+
+
+<section id="slide-08" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>Model providers &mdash; <span class="accent">first-class in the SDK</span>.</h2>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Provider</span><span>Where it fits</span></div>
+    <div class="matrix-row"><span>OpenAI</span><span>Default in the sample. Strong tool-use, wide model choice, well-known API.</span></div>
+    <div class="matrix-row"><span>Anthropic</span><span>Claude family. Excellent for long-context and instruction-following.</span></div>
+    <div class="matrix-row"><span>Google AI Gemini</span><span>Multimodal (image / audio) if you need it.</span></div>
+    <div class="matrix-row"><span>HuggingFace</span><span>Any hosted model with an HF endpoint.</span></div>
+    <div class="matrix-row"><span>Ollama / LocalAI</span><span>Air-gapped or dev-loop with a local model. No cloud API key.</span></div>
+  </div>
+  <div class="callout">Different agents in the same service can use different providers. Config-driven &mdash; no code change to switch models.</div>
+</section>
+
+
+<section id="slide-09" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>All in <span class="accent">application.conf</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">src/main/resources/application.conf</div>
+      <pre class="code-block">akka.javasdk {
+  agent {
+    <span class="cmt"># Which provider agents default to</span>
+    model-provider = <span class="str">"akka.javasdk.agent.openai"</span>
+
+    openai {
+      model-name  = <span class="str">"gpt-4o-mini"</span>
+      temperature = 0.2
+      <span class="cmt"># api-key = ${?OPENAI_API_KEY}   (inherited default)</span>
+    }
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>SDK ships default openai/anthropic/gemini configs</li>
+        <li>Override only what you need &mdash; model name, temperature, base URL</li>
+        <li><span class="accent">api-key = ${?OPENAI_API_KEY}</span> is already in the reference config</li>
+        <li>Fail-fast on startup if the key is missing</li>
+        <li>Individual agents can override via <span class="accent">.model(ModelProvider.openAi(...))</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-10" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">The sample</div>
+    <h2>SupportAgent &mdash; the real one.</h2>
+    <p>A customer-support agent that answers "where's my order?" using the sample's data as tools.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Job</div><p>Answer questions about a customer's profile, orders, and audit history.</p></div>
+    <div class="locus"><div class="locus-title">Tools</div><p>Four function tools bound to entity + view queries.</p></div>
+    <div class="locus"><div class="locus-title">Memory</div><p>Last 10 turns, keyed by sessionId. Multi-turn context works.</p></div>
+  </div>
+  <div class="callout">The system prompt is the guardrail: "Never invent ids. Use the provided tools. If a tool returns nothing, say so."</div>
+</section>
+
+
+<section id="slide-11" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>The <span class="accent">Effect.Builder</span>, one call at a time.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">SupportAgent.ask()</div>
+      <pre class="code-block"><span class="kw">public</span> Effect&lt;String&gt; ask(String question) {
+  <span class="kw">return</span> effects()
+      .memory(MemoryProvider.limitedWindow().readLast(10))
+      .systemMessage(SYSTEM_PROMPT)
+      .tools(<span class="kw">this</span>)              <span class="cmt">// scan @FunctionTool methods on this class</span>
+      .userMessage(question)
+      .thenReply();
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">.memory(...)</span> &mdash; MemoryProvider (LimitedWindow / Disabled / Custom)</li>
+        <li><span class="accent">.systemMessage(...)</span> &mdash; guardrails, role, constraints</li>
+        <li><span class="accent">.tools(this, ...)</span> &mdash; objects or classes hosting <span class="accent">@FunctionTool</span> methods</li>
+        <li><span class="accent">.userMessage(...)</span> &mdash; the actual question</li>
+        <li><span class="accent">.thenReply()</span> &mdash; return the model's text response</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-12" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>The system message is the <span class="accent">contract</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">SupportAgent.SYSTEM_PROMPT</div>
+      <pre class="code-block">You are Akka Workshop Support &mdash; a customer-support
+assistant for the sample e-commerce service in the
+akka-workshop repository.
+
+Rules:
+- Never invent customer ids or order ids. Use the values
+  the user provides, verbatim.
+- Before answering, use the provided tools to look up real
+  data. Do not guess.
+- If a tool returns no data, say so plainly; do not fabricate.
+- Keep answers short and factual.
+- You have access to customer profiles, order lists,
+  individual order details, and audit history.</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Persona + boundaries + escalation policy in plain text</li>
+        <li>The model reads this before every question &mdash; even follow-ups</li>
+        <li>Prompt injection defence lives here first</li>
+        <li>Iterate this file; it's the highest-leverage line of code</li>
+        <li>PromptTemplate + template-id for i18n or per-tenant prompts</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-13" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2><span class="accent">@FunctionTool</span> &mdash; a method the model can call.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Anatomy of a tool method</div>
+      <pre class="code-block"><span class="anno">@FunctionTool</span>(description =
+    <span class="str">"Look up a customer's profile by customerId. "</span> +
+    <span class="str">"Returns first name, last name, deleted flag."</span>)
+<span class="kw">public</span> String getCustomer(
+    <span class="anno">@Description</span>(<span class="str">"The customer id, e.g. cust-001"</span>)
+    String customerId) {
+  <span class="kw">var</span> s = client.forEventSourcedEntity(customerId)
+      .method(CustomerEntity::get).invoke();
+  <span class="kw">if</span> (s.customerId() == <span class="kw">null</span>)
+    <span class="kw">return</span> <span class="str">"No customer found for "</span> + customerId;
+  <span class="kw">return</span> String.format(
+      <span class="str">"customerId=%s firstName=%s deleted=%s"</span>, ...);
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">description</span> is what the LLM reads to pick a tool</li>
+        <li><span class="accent">@Description</span> on params helps the LLM fill them right</li>
+        <li>Return <span class="accent">String</span> &mdash; that's what the model sees</li>
+        <li>Format the return so the model can quote it later</li>
+        <li>"No data" is a valid answer; never fabricate</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-14" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>SupportAgent's <span class="accent">four tools</span>.</h2>
+    <p>Each one hits a component we built on previous days. The LLM chooses which to call.</p>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Tool</span><span>What it queries</span></div>
+    <div class="matrix-row"><span>getCustomer(id)</span><span>CustomerEntity.get() &mdash; profile summary</span></div>
+    <div class="matrix-row"><span>listOrdersForCustomer(id)</span><span>OrdersView.byCustomer &mdash; all orders + statuses</span></div>
+    <div class="matrix-row"><span>getOrder(id)</span><span>OrderEntity.get() &mdash; single order full detail</span></div>
+    <div class="matrix-row"><span>getAudit(id)</span><span>AuditLogEntity.get() &mdash; account change history</span></div>
+  </div>
+  <div class="callout">The LLM orchestrates tools without your code deciding order. Give clear descriptions and it usually does the right thing.</div>
+</section>
+
+
+<section id="slide-15" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>Memory: <span class="accent">three built-in strategies</span>.</h2>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Provider</span><span>Behaviour</span></div>
+    <div class="matrix-row"><span>Disabled</span><span>No history. Each turn is a cold start.</span></div>
+    <div class="matrix-row"><span>LimitedWindow</span><span>Bounded history &mdash; last N messages or K bytes. Sample uses this.</span></div>
+    <div class="matrix-row"><span>FromConfig</span><span>Reads memory settings from application.conf. Central overrides.</span></div>
+    <div class="matrix-row"><span>Custom</span><span>Plug in your own SessionMemory implementation. Redis, external store, whatever.</span></div>
+  </div>
+  <div class="callout">Memory is persisted by the runtime &mdash; the same cluster mechanism as entities. No external cache needed.</div>
+</section>
+
+
+<section id="slide-16" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>LimitedWindow: <span class="accent">bounded and observable</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Common shapes</div>
+      <pre class="code-block"><span class="cmt">// last N messages, read and write</span>
+MemoryProvider.limitedWindow().readLast(10);
+
+<span class="cmt">// bounded by byte size (reference.conf default)</span>
+<span class="cmt">// akka.javasdk.agent.memory.limited-window.max-size = 510 KiB</span>
+
+<span class="cmt">// read only (agent sees history, doesn't record its turn)</span>
+MemoryProvider.limitedWindow().readOnly();
+
+<span class="cmt">// write only (record but don't feed back)</span>
+MemoryProvider.limitedWindow().writeOnly();
+
+<span class="cmt">// turn it off entirely</span>
+MemoryProvider.none();</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>FIFO eviction &mdash; oldest turn drops first</li>
+        <li>510 KiB default max &mdash; safe for cluster routing</li>
+        <li>readOnly for a passive observer agent</li>
+        <li>writeOnly for a "log-only" mode during rollout</li>
+        <li>Memory is <span class="accent">per session id</span>, shared across agents in the same session</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-17" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>Session id is the <span class="accent">router key</span>.</h2>
+    <p>Same session id &rarr; same memory. Different sessions &rarr; isolated conversations.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">SupportEndpoint</div>
+      <pre class="code-block"><span class="anno">@Post</span>(<span class="str">"/support/{sessionId}"</span>)
+<span class="kw">public</span> Answer ask(String sessionId, Question req) {
+  String answer = client.forAgent()
+      .inSession(sessionId)
+      .method(SupportAgent::ask)
+      .invoke(req.question());
+  <span class="kw">return new</span> Answer(sessionId, answer);
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Caller chooses the session id &mdash; per-user, per-ticket, per-thread</li>
+        <li><span class="accent">forAgent().inSession(id)</span> is how ComponentClient routes</li>
+        <li>Memory is scoped to the session &mdash; not the agent</li>
+        <li>Two different agents in the same session share memory</li>
+        <li>Sessions never explicitly end &mdash; memory bounds them naturally</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-18" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>Structured responses: <span class="accent">responseAs</span> &amp; <span class="accent">map</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Parsing model output</div>
+      <pre class="code-block"><span class="kw">public record</span> Summary(String status, String nextAction) {}
+
+<span class="kw">public</span> Effect&lt;Summary&gt; summarise(String orderId) {
+  <span class="kw">return</span> effects()
+      .systemMessage(<span class="str">"Return JSON matching the Summary schema."</span>)
+      .tools(<span class="kw">this</span>)
+      .userMessage(<span class="str">"Summarise order "</span> + orderId)
+      .responseAs(Summary.<span class="kw">class</span>)
+      .thenReply();
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">.responseAs(Type.class)</span> &mdash; deserialises JSON to a record</li>
+        <li><span class="accent">.map(fn)</span> &mdash; transform the raw string</li>
+        <li>Use for tickets, decisions, workflow inputs</li>
+        <li>The runtime handles parse errors as <span class="accent">JsonParsingException</span></li>
+        <li>Prompt the schema explicitly &mdash; the model can't infer field names</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-19" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>Failures the runtime <span class="accent">catches for you</span>.</h2>
+    <p>Agent effects have a first-class error taxonomy. Recover per case, don't blanket-catch.</p>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Exception</span><span>When</span></div>
+    <div class="matrix-row"><span>RateLimitException</span><span>Provider throttled you. Back off, retry, or degrade.</span></div>
+    <div class="matrix-row"><span>ModelTimeoutException</span><span>Model didn't respond in time. Consider a shorter prompt.</span></div>
+    <div class="matrix-row"><span>ToolCallLimitReachedException</span><span>Model tried to call tools too many times. Simplify or add a tool.</span></div>
+    <div class="matrix-row"><span>ToolCallExecutionException</span><span>Your tool threw. Fix the tool or return a plain error string.</span></div>
+    <div class="matrix-row"><span>JsonParsingException</span><span>Structured response didn't parse. Tighten the schema prompt.</span></div>
+    <div class="matrix-row"><span>InternalServerException</span><span>Provider 5xx. Retry with backoff.</span></div>
+  </div>
+  <div class="callout">Use <span class="accent">.onFailure(Function&lt;Throwable, String&gt;)</span> to substitute a graceful response per exception type.</div>
+</section>
+
+
+<section id="slide-20" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>Multi-agent systems, <span class="accent">without a framework</span>.</h2>
+    <p>Multiple agents in the same service, same runtime. Sharing sessions if they should, isolated if they shouldn't.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Same session</div><p>Agents share memory. A "triage" agent hands off to a "billing" agent, both see the transcript.</p></div>
+    <div class="locus"><div class="locus-title">Different sessions</div><p>Isolated. Useful for tenant separation or batch workers.</p></div>
+    <div class="locus"><div class="locus-title">AgentRegistry</div><p><span class="accent">@AgentDescription</span> makes agents discoverable so a supervisor agent can list &amp; delegate.</p></div>
+  </div>
+  <div class="callout">Multi-agent lives in the same Java service &mdash; no bus, no coordinator, no separate deployment.</div>
+</section>
+
+
+<section id="slide-21" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">MCP</div>
+    <h2>MCP: <span class="accent">tools your agents didn't write</span>.</h2>
+    <p>Model Context Protocol lets external LLM clients (Claude Desktop, Cursor, other agents) call tools you expose over HTTP.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">You expose</div><p>Tools, resources, prompts &mdash; via annotations on plain Java methods.</p></div>
+    <div class="locus"><div class="locus-title">Clients call</div><p>JSON-RPC over HTTP. Streamable. Discoverable via tools/list.</p></div>
+    <div class="locus"><div class="locus-title">Auth</div><p>Same <span class="accent">@Acl</span> annotations as any endpoint. Same identity model.</p></div>
+  </div>
+  <div class="callout">Two audiences for the same domain: your internal agent uses <span class="accent">@FunctionTool</span>; external clients use <span class="accent">@McpTool</span>.</div>
+</section>
+
+
+<section id="slide-22" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">MCP</div>
+    <h2>CustomerMcpServer, <span class="accent">annotated</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">mcp/CustomerMcpServer.java</div>
+      <pre class="code-block"><span class="anno">@McpEndpoint</span>(
+    path = <span class="str">"/mcp"</span>,
+    serverName = <span class="str">"akka-workshop-customer"</span>,
+    serverVersion = <span class="str">"0.1.0"</span>,
+    instructions = <span class="str">"Read-only customer and order lookup tools."</span>)
+<span class="anno">@Acl</span>(allow = <span class="anno">@Acl</span>.Matcher(principal = Acl.Principal.INTERNET))
+<span class="kw">public class</span> CustomerMcpServer {
+
+  <span class="anno">@McpTool</span>(description =
+      <span class="str">"List all orders for a given customer."</span>)
+  <span class="kw">public</span> String listOrdersForCustomer(
+      <span class="anno">@Description</span>(<span class="str">"Customer id"</span>) String customerId) {
+    ...
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">@McpEndpoint</span> declares the MCP server at a path</li>
+        <li><span class="accent">serverName / version</span> returned in the initialize handshake</li>
+        <li><span class="accent">@McpTool</span> methods must return String</li>
+        <li>JSON schema is <span class="accent">auto-derived</span> from Java params</li>
+        <li><span class="accent">@Description</span> on params gives the LLM context</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-23" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">MCP</div>
+    <h2>Wiring a real client &mdash; <span class="accent">Claude Desktop</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">~/.config/claude/claude_desktop_config.json</div>
+      <pre class="code-block">{
+  <span class="str">"mcpServers"</span>: {
+    <span class="str">"akka-workshop"</span>: {
+      <span class="str">"transport"</span>: <span class="str">"http"</span>,
+      <span class="str">"url"</span>: <span class="str">"http://localhost:9000/mcp"</span>
+    }
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Same MCP the Anthropic client already speaks</li>
+        <li>No plugin, no adapter code &mdash; just URL + name</li>
+        <li>Restart Claude Desktop; tools appear in the tool picker</li>
+        <li>Same setup pattern for Cursor, other agents, other services</li>
+        <li>Deploy to Akka runtime &rarr; publicly reachable MCP endpoint</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-24" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Hands-on &middot; 90 minutes</div>
+    <h2>Talk to your service.</h2>
+    <p>The agents branch is fully wired. Set the key, ask questions, connect an MCP client.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block">git checkout agents
+export OPENAI_API_KEY=sk-...
+mvn compile exec:java
+
+<span class="cmt"># create fixtures</span>
+curl -XPOST http://localhost:9000/api/customers ... -d <span class="str">'{...}'</span>
+curl -XPOST http://localhost:9000/api/orders    ... -d <span class="str">'{...}'</span>
+
+<span class="cmt"># ask the agent</span>
+curl -XPOST http://localhost:9000/api/support/s-1 \
+  -H <span class="str">'Content-Type: application/json'</span> \
+  -d <span class="str">'{"question":"Where are cust-ada'\''s orders?"}'</span>
+
+<span class="cmt"># follow up in the same session (memory!)</span>
+curl -XPOST http://localhost:9000/api/support/s-1 -d <span class="str">'{"question":"Dig into the FAILED one"}'</span></pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Add a fifth tool: <span class="accent">getInventoryStock()</span></li>
+        <li>Add error handling with <span class="accent">.onFailure(...)</span></li>
+        <li>Swap the model to <span class="accent">gpt-4o</span> and compare tool-use quality</li>
+        <li>Connect Claude Desktop to the MCP endpoint</li>
+        <li>Break the system prompt; watch guardrails fail</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-67" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Where to go from here</div>
+    <h2>Keep <span class="accent">using it</span>.</h2>
+    <p>The best way to retain what you've learned is to build one small thing of your own with it. Then come back with questions.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Docs</div><p><span class="accent">docs.akka.io</span> &mdash; SDK reference, patterns, HOWTOs.</p></div>
+    <div class="locus"><div class="locus-title">Sample</div><p><span class="accent">github.com/PradeepLoganathan/akka-workshop</span> &mdash; the sample you built on.</p></div>
+    <div class="locus"><div class="locus-title">Community</div><p><span class="accent">akka.io/community</span> &mdash; forums, Discord, office hours.</p></div>
+  </div>
+  <div class="pill-row">
+    <span>github.com/PradeepLoganathan/akka-workshop</span>
+    <span>docs.akka.io</span>
+    <span>akka.io/community</span>
+    <span>console.akka.io</span>
+  </div>
+</section>
+
+
+<section id="slide-68" class="deck-slide title-slide" data-view>
+  <div class="brand-mark" aria-label="Akka">AKKA</div>
+  <div class="kicker">End of day 3</div>
+  <h1 class="title-headline"><span class="accent">Questions?</span></h1>
+  <div class="title-sub">TOMORROW: TESTING WHAT YOU JUST BUILT</div>
+  <div class="rule"></div>
+  <p class="title-copy">You've wired an LLM in as a first-class component &mdash; tools, memory, MCP, all backed by the same runtime. Play with the sample tonight. Break the system prompt on purpose. Add a fifth tool.</p>
+  <div class="session-meta">
+    <span>github.com/PradeepLoganathan/akka-workshop</span>
+    <span>docs.akka.io</span>
+  </div>
+  
+</section>
+
+<script>
+
+
+(function() {
+  const slides = document.querySelectorAll('.deck-slide');
+  const total = slides.length;
+  slides.forEach(function(slide, i) {
+    const num = document.createElement('div');
+    num.className = 'slide-number';
+    num.textContent = (i + 1) + ' / ' + total;
+    slide.appendChild(num);
+  });
+
+  const views = Array.from(document.querySelectorAll('[data-view]'));
+  function top(el) { return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset); }
+  function current() {
+    const y = window.scrollY || window.pageYOffset;
+    let best = 0;
+    for (let i = 0; i < views.length; i++) if (top(views[i]) <= y + 12) best = i;
+    return best;
+  }
+  document.addEventListener('keydown', function(e) {
+    if (['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)) {
+      e.preventDefault();
+      const i = current();
+      if (i < views.length - 1) window.scrollTo({ top: top(views[i + 1]), behavior: 'smooth' });
+    }
+    if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) {
+      e.preventDefault();
+      const i = current();
+      const y = window.scrollY || window.pageYOffset;
+      if (y > top(views[i]) + 12) window.scrollTo({ top: top(views[i]), behavior: 'smooth' });
+      else if (i > 0) window.scrollTo({ top: top(views[i - 1]), behavior: 'smooth' });
+    }
+  });
+})();
+
+
+(function() {
+  if (!new URLSearchParams(location.search).has('kiosk')) return;
+  const views = Array.from(document.querySelectorAll('[data-view]'));
+  const seconds = Number(new URLSearchParams(location.search).get('kiosk')) || 35;
+  let i = 0;
+  function top(el) { return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset); }
+  setInterval(function() {
+    i = (i + 1) % views.length;
+    window.scrollTo({ top: top(views[i]), behavior: 'smooth' });
+  }, seconds * 1000);
+})();
+
+</script>
+</body>
+</html>

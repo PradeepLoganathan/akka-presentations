@@ -1,0 +1,6 @@
+{
+  "id": "recap",
+  "nav_id": "slide-recap",
+  "section": 0,
+  "include_in": ["overview", "shareable"]
+}

@@ -1,0 +1,29 @@
+{
+  "slides": [
+    { "id": "01-where-we-are",             "folder": "slides/01-where-we-are" },
+    { "id": "02-sample-repo-state",        "folder": "slides/02-sample-repo-state" },
+    { "id": "04-day3-opener",              "folder": "slides/04-day3-opener" },
+    { "id": "05-why-agents",               "folder": "slides/05-why-agents" },
+    { "id": "06-what-is-an-agent",         "folder": "slides/06-what-is-an-agent" },
+    { "id": "07-agent-lifecycle",          "folder": "slides/07-agent-lifecycle" },
+    { "id": "08-model-providers",          "folder": "slides/08-model-providers" },
+    { "id": "09-configuration",            "folder": "slides/09-configuration" },
+    { "id": "10-support-agent-intro",      "folder": "slides/10-support-agent-intro" },
+    { "id": "11-agent-effect-builder",     "folder": "slides/11-agent-effect-builder" },
+    { "id": "12-system-message",           "folder": "slides/12-system-message" },
+    { "id": "13-function-tool",            "folder": "slides/13-function-tool" },
+    { "id": "14-tools-walkthrough",        "folder": "slides/14-tools-walkthrough" },
+    { "id": "15-memory-providers",         "folder": "slides/15-memory-providers" },
+    { "id": "16-limited-window",           "folder": "slides/16-limited-window" },
+    { "id": "17-sessions",                 "folder": "slides/17-sessions" },
+    { "id": "18-structured-responses",     "folder": "slides/18-structured-responses" },
+    { "id": "19-agent-errors",             "folder": "slides/19-agent-errors" },
+    { "id": "20-multi-agent",              "folder": "slides/20-multi-agent" },
+    { "id": "21-mcp-what",                 "folder": "slides/21-mcp-what" },
+    { "id": "22-mcp-server-code",          "folder": "slides/22-mcp-server-code" },
+    { "id": "23-mcp-clients",              "folder": "slides/23-mcp-clients" },
+    { "id": "24-handson-agents",           "folder": "slides/24-handson-agents" },
+    { "id": "67-resources",                "folder": "slides/67-resources" },
+    { "id": "68-thanks",                   "folder": "slides/68-thanks" }
+  ]
+}

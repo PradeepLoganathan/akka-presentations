@@ -35,9 +35,17 @@ PRESENTATIONS = [
 
 # Training decks — same per-slide-folder shape as PRESENTATIONS.
 TRAININGS = [
-    {"dir": "training/akka-sdk-fundamentals-3h", "link": "training/akka-sdk-fundamentals-3h/generated/overview/"},
-    {"dir": "training/akka-sdk-workflows-day",   "link": "training/akka-sdk-workflows-day/generated/overview/"},
-    {"dir": "training/akka-sdk-mastery-5d",      "link": "training/akka-sdk-mastery-5d/generated/overview/"},
+    {"dir": "training/akka-sdk-fundamentals", "link": "training/akka-sdk-fundamentals/generated/overview/"},
+    {"dir": "training/akka-sdk-workflows",    "link": "training/akka-sdk-workflows/generated/overview/"},
+    {"link": "training/akka-sdk-agents/generated/overview/",
+     "title": "Akka SDK Agents & MCP",
+     "sub": "DAY 3 — AGENTS, TOOLS, MEMORY, MCP"},
+    {"link": "training/akka-sdk-testing/generated/overview/",
+     "title": "Akka SDK Testing",
+     "sub": "DAY 4 — TESTKITS, INTEGRATION, CHAOS, CONTRACTS, LOAD"},
+    {"link": "training/akka-sdk-deploy/generated/overview/",
+     "title": "Akka SDK Deploy & Multi-region",
+     "sub": "DAY 5 — DEPLOY, MULTI-REGION, OBSERVABILITY, RUNBOOKS, COST"},
 ]
 
 # Standalone competitive briefs (single HTML files at the repo root).
