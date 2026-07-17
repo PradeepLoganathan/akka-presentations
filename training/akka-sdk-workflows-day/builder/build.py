@@ -55,6 +55,15 @@ if presenter:
         r'<!--\s*PRESENTER-BLOCK\s*-->|<!--\s*/PRESENTER-BLOCK\s*-->', '', slides_html_combined)
     for key, value in presenter.items():
         slides_html_combined = slides_html_combined.replace(f'{{{{PRESENTER_{key.upper()}}}}}', value)
+    # Any placeholder still present = key missing from JSON. Strip it,
+    # then collapse the row that would otherwise render as an empty div.
+    slides_html_combined = re.sub(r'\{\{PRESENTER_[A-Z_]+\}\}', '', slides_html_combined)
+    slides_html_combined = re.sub(
+        r'\s*<div class="title-presenter-(?:title|email)">\s*</div>',
+        '', slides_html_combined)
+    slides_html_combined = re.sub(
+        r'\s*<div class="title-presenter-name">\s*<a[^>]*>\s*</a>\s*</div>',
+        '', slides_html_combined)
 else:
     # No presenter: strip the entire block (markers and their content) so nothing leaks.
     slides_html_combined = re.sub(

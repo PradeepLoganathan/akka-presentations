@@ -412,6 +412,86 @@ body {
 }
 .title-presenter-email { margin-top: 8px; font-size: 14px; }
 
+/* Vertical-timeline agenda */
+.agenda-timeline {
+  max-width: 920px;
+  margin: 0;
+  padding: 8px 0 8px 30px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.agenda-timeline::before {
+  content: '';
+  position: absolute;
+  left: 25px;
+  top: 24px;
+  bottom: 24px;
+  width: 2px;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    var(--yellow) 8%,
+    var(--yellow) 92%,
+    transparent 100%);
+  opacity: 0.45;
+  z-index: 0;
+}
+.agenda-step {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  align-items: center;
+  gap: 28px;
+  position: relative;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards;
+}
+.agenda-step::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--yellow);
+  border: 4px solid var(--black);
+  box-sizing: content-box;
+  z-index: 2;
+  box-shadow: 0 0 0 1px rgba(245, 197, 24, 0.35);
+}
+.agenda-step-num {
+  color: var(--yellow);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.agenda-step-body {
+  color: var(--white);
+  font-size: 22px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+.agenda-step:nth-child(1) { animation-delay: 0.30s; }
+.agenda-step:nth-child(2) { animation-delay: 0.40s; }
+.agenda-step:nth-child(3) { animation-delay: 0.50s; }
+.agenda-step:nth-child(4) { animation-delay: 0.60s; }
+.agenda-step:nth-child(5) { animation-delay: 0.70s; }
+.agenda-step:nth-child(6) { animation-delay: 0.80s; }
+.agenda-step:nth-child(7) { animation-delay: 0.90s; }
+.agenda-step:nth-child(8) { animation-delay: 1.00s; }
+.agenda-step:nth-child(9) { animation-delay: 1.10s; }
+@media (max-width: 700px) {
+  .agenda-timeline { padding-left: 24px; }
+  .agenda-timeline::before { left: 19px; }
+  .agenda-step { grid-template-columns: 56px 1fr; gap: 18px; }
+  .agenda-step-num { font-size: 20px; }
+  .agenda-step-body { font-size: 18px; }
+}
+
 /* Slide number in bottom right — injected by nav.js */
 .slide-number {
   position: absolute;
