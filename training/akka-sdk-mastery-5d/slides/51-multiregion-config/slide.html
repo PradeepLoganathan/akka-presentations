@@ -1,0 +1,34 @@
+<section id="slide-51" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Multi-region</div>
+    <h2>Config-first: <span class="accent">no code changes</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># create a project spanning three regions</span>
+akka projects new akka-workshop-prod \
+    --region gcp-us-east1 \
+    --region gcp-europe-west1 \
+    --region gcp-asia-southeast1
+
+<span class="cmt"># set primary region for a service</span>
+akka services deploy akka-workshop \
+    ghcr.io/pradeepl/akka-workshop:1.0 \
+    --region gcp-us-east1
+
+<span class="cmt"># add a replica region</span>
+akka services replicate akka-workshop \
+    --to gcp-europe-west1</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Regions are project-level; services opt in</li>
+        <li><span class="accent">Sample code compiles unchanged</span> &mdash; the runtime handles replication</li>
+        <li>Entity id determines which region "owns" it (consistent hashing)</li>
+        <li>Views project locally per region</li>
+        <li>Workflows resume in the region where they started</li>
+      </ul>
+    </div>
+  </div>
+</section>

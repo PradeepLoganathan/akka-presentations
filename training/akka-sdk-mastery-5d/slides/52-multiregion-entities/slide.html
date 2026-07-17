@@ -1,0 +1,13 @@
+<section id="slide-52" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Multi-region</div>
+    <h2>Entity semantics <span class="accent">across regions</span>.</h2>
+    <p>The mental model shifts slightly. Local reads always. Writes go to the entity's home region.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Reads</div><p>Always local. Views project per region, entity state is replicated with bounded staleness.</p></div>
+    <div class="locus"><div class="locus-title">Writes</div><p>Routed to the entity's home region &mdash; usually one round-trip more if the caller is elsewhere.</p></div>
+    <div class="locus"><div class="locus-title">Consistency</div><p>Single-writer per entity globally. No conflicting writes at the entity level.</p></div>
+  </div>
+  <div class="callout">CustomerEntity for customer-42 has one home region. Reads happen anywhere. Writes go to <span class="accent">customer-42's</span> region.</div>
+</section>

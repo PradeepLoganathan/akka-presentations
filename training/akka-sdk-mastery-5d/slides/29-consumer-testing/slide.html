@@ -1,0 +1,33 @@
+<section id="slide-29" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Testing</div>
+    <h2>Consumer testing: <span class="accent">feed events, assert calls</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">CustomerAuditConsumerTest.java (shape)</div>
+      <pre class="code-block"><span class="kw">var</span> tk = ConsumerTestKit.of(CustomerAuditConsumer::<span class="kw">new</span>);
+
+<span class="kw">var</span> result = tk.onEvent(
+    <span class="kw">new</span> customerCreated(<span class="str">"c-1"</span>, <span class="str">"Ada"</span>, <span class="str">"Lovelace"</span>));
+
+<span class="cmt">// side effects captured for assertion</span>
+<span class="kw">var</span> calls = result.getSideEffects();
+assertThat(calls).hasSize(1);
+assertThat(calls.get(0).targetComponent()).isEqualTo(<span class="str">"audit-log"</span>);
+
+<span class="cmt">// idempotency: same event twice</span>
+tk.onEvent(sameEvent);
+tk.onEvent(sameEvent);
+assertThat(auditEntity.getState().entries()).hasSize(1);</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Consumer effects are captured &mdash; nothing actually calls the network</li>
+        <li>Assert on the deferred calls the consumer would make</li>
+        <li>Test idempotency explicitly &mdash; feed the same event twice</li>
+        <li>Combine with an EventSourcedTestKit for full audit pipeline test</li>
+      </ul>
+    </div>
+  </div>
+</section>

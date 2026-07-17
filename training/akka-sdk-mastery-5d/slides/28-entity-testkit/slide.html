@@ -1,0 +1,34 @@
+<section id="slide-28" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Testing</div>
+    <h2>EventSourcedTestKit, <span class="accent">for the Order entity</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">OrderEntityTest.java (shape)</div>
+      <pre class="code-block"><span class="kw">var</span> tk = EventSourcedTestKit.of(OrderEntity::<span class="kw">new</span>);
+
+<span class="cmt">// given: an order was placed</span>
+tk.method(OrderEntity::place)
+  .invoke(<span class="kw">new</span> PlaceOrder(<span class="str">"c1"</span>, lines));
+
+<span class="cmt">// when: mark reserved</span>
+<span class="kw">var</span> r = tk.method(OrderEntity::markReserved)
+    .invoke(<span class="kw">new</span> MarkReserved());
+
+<span class="cmt">// then</span>
+assertThat(r.getNextEventOfType(inventoryReserved.<span class="kw">class</span>))
+    .isNotNull();
+assertThat(tk.getState().status()).isEqualTo(OrderStatus.RESERVED);</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Fastest possible feedback for domain logic</li>
+        <li>Test replay: <span class="accent">tk.replayEvents(...)</span> and assert state</li>
+        <li>Test guard clauses &mdash; illegal transitions returned as errors</li>
+        <li>Snapshot a scenario with builders (see slide 36)</li>
+        <li>Milliseconds per test &mdash; run thousands in CI</li>
+      </ul>
+    </div>
+  </div>
+</section>

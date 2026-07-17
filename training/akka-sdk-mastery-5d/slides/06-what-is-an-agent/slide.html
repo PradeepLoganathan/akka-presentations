@@ -1,0 +1,31 @@
+<section id="slide-06" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>An Akka agent, <span class="accent">anatomically</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Minimum viable agent</div>
+      <pre class="code-block"><span class="anno">@ComponentId</span>(<span class="str">"support-agent"</span>)
+<span class="kw">public class</span> SupportAgent <span class="kw">extends</span> Agent {
+
+  <span class="kw">public</span> Effect&lt;String&gt; ask(String question) {
+    <span class="kw">return</span> effects()
+        .systemMessage(<span class="str">"You are a helpful assistant."</span>)
+        .userMessage(question)
+        .thenReply();
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">extends Agent</span> &mdash; component base class</li>
+        <li><span class="accent">@ComponentId</span> gives it identity for storage &amp; routing</li>
+        <li><span class="accent">effects()</span> builds an LLM interaction description</li>
+        <li><span class="accent">systemMessage / userMessage</span> mirror the OpenAI chat contract</li>
+        <li><span class="accent">.thenReply()</span> hands the model's answer back to the caller</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">No SDK setup, no HTTP wiring, no client library. The runtime handles model calls the same way it handles persistence.</div>
+</section>

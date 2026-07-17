@@ -1,0 +1,17 @@
+<section id="slide-63" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Ops</div>
+    <h2>Capacity planning: <span class="accent">what to size for</span>.</h2>
+    <p>Stateful workloads size on different dimensions than stateless ones. Instance count is only one lever.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Active entities</div><p>Entities in memory per node. Passivation reclaims idle ones.</p></div>
+    <div class="locus"><div class="locus-title">Workflow throughput</div><p>How many workflows can transition per second? Set by step call latency, not CPU.</p></div>
+    <div class="locus"><div class="locus-title">View lag</div><p>How stale can reads be? Sets consumer parallelism.</p></div>
+  </div>
+  <div class="loci-grid" style="margin-top: 18px;">
+    <div class="locus"><div class="locus-title">LLM tokens</div><p>Per-agent-call. Budget = model choice &times; memory window &times; tool calls.</p></div>
+    <div class="locus"><div class="locus-title">Storage</div><p>Journal grows forever unless you archive. Design event schema for retention early.</p></div>
+    <div class="locus"><div class="locus-title">Egress</div><p>LLM calls are egress. Multi-region calls are egress. Both add up.</p></div>
+  </div>
+</section>

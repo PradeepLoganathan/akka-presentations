@@ -1,0 +1,30 @@
+<section id="slide-18" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>Structured responses: <span class="accent">responseAs</span> &amp; <span class="accent">map</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Parsing model output</div>
+      <pre class="code-block"><span class="kw">public record</span> Summary(String status, String nextAction) {}
+
+<span class="kw">public</span> Effect&lt;Summary&gt; summarise(String orderId) {
+  <span class="kw">return</span> effects()
+      .systemMessage(<span class="str">"Return JSON matching the Summary schema."</span>)
+      .tools(<span class="kw">this</span>)
+      .userMessage(<span class="str">"Summarise order "</span> + orderId)
+      .responseAs(Summary.<span class="kw">class</span>)
+      .thenReply();
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">.responseAs(Type.class)</span> &mdash; deserialises JSON to a record</li>
+        <li><span class="accent">.map(fn)</span> &mdash; transform the raw string</li>
+        <li>Use for tickets, decisions, workflow inputs</li>
+        <li>The runtime handles parse errors as <span class="accent">JsonParsingException</span></li>
+        <li>Prompt the schema explicitly &mdash; the model can't infer field names</li>
+      </ul>
+    </div>
+  </div>
+</section>

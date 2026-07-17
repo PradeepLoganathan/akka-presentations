@@ -1,0 +1,42 @@
+<section id="slide-60" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Runbook example</div>
+    <h2>Alert: <span class="accent">OrderWorkflow stuck &gt; 5min</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Steps</div>
+      <pre class="code-block">1. Verify:
+   akka logs --grep <span class="str">"workflow"</span> --tail 100
+   Open console: which workflow instance? Which step?
+
+2. Diagnose:
+   akka services describe akka-workshop
+   Look for InventoryEntity or PaymentEntity errors.
+
+3. Common causes:
+   - Payment provider outage (check status.stripe.com)
+   - Inventory reserved-orders leak (see runbook 61)
+   - Model provider timeout (check /metrics)
+
+4. Mitigate:
+   - Transient: wait for provider recovery
+   - Persistent: transition workflow to compensate:
+     akka services command akka-workshop \
+       order-workflow &lt;id&gt; forceCompensate
+
+5. Escalate if:
+   &gt; 20 workflows stuck OR provider outage &gt; 15min</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Specific alert name, no ambiguity</li>
+        <li>Verify step confirms it's real</li>
+        <li>Bounded diagnostic checks</li>
+        <li>Concrete mitigation commands</li>
+        <li>Clear escalation trigger</li>
+        <li>Living doc &mdash; update after every incident</li>
+      </ul>
+    </div>
+  </div>
+</section>

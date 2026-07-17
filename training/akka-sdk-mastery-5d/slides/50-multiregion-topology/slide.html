@@ -1,0 +1,28 @@
+<section id="slide-50" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Multi-region</div>
+    <h2>Two shapes: <span class="accent">active/active</span> vs <span class="accent">primary/replica</span>.</h2>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-col active">
+      <div class="compare-label">Active/active</div>
+      <ul>
+        <li>Every region writes and reads locally</li>
+        <li>Entities replicated across regions</li>
+        <li>Local reads always; local writes when the entity is "home" here</li>
+        <li>Best for latency + availability</li>
+        <li>Conflict resolution matters (usually last-write-wins per entity)</li>
+      </ul>
+    </div>
+    <div class="compare-col blue">
+      <div class="compare-label">Primary/replica</div>
+      <ul>
+        <li>One region owns writes for a slice of entities</li>
+        <li>Replicas serve local reads only</li>
+        <li>Failover on primary loss = promotion</li>
+        <li>Best for sovereignty + simpler consistency</li>
+        <li>Slightly higher write latency for far-away callers</li>
+      </ul>
+    </div>
+  </div>
+</section>

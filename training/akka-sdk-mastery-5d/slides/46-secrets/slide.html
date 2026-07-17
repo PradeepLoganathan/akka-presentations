@@ -1,0 +1,33 @@
+<section id="slide-46" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Deploy</div>
+    <h2>Secrets: <span class="accent">env vars, not code</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># create a secret</span>
+akka secrets create generic openai-key \
+    --literal OPENAI_API_KEY=sk-...
+
+<span class="cmt"># wire it into the service's env</span>
+akka services deploy akka-workshop \
+    ghcr.io/pradeepl/akka-workshop:1.0 \
+    --secret-env openai-key
+
+<span class="cmt"># rotate</span>
+akka secrets update generic openai-key \
+    --literal OPENAI_API_KEY=sk-new...
+akka services rolling-update akka-workshop</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Secrets never appear in the image, config, or logs</li>
+        <li>Mounted as env vars &mdash; picked up by application.conf substitution</li>
+        <li>Rotate via <span class="accent">update</span> + <span class="accent">rolling-update</span></li>
+        <li>Access control: only the service can see its wired secrets</li>
+        <li>Audit trail on every read (see runbook slide 62)</li>
+      </ul>
+    </div>
+  </div>
+</section>

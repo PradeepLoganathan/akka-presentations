@@ -1,0 +1,41 @@
+<section id="slide-65" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Hands-on &middot; 90 minutes</div>
+    <h2>Ship it to <span class="accent">your Akka account</span>.</h2>
+    <p>End-to-end deploy. Real image, real service, real URL. By the end of the lab you'll be curling a production endpoint.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block">akka auth login
+akka projects new my-workshop-prod
+akka config set project my-workshop-prod
+
+<span class="cmt"># build + push image</span>
+mvn install
+docker push ghcr.io/&lt;you&gt;/akka-workshop:1.0
+
+<span class="cmt"># store your OpenAI key</span>
+akka secrets create generic openai-key \
+    --literal OPENAI_API_KEY=$OPENAI_API_KEY
+
+<span class="cmt"># deploy</span>
+akka services deploy akka-workshop \
+    ghcr.io/&lt;you&gt;/akka-workshop:1.0 \
+    --secret-env openai-key
+
+<span class="cmt"># expose + smoke test</span>
+akka routes create workshop --service akka-workshop
+curl https://workshop-&lt;yours&gt;.akka.app/api/customers</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Bring your own image registry (GHCR free tier is fine)</li>
+        <li>Bring your OPENAI_API_KEY</li>
+        <li>Bonus: add a second region</li>
+        <li>Bonus: wire /metrics to Grafana Cloud</li>
+        <li>Bonus: connect Claude Desktop to <span class="accent">https://.../mcp</span></li>
+      </ul>
+    </div>
+  </div>
+</section>

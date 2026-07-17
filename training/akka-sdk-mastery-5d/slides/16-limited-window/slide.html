@@ -1,0 +1,34 @@
+<section id="slide-16" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>LimitedWindow: <span class="accent">bounded and observable</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Common shapes</div>
+      <pre class="code-block"><span class="cmt">// last N messages, read and write</span>
+MemoryProvider.limitedWindow().readLast(10);
+
+<span class="cmt">// bounded by byte size (reference.conf default)</span>
+<span class="cmt">// akka.javasdk.agent.memory.limited-window.max-size = 510 KiB</span>
+
+<span class="cmt">// read only (agent sees history, doesn't record its turn)</span>
+MemoryProvider.limitedWindow().readOnly();
+
+<span class="cmt">// write only (record but don't feed back)</span>
+MemoryProvider.limitedWindow().writeOnly();
+
+<span class="cmt">// turn it off entirely</span>
+MemoryProvider.none();</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>FIFO eviction &mdash; oldest turn drops first</li>
+        <li>510 KiB default max &mdash; safe for cluster routing</li>
+        <li>readOnly for a passive observer agent</li>
+        <li>writeOnly for a "log-only" mode during rollout</li>
+        <li>Memory is <span class="accent">per session id</span>, shared across agents in the same session</li>
+      </ul>
+    </div>
+  </div>
+</section>

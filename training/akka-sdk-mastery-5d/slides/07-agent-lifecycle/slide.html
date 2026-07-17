@@ -1,0 +1,16 @@
+<section id="slide-07" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>What actually happens when you <span class="accent">.thenReply()</span>?</h2>
+    <p>The runtime turns your effect into a bounded loop with tool calls, memory reads, and error handling.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>1</b><small>Load session memory (if enabled)</small></div>
+    <div class="lifecycle-step"><b>2</b><small>Build chat: system + memory + user</small></div>
+    <div class="lifecycle-step"><b>3</b><small>Call the model provider (OpenAI)</small></div>
+    <div class="lifecycle-step"><b>4</b><small>If tool calls: execute, feed results, repeat</small></div>
+    <div class="lifecycle-step"><b>5</b><small>Persist new turn to memory</small></div>
+    <div class="lifecycle-step"><b>6</b><small>Return the final response</small></div>
+  </div>
+  <div class="callout">Step 4 loops up to <span class="accent">max-tool-call-steps</span> (default 100). Beyond that the runtime stops even if the model wants more.</div>
+</section>

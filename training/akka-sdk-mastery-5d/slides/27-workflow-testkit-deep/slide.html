@@ -1,0 +1,36 @@
+<section id="slide-27" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Testing</div>
+    <h2>WorkflowTestKit &mdash; <span class="accent">step by step</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">OrderWorkflowTest.java (excerpt)</div>
+      <pre class="code-block"><span class="kw">var</span> testKit = WorkflowTestKit.of(OrderWorkflow::<span class="kw">new</span>);
+
+<span class="kw">var</span> started = testKit.method(OrderWorkflow::start)
+    .invoke(<span class="kw">new</span> StartOrder(<span class="str">"c1"</span>,
+        List.of(<span class="kw">new</span> OrderLine(<span class="str">"sku-1"</span>, 1, 100))));
+
+assertThat(started.getReply()).startsWith(<span class="str">"order-"</span>);
+assertThat(testKit.currentState().totalCents()).isEqualTo(100L);
+
+<span class="cmt">// advance one step at a time</span>
+<span class="kw">var</span> t1 = testKit.getTransition();
+assertThat(t1.stepName()).isEqualTo(<span class="str">"reserve"</span>);
+
+testKit.runStep(<span class="str">"reserve"</span>);
+<span class="kw">var</span> t2 = testKit.getTransition();
+assertThat(t2.stepName()).isEqualTo(<span class="str">"charge"</span>);</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>In-JVM, no cluster, no HTTP</li>
+        <li>Mock component clients per step for isolation</li>
+        <li>Assert transitions, state, scheduled timers</li>
+        <li>Run one step at a time or the whole workflow</li>
+        <li>Time is virtual &mdash; test 24h timers in milliseconds</li>
+      </ul>
+    </div>
+  </div>
+</section>

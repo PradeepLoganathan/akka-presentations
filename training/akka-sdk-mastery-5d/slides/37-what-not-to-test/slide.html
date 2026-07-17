@@ -1,0 +1,13 @@
+<section id="slide-37" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>What <span class="accent">not</span> to test.</h2>
+    <p>Time and complexity are finite. Spend them on what changes when your code changes.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Don't test the runtime</div><p>"Does Akka persist events?" &mdash; that's their test, not yours.</p></div>
+    <div class="locus"><div class="locus-title">Don't test framework glue</div><p>Testing @ComponentClient wiring proves nothing. Test the behaviour it enables.</p></div>
+    <div class="locus"><div class="locus-title">Don't test the LLM</div><p>You can't. Test your prompt, your tools, your guardrails.</p></div>
+  </div>
+  <div class="callout">Rule of thumb: if the test would still pass after removing your code, you're testing the wrong thing.</div>
+</section>

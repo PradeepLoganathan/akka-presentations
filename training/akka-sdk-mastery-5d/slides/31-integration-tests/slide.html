@@ -1,0 +1,13 @@
+<section id="slide-31" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Integration: <span class="accent">real components, in one JVM</span>.</h2>
+    <p>TestKit supports full multi-component scenarios &mdash; entity + workflow + consumer + view &mdash; without leaving the JVM.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">TestKitSupport</div><p>Boots the runtime in-process. Same behaviour as prod, minus the network.</p></div>
+    <div class="locus"><div class="locus-title">Scenario tests</div><p>POST an order, wait for terminal status, assert view + audit log content.</p></div>
+    <div class="locus"><div class="locus-title">Awaitility</div><p>Eventually-consistent assertions with bounded polling. No sleep(2000) hacks.</p></div>
+  </div>
+  <div class="callout">One integration test per user-visible outcome. Ten unit tests per component. That's the ratio.</div>
+</section>

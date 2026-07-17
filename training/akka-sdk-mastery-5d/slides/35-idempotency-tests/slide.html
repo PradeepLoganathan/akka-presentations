@@ -1,0 +1,13 @@
+<section id="slide-35" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Idempotency: the <span class="accent">non-negotiable</span>.</h2>
+    <p>At-least-once delivery means "duplicates happen." Every command handler, every consumer, every timer target needs a test that says: "the second time is a no-op."</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Entity commands</div><p>Send the same command twice. Assert the second attempt is rejected or idempotent.</p></div>
+    <div class="locus"><div class="locus-title">Consumer handlers</div><p>Feed the same event twice. Assert the downstream state is identical to feeding it once.</p></div>
+    <div class="locus"><div class="locus-title">Timer targets</div><p>Test the command the timer calls, not the timer. Idempotence is the target's problem.</p></div>
+  </div>
+  <div class="callout">A test that only fires the command once tells you nothing about production. Fire it three times.</div>
+</section>

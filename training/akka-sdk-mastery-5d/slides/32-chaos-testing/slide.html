@@ -1,0 +1,13 @@
+<section id="slide-32" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Chaos: <span class="accent">assert what survives</span>.</h2>
+    <p>Not "does it work?" but "what happens when it doesn't?" Test the runtime's failure semantics on your workflow.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Mid-step kill</div><p>POST an order, watch it get to <span class="accent">charge</span>, kill the JVM, restart, assert SHIPPED.</p></div>
+    <div class="locus"><div class="locus-title">Consumer redelivery</div><p>Kill mid-consume; assert the same event is redelivered on restart; assert idempotency.</p></div>
+    <div class="locus"><div class="locus-title">Provider outage</div><p>Point OpenAI base URL at a broken host; assert onFailure handler engages, workflow doesn't corrupt.</p></div>
+  </div>
+  <div class="callout">Chaos tests are <span class="accent">expensive</span> to run and <span class="accent">priceless</span> when a production incident matches the scenario.</div>
+</section>

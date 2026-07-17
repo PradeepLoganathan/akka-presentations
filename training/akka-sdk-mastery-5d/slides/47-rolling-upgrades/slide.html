@@ -1,0 +1,16 @@
+<section id="slide-47" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Deploy</div>
+    <h2>Rolling upgrades: <span class="accent">no downtime by default</span>.</h2>
+    <p>The platform replaces instances one at a time. Sharded entities and workflows migrate as part of the process.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>1</b><small>New image pushed</small></div>
+    <div class="lifecycle-step"><b>2</b><small>1 new instance started, health-checked</small></div>
+    <div class="lifecycle-step"><b>3</b><small>Traffic shifted, entities rebalance to new instance</small></div>
+    <div class="lifecycle-step"><b>4</b><small>1 old instance drained + terminated</small></div>
+    <div class="lifecycle-step"><b>5</b><small>Repeat until all N instances are new</small></div>
+    <div class="lifecycle-step"><b>6</b><small>In-flight workflows resume on new instances via replay</small></div>
+  </div>
+  <div class="callout">Requires backward-compatible event schemas. See contract tests (slide 33).</div>
+</section>

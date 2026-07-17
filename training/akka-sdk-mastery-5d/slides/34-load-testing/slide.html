@@ -1,0 +1,13 @@
+<section id="slide-34" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Load: what does <span class="accent">sharding look like</span> at 10k RPS?</h2>
+    <p>Load tests answer questions unit tests can't: throughput at your scale, tail latency, entity distribution, LLM token burn.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Tooling</div><p>k6, Gatling, or plain Go with worker pools. Whatever your team already runs.</p></div>
+    <div class="locus"><div class="locus-title">Scenarios</div><p>Not "1 endpoint, max RPS." "1000 concurrent workflows across 100 entities."</p></div>
+    <div class="locus"><div class="locus-title">Success signals</div><p>P99 latency, workflow completion time, view lag. Not just RPS.</p></div>
+  </div>
+  <div class="callout">If the load test doesn't distribute across entity ids, you're testing one shard &mdash; not the system.</div>
+</section>

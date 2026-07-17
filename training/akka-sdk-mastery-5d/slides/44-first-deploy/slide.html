@@ -1,0 +1,35 @@
+<section id="slide-44" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Deploy</div>
+    <h2>First deploy: <span class="accent">akka services deploy</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># deploy the service</span>
+akka services deploy akka-workshop \
+    ghcr.io/pradeepl/akka-workshop:1.0
+
+<span class="cmt"># wait for it to be ready</span>
+akka services list
+<span class="cmt">## STATE: Ready  READY: 3/3</span>
+
+<span class="cmt"># expose it publicly (routes are project-scoped by default)</span>
+akka routes create workshop-route \
+    --service akka-workshop \
+    --port 9000
+
+<span class="cmt"># test it</span>
+curl https://workshop-abc.akka.app/api/customers</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Same command; the platform handles rolling deploys after the first</li>
+        <li>Routes give you a public HTTPS URL</li>
+        <li>Custom domains + certs configured per project</li>
+        <li>Health checks and readiness are inferred from the SDK</li>
+        <li>Ready to accept traffic in ~60s from image push</li>
+      </ul>
+    </div>
+  </div>
+</section>

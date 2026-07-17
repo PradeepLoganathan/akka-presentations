@@ -1,0 +1,32 @@
+<section id="slide-09" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>All in <span class="accent">application.conf</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">src/main/resources/application.conf</div>
+      <pre class="code-block">akka.javasdk {
+  agent {
+    <span class="cmt"># Which provider agents default to</span>
+    model-provider = <span class="str">"akka.javasdk.agent.openai"</span>
+
+    openai {
+      model-name  = <span class="str">"gpt-4o-mini"</span>
+      temperature = 0.2
+      <span class="cmt"># api-key = ${?OPENAI_API_KEY}   (inherited default)</span>
+    }
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>SDK ships default openai/anthropic/gemini configs</li>
+        <li>Override only what you need &mdash; model name, temperature, base URL</li>
+        <li><span class="accent">api-key = ${?OPENAI_API_KEY}</span> is already in the reference config</li>
+        <li>Fail-fast on startup if the key is missing</li>
+        <li>Individual agents can override via <span class="accent">.model(ModelProvider.openAi(...))</span></li>
+      </ul>
+    </div>
+  </div>
+</section>

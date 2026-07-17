@@ -37,6 +37,7 @@ PRESENTATIONS = [
 TRAININGS = [
     {"dir": "training/akka-sdk-fundamentals-3h", "link": "training/akka-sdk-fundamentals-3h/generated/overview/"},
     {"dir": "training/akka-sdk-workflows-day",   "link": "training/akka-sdk-workflows-day/generated/overview/"},
+    {"dir": "training/akka-sdk-mastery-5d",      "link": "training/akka-sdk-mastery-5d/generated/overview/"},
 ]
 
 # Standalone competitive briefs (single HTML files at the repo root).

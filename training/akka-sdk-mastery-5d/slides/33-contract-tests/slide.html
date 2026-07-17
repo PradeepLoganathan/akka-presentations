@@ -1,0 +1,13 @@
+<section id="slide-33" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Contract tests: <span class="accent">events are forever</span>.</h2>
+    <p>An event journaled today gets replayed by code you'll write in 2028. Break the schema, break the past.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Schema tests</div><p>Fixture files of historical event JSON. Assert the new record types can deserialize each one.</p></div>
+    <div class="locus"><div class="locus-title">Replay tests</div><p>Given a corpus of events, assert the current state matches the expected snapshot.</p></div>
+    <div class="locus"><div class="locus-title">Migration tests</div><p>When you must break, migrate: old event &rarr; new event via a translator. Test both sides.</p></div>
+  </div>
+  <div class="callout">Rule: adding a field is safe (with a default). Renaming, removing, changing type &mdash; assume it will break replay, and test accordingly.</div>
+</section>

@@ -1,0 +1,13 @@
+<section id="slide-57" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Observability</div>
+    <h2>Distributed tracing: <span class="accent">one trace, whole saga</span>.</h2>
+    <p>An order placement spans endpoint &rarr; workflow &rarr; multiple entities &rarr; view. All in one trace, without you instrumenting anything.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Automatic spans</div><p>Every component invocation is a span. Parent-child from the HTTP request down.</p></div>
+    <div class="locus"><div class="locus-title">Trace context</div><p>Propagated automatically through workflow steps, timers, consumer subscriptions.</p></div>
+    <div class="locus"><div class="locus-title">Custom spans</div><p>Inject <span class="accent">Span</span> or <span class="accent">Tracer</span> into your components for domain-level instrumentation.</p></div>
+  </div>
+  <div class="callout">Ship traces to Tempo, Jaeger, Honeycomb, Datadog &mdash; any OTLP-compatible backend. Config-only.</div>
+</section>

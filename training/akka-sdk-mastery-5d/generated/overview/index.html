@@ -1,0 +1,2375 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akka SDK Mastery &mdash; Akka</title>
+<link rel="icon" href="https://akka.io/favicon.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --yellow: #F5C518;
+  --black: #000;
+  --panel: #101116;
+  --line: #27282f;
+  --muted: #8b8d98;
+  --white: #fff;
+  --green: #3fb950;
+  --blue: #7EC8E3;
+  --red: #ff5f57;
+  --pad: 96px;
+}
+@media (max-width: 900px) { :root { --pad: 28px; } }
+html { background: var(--black); scroll-behavior: smooth; }
+body {
+  font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  max-width: 1536px;
+  margin: 0 auto;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+.deck-slide {
+  min-height: 100vh;
+  padding: 88px var(--pad);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--black);
+}
+.deck-slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+.deck-slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(0,0,0,0.95), rgba(0,0,0,0.78) 55%, rgba(0,0,0,0.98));
+  pointer-events: none;
+}
+.deck-slide > * { position: relative; z-index: 1; }
+.accent { color: var(--yellow); }
+.brand-mark {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 7px;
+  color: var(--white);
+  margin-bottom: 44px;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards .15s;
+}
+.kicker, .eyebrow {
+  color: var(--yellow);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.kicker::before, .eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 30px;
+  height: 2px;
+  background: var(--yellow);
+  margin-right: 12px;
+  vertical-align: middle;
+}
+.title-slide { text-align: center; align-items: center; }
+.title-slide::after { background: radial-gradient(ellipse at 50% 45%, transparent 18%, rgba(0,0,0,.88) 72%); }
+.title-headline {
+  font-size: 84px;
+  line-height: .98;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  max-width: 1080px;
+  margin-top: 22px;
+  opacity: 0;
+  animation: fadeUp .6s ease forwards .35s;
+}
+.title-sub {
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 14px;
+  letter-spacing: 4px;
+  font-weight: 700;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards .55s;
+}
+.rule {
+  width: 58px;
+  height: 3px;
+  background: var(--yellow);
+  margin: 38px auto;
+  opacity: 0;
+  animation: fadeUp .45s ease forwards .7s;
+}
+.title-copy {
+  color: #d7d7dc;
+  font-size: 23px;
+  line-height: 1.35;
+  max-width: 790px;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards .85s;
+}
+.session-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 34px;
+  opacity: 0;
+  animation: fadeUp .55s ease forwards 1s;
+}
+.session-meta span, .proof-strip span, .chip-grid span {
+  border: 1px solid rgba(245,197,24,.28);
+  background: rgba(245,197,24,.06);
+  color: #ece2ad;
+  border-radius: 999px;
+  padding: 8px 13px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .4px;
+}
+.slide-head { max-width: 1050px; margin-bottom: 58px; }
+.slide-head.compact { margin-bottom: 38px; }
+.slide-head h2 {
+  font-size: 58px;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  margin-top: 18px;
+  font-weight: 800;
+}
+.slide-head p {
+  margin-top: 18px;
+  max-width: 860px;
+  color: #b9bbc4;
+  font-size: 21px;
+  line-height: 1.42;
+}
+.three-stat, .compare-grid, .output-grid, .loci-grid, .question-grid, .phase-row {
+  display: grid;
+  gap: 18px;
+}
+.three-stat { grid-template-columns: repeat(3, 1fr); }
+.stat-block, .compare-col, .output-col, .locus, .phase, .question, .matrix-card, .rd-boundary {
+  background: rgba(16,17,22,.88);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--yellow);
+  padding: 26px;
+}
+.stat-num, .phase-num {
+  color: var(--yellow);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 2px;
+  margin-bottom: 18px;
+}
+.stat-title, .compare-label, .output-kicker, .locus-title {
+  color: var(--yellow);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.stat-text, .compare-col li, .locus p, .phase p, .question {
+  color: #d2d3da;
+  font-size: 18px;
+  line-height: 1.38;
+}
+.whiteboard-prompt, .bottom-line {
+  margin-top: 30px;
+  color: var(--white);
+  border-top: 1px solid rgba(255,255,255,.12);
+  padding-top: 22px;
+  font-size: 22px;
+  font-weight: 700;
+}
+.compare-grid { grid-template-columns: repeat(2, 1fr); }
+.compare-col { border-left-color: #777; }
+.compare-col.active { border-left-color: var(--yellow); }
+.compare-col.blue { border-left-color: var(--blue); }
+.compare-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.compare-col li::before { content: '-'; color: var(--yellow); margin-right: 10px; }
+.compare-col h3, .output-col h3, .phase h3 {
+  font-size: 28px;
+  margin-bottom: 18px;
+  letter-spacing: -0.02em;
+}
+.loop-diagram, .convergence-diagram, .two-lane, .stack-diagram {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+}
+.loop-node, .lane, .conv-box, .conv-result, .stack-layer, .stack-output {
+  border: 1px solid var(--line);
+  background: rgba(16,17,22,.9);
+  padding: 28px;
+}
+.loop-node { flex: 1; border-top: 3px solid var(--yellow); }
+.loop-node span { display: block; font-size: 34px; font-weight: 800; margin-bottom: 14px; letter-spacing: -0.02em; }
+.loop-node small { color: #c9cad2; font-size: 18px; line-height: 1.35; }
+.loop-arrow, .conv-plus, .conv-arrow {
+  align-self: center;
+  color: var(--yellow);
+  font-size: 44px;
+  font-weight: 800;
+}
+.proof-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 34px; }
+.two-lane { align-items: center; }
+.lane { flex: 1; min-height: 300px; }
+.lane.functional { border-left: 3px solid var(--green); }
+.lane.governance { border-left: 3px solid var(--blue); }
+.lane-title { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+.lane-owner { color: var(--muted); text-transform: uppercase; letter-spacing: 2px; font-size: 11px; font-weight: 800; margin-bottom: 22px; }
+.lane ul { list-style: none; display: grid; gap: 9px; color: #d6d7de; font-size: 18px; }
+.specify-core {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  flex: 0 0 auto;
+}
+.matrix-card { padding: 0; overflow: hidden; }
+.matrix-row { display: grid; grid-template-columns: 260px 1fr; border-top: 1px solid var(--line); }
+.matrix-row:first-child { border-top: 0; }
+.matrix-row span { padding: 15px 20px; color: #d4d5dc; font-size: 17px; line-height: 1.35; }
+.matrix-row span:first-child { color: var(--white); font-weight: 800; border-right: 1px solid var(--line); }
+.matrix-head { background: rgba(245,197,24,.08); }
+.matrix-head span { color: var(--yellow) !important; text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px; }
+.output-grid { grid-template-columns: repeat(2, 1fr); }
+.output-col:first-child { border-left-color: var(--green); }
+.output-col:last-child { border-left-color: var(--blue); }
+.chip-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.convergence-diagram { align-items: center; margin-top: 8px; }
+.conv-box { flex: 1; font-size: 24px; font-weight: 800; min-height: 140px; display: flex; align-items: center; justify-content: center; text-align: center; }
+.conv-result { flex: 1.1; font-size: 32px; font-weight: 900; color: var(--black); background: var(--yellow); display: flex; align-items: center; justify-content: center; text-align: center; }
+.rd-boundary { margin-top: 32px; border-left-color: var(--red); color: #dadbe2; font-size: 19px; line-height: 1.45; }
+.rd-boundary.subtle { border-left-color: var(--yellow); }
+.loci-grid { grid-template-columns: repeat(3, 1fr); }
+.locus { min-height: 170px; }
+.stack-diagram { flex-direction: column; max-width: 920px; }
+.stack-layer { font-size: 27px; font-weight: 850; }
+.stack-layer small { display: block; margin-top: 9px; color: #b9bbc4; font-size: 17px; font-weight: 500; line-height: 1.35; }
+.stack-layer.corporate { border-left: 4px solid var(--red); margin-left: 0; }
+.stack-layer.domain { border-left: 4px solid var(--blue); margin-left: 80px; }
+.stack-layer.project { border-left: 4px solid var(--green); margin-left: 160px; }
+.stack-output { margin-left: 240px; background: var(--yellow); color: var(--black); font-size: 26px; font-weight: 900; }
+.phase-row { grid-template-columns: repeat(3, 1fr); }
+.phase { min-height: 250px; }
+.question-grid { grid-template-columns: repeat(2, 1fr); }
+.question { border-left-color: var(--yellow); min-height: 125px; display: flex; gap: 18px; align-items: flex-start; }
+.question span { color: var(--yellow); font-size: 18px; font-weight: 900; letter-spacing: 2px; }
+@media (max-width: 1000px) {
+  .title-headline { font-size: 54px; }
+  .slide-head h2 { font-size: 40px; }
+  .three-stat, .compare-grid, .output-grid, .loci-grid, .phase-row, .question-grid { grid-template-columns: 1fr; }
+  .two-lane, .convergence-diagram, .loop-diagram { flex-direction: column; }
+  .loop-arrow, .conv-plus, .conv-arrow { transform: rotate(90deg); align-self: center; }
+  .specify-core { width: 112px; height: 112px; }
+  .matrix-row { grid-template-columns: 1fr; }
+  .matrix-row span:first-child { border-right: 0; border-bottom: 1px solid var(--line); }
+  .stack-layer, .stack-output { margin-left: 0 !important; }
+}
+
+/* Consolidated Akka move slide */
+.move-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.move-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.move-card {
+  background: rgba(16,17,22,.9);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--yellow);
+  padding: 24px;
+  min-height: 178px;
+}
+.move-card.functional { border-left-color: var(--green); }
+.move-card.governance { border-left-color: var(--blue); }
+.move-kicker {
+  color: var(--yellow);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+  font-weight: 850;
+  margin-bottom: 12px;
+}
+.move-card h3 {
+  font-size: 27px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.move-card p {
+  color: #c9cad2;
+  font-size: 17px;
+  line-height: 1.38;
+}
+.move-specify,
+.move-converge {
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  border: 1px solid rgba(245,197,24,.38);
+}
+.move-specify {
+  background: var(--yellow);
+  color: var(--black);
+  padding: 18px 20px;
+  font-size: 26px;
+}
+.move-converge {
+  background: rgba(245,197,24,.08);
+  color: var(--white);
+  padding: 20px 24px;
+  font-size: 25px;
+}
+@media (max-width: 1000px) {
+  .move-row { grid-template-columns: 1fr; }
+}
+
+/* Training deck additions */
+.code-block {
+  background: rgba(16,17,22,.92);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--yellow);
+  padding: 20px 24px;
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #e6e7ec;
+  overflow-x: auto;
+  white-space: pre;
+  border-radius: 2px;
+}
+.code-block .cmt { color: #8b8d98; font-style: italic; }
+.code-block .kw  { color: var(--yellow); }
+.code-block .str { color: var(--blue); }
+.code-block .anno { color: #b0e88a; }
+.file-tag {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.two-code { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 1000px) { .two-code { grid-template-columns: 1fr; } }
+.bullets { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 6px; }
+.bullets li { color: #d2d3da; font-size: 20px; line-height: 1.4; padding-left: 22px; position: relative; }
+.bullets li::before { content: '>'; color: var(--yellow); font-weight: 800; position: absolute; left: 0; top: 0; }
+.callout {
+  margin-top: 26px;
+  padding: 18px 22px;
+  border: 1px solid rgba(126,200,227,.35);
+  background: rgba(126,200,227,.06);
+  color: #cfe6f4;
+  font-size: 17px;
+  line-height: 1.45;
+  border-left: 3px solid var(--blue);
+}
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.pill-row span { border: 1px solid rgba(245,197,24,.28); background: rgba(245,197,24,.06); color: #ece2ad; border-radius: 999px; padding: 8px 13px; font-size: 12px; font-weight: 700; letter-spacing: .4px; }
+.lifecycle { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; align-items: stretch; margin-top: 8px; }
+.lifecycle-step { background: rgba(16,17,22,.9); border: 1px solid var(--line); border-top: 3px solid var(--yellow); padding: 18px 16px; }
+.lifecycle-step b { display: block; color: var(--yellow); font-size: 11px; letter-spacing: 2px; margin-bottom: 8px; }
+.lifecycle-step small { color: #cfd1d8; font-size: 14px; line-height: 1.35; }
+@media (max-width: 1000px) { .lifecycle { grid-template-columns: 1fr 1fr; } }
+
+
+
+/* 00-title */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 01-where-we-are */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 02-sample-repo-state */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 03-days-3-5-map */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 04-day3-opener */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 05-why-agents */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 06-what-is-an-agent */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 07-agent-lifecycle */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 08-model-providers */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 09-configuration */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 10-support-agent-intro */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 11-agent-effect-builder */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 12-system-message */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 13-function-tool */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 14-tools-walkthrough */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 15-memory-providers */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 16-limited-window */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 17-sessions */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 18-structured-responses */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 19-agent-errors */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 20-multi-agent */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 21-mcp-what */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 22-mcp-server-code */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 23-mcp-clients */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 24-handson-agents */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 25-day4-opener */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 26-testing-pyramid */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 27-workflow-testkit-deep */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 28-entity-testkit */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 29-consumer-testing */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 30-agent-testing */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 31-integration-tests */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 32-chaos-testing */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 33-contract-tests */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 34-load-testing */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 35-idempotency-tests */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 36-test-data */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 37-what-not-to-test */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 38-staging-vs-prod */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 39-handson-testing */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 40-day5-opener */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 41-deploy-topology */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 42-akka-cli */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 43-container-image */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 44-first-deploy */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 45-deploy-checklist */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 46-secrets */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 47-rolling-upgrades */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 48-autoscale */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 49-multiregion-why */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 50-multiregion-topology */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 51-multiregion-config */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 52-multiregion-entities */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 53-multiregion-workflows */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 54-multiregion-failover */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 55-observability-metrics */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 56-prometheus-grafana */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 57-tracing */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 58-alerting */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 59-runbooks */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 60-runbook-workflow-stuck */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 61-runbook-entity-partition */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 62-runbook-agent-quota */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 63-capacity-planning */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 64-cost-management */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 65-handson-deploy */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 66-what-next */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 67-resources */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 68-thanks */
+/* Slide-specific overrides intentionally minimal. */
+
+</style>
+</head>
+<body>
+<section id="slide-00" class="deck-slide title-slide" data-view>
+  <div class="brand-mark" aria-label="Akka">AKKA</div>
+  <div class="kicker">Developer training &middot; days 3&ndash;5</div>
+  <h1 class="title-headline"><span class="accent">Akka SDK Mastery</span></h1>
+  <div class="title-sub">AGENTS &middot; MCP &middot; TESTING &middot; DEPLOY &middot; MULTI-REGION</div>
+  <div class="rule"></div>
+  <p class="title-copy">Days 1&ndash;2 turned the sample into a durable saga with an audit trail. Days 3&ndash;5 make it <span class="accent">agentic, tested, and shipped</span>.</p>
+  <div class="session-meta">
+    <span>Sample: akka-workshop</span>
+    <span>Branch: agents</span>
+    <span>Java 21 &middot; Akka SDK 3.4</span>
+  </div>
+</section>
+
+
+<section id="slide-01" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Where we've been</div>
+    <h2>Two days in, <span class="accent">six components</span>.</h2>
+    <p>A quick map for anyone joining fresh. Days 1&ndash;2 covered these; today we build on them.</p>
+  </div>
+  <div class="three-stat">
+    <div class="stat-block"><div class="stat-num">Day 1</div><div class="stat-title">Fundamentals</div><div class="stat-text">Entities (value + event-sourced), views, endpoints. Sample built the Customer aggregate.</div></div>
+    <div class="stat-block"><div class="stat-num">Day 2 &middot; AM</div><div class="stat-title">Workflows</div><div class="stat-text">Second aggregate (Order), OrderWorkflow with compensation, abandon-cart timer.</div></div>
+    <div class="stat-block"><div class="stat-num">Day 2 &middot; PM</div><div class="stat-title">Consumers</div><div class="stat-text">CustomerAuditConsumer, AuditLogEntity. Reactive processing that isn't a view.</div></div>
+  </div>
+  <div class="callout">If any of that is fuzzy, ask &mdash; today's material builds on it directly.</div>
+</section>
+
+
+<section id="slide-02" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Sample repo state</div>
+    <h2>Where we <span class="accent">check out from</span> today.</h2>
+    <p>Four branches, each a teaching checkpoint. Today's work happens on <span class="accent">agents</span>.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Branch progression</div>
+      <pre class="code-block">git clone https://github.com/PradeepLoganathan/akka-workshop.git
+cd akka-workshop
+git branch -a
+
+  main       <span class="cmt">// Customer + Preferences (day 1)</span>
+  workflows  <span class="cmt">// + Order aggregate, workflow, timer (day 2 AM)</span>
+  consumers  <span class="cmt">// + audit consumer + AuditLogEntity (day 2 PM)</span>
+  agents     <span class="cmt">// + SupportAgent + CustomerMcpServer (today)</span>
+
+git checkout agents
+export OPENAI_API_KEY=sk-...
+mvn compile exec:java</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">git diff main agents</span> shows the whole three-day journey</li>
+        <li>Each branch compiles + runs on its own</li>
+        <li>Bug fixes on <span class="accent">main</span> merge forward</li>
+        <li>OPENAI_API_KEY is only needed on <span class="accent">agents</span></li>
+        <li>Day 5 deploys the same code &mdash; unchanged</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-03" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">The plan for the rest of the week</div>
+    <h2>Three days, <span class="accent">three shifts</span>.</h2>
+    <p>Each day ends with a hands-on lab. Assessments interleaved. Bring your laptop.</p>
+  </div>
+  <div class="three-stat">
+    <div class="stat-block"><div class="stat-num">Day 3</div><div class="stat-title">Agentic</div><div class="stat-text">Wire an LLM in as a first-class component. Tools, memory, MCP.</div></div>
+    <div class="stat-block"><div class="stat-num">Day 4</div><div class="stat-title">Tested</div><div class="stat-text">Every layer: TestKits, integration, chaos, contracts, load.</div></div>
+    <div class="stat-block"><div class="stat-num">Day 5</div><div class="stat-title">Shipped</div><div class="stat-text">Deploy, multi-region, observability, runbooks, cost.</div></div>
+  </div>
+  <div class="callout">By Friday you'll have deployed the sample to <span class="accent">your own Akka account</span>, with tracing, and a runbook.</div>
+</section>
+
+
+<section id="slide-04" class="deck-slide title-slide" data-view>
+  <div class="brand-mark" aria-label="Akka">AKKA</div>
+  <div class="kicker">Day 3</div>
+  <h1 class="title-headline"><span class="accent">Agentic</span></h1>
+  <div class="title-sub">AGENTS, TOOLS, MEMORY, MCP</div>
+  <div class="rule"></div>
+  <p class="title-copy">Add an LLM to the mix &mdash; not as a wrapper, as a component that participates in the same runtime.</p>
+  <div class="session-meta">
+    <span>Sample branch: agents</span>
+    <span>OpenAI gpt-4o-mini</span>
+    <span>Hands-on lab: 90 min</span>
+  </div>
+</section>
+
+
+<section id="slide-05" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Why agents belong here</div>
+    <h2>An agent is a <span class="accent">stateful, addressable, reactive</span> LLM caller.</h2>
+    <p>That's a mouthful. Look at each word &mdash; you already have infrastructure for it.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Stateful</div><p>Session memory persists across turns. Same runtime the entities use.</p></div>
+    <div class="locus"><div class="locus-title">Addressable</div><p>Session id routes you to the same agent instance. Same sharding as entities.</p></div>
+    <div class="locus"><div class="locus-title">Reactive</div><p>Agents can be called from workflows, consumers, endpoints &mdash; anywhere a component can.</p></div>
+  </div>
+  <div class="callout">You don't bolt an LLM onto Akka. You <span class="accent">host</span> it as a component and get the whole runtime for free.</div>
+</section>
+
+
+<section id="slide-06" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>An Akka agent, <span class="accent">anatomically</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Minimum viable agent</div>
+      <pre class="code-block"><span class="anno">@ComponentId</span>(<span class="str">"support-agent"</span>)
+<span class="kw">public class</span> SupportAgent <span class="kw">extends</span> Agent {
+
+  <span class="kw">public</span> Effect&lt;String&gt; ask(String question) {
+    <span class="kw">return</span> effects()
+        .systemMessage(<span class="str">"You are a helpful assistant."</span>)
+        .userMessage(question)
+        .thenReply();
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">extends Agent</span> &mdash; component base class</li>
+        <li><span class="accent">@ComponentId</span> gives it identity for storage &amp; routing</li>
+        <li><span class="accent">effects()</span> builds an LLM interaction description</li>
+        <li><span class="accent">systemMessage / userMessage</span> mirror the OpenAI chat contract</li>
+        <li><span class="accent">.thenReply()</span> hands the model's answer back to the caller</li>
+      </ul>
+    </div>
+  </div>
+  <div class="callout">No SDK setup, no HTTP wiring, no client library. The runtime handles model calls the same way it handles persistence.</div>
+</section>
+
+
+<section id="slide-07" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>What actually happens when you <span class="accent">.thenReply()</span>?</h2>
+    <p>The runtime turns your effect into a bounded loop with tool calls, memory reads, and error handling.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>1</b><small>Load session memory (if enabled)</small></div>
+    <div class="lifecycle-step"><b>2</b><small>Build chat: system + memory + user</small></div>
+    <div class="lifecycle-step"><b>3</b><small>Call the model provider (OpenAI)</small></div>
+    <div class="lifecycle-step"><b>4</b><small>If tool calls: execute, feed results, repeat</small></div>
+    <div class="lifecycle-step"><b>5</b><small>Persist new turn to memory</small></div>
+    <div class="lifecycle-step"><b>6</b><small>Return the final response</small></div>
+  </div>
+  <div class="callout">Step 4 loops up to <span class="accent">max-tool-call-steps</span> (default 100). Beyond that the runtime stops even if the model wants more.</div>
+</section>
+
+
+<section id="slide-08" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>Model providers &mdash; <span class="accent">first-class in the SDK</span>.</h2>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Provider</span><span>Where it fits</span></div>
+    <div class="matrix-row"><span>OpenAI</span><span>Default in the sample. Strong tool-use, wide model choice, well-known API.</span></div>
+    <div class="matrix-row"><span>Anthropic</span><span>Claude family. Excellent for long-context and instruction-following.</span></div>
+    <div class="matrix-row"><span>Google AI Gemini</span><span>Multimodal (image / audio) if you need it.</span></div>
+    <div class="matrix-row"><span>HuggingFace</span><span>Any hosted model with an HF endpoint.</span></div>
+    <div class="matrix-row"><span>Ollama / LocalAI</span><span>Air-gapped or dev-loop with a local model. No cloud API key.</span></div>
+  </div>
+  <div class="callout">Different agents in the same service can use different providers. Config-driven &mdash; no code change to switch models.</div>
+</section>
+
+
+<section id="slide-09" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>All in <span class="accent">application.conf</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">src/main/resources/application.conf</div>
+      <pre class="code-block">akka.javasdk {
+  agent {
+    <span class="cmt"># Which provider agents default to</span>
+    model-provider = <span class="str">"akka.javasdk.agent.openai"</span>
+
+    openai {
+      model-name  = <span class="str">"gpt-4o-mini"</span>
+      temperature = 0.2
+      <span class="cmt"># api-key = ${?OPENAI_API_KEY}   (inherited default)</span>
+    }
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>SDK ships default openai/anthropic/gemini configs</li>
+        <li>Override only what you need &mdash; model name, temperature, base URL</li>
+        <li><span class="accent">api-key = ${?OPENAI_API_KEY}</span> is already in the reference config</li>
+        <li>Fail-fast on startup if the key is missing</li>
+        <li>Individual agents can override via <span class="accent">.model(ModelProvider.openAi(...))</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-10" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">The sample</div>
+    <h2>SupportAgent &mdash; the real one.</h2>
+    <p>A customer-support agent that answers "where's my order?" using the sample's data as tools.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Job</div><p>Answer questions about a customer's profile, orders, and audit history.</p></div>
+    <div class="locus"><div class="locus-title">Tools</div><p>Four function tools bound to entity + view queries.</p></div>
+    <div class="locus"><div class="locus-title">Memory</div><p>Last 10 turns, keyed by sessionId. Multi-turn context works.</p></div>
+  </div>
+  <div class="callout">The system prompt is the guardrail: "Never invent ids. Use the provided tools. If a tool returns nothing, say so."</div>
+</section>
+
+
+<section id="slide-11" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>The <span class="accent">Effect.Builder</span>, one call at a time.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">SupportAgent.ask()</div>
+      <pre class="code-block"><span class="kw">public</span> Effect&lt;String&gt; ask(String question) {
+  <span class="kw">return</span> effects()
+      .memory(MemoryProvider.limitedWindow().readLast(10))
+      .systemMessage(SYSTEM_PROMPT)
+      .tools(<span class="kw">this</span>)              <span class="cmt">// scan @FunctionTool methods on this class</span>
+      .userMessage(question)
+      .thenReply();
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">.memory(...)</span> &mdash; MemoryProvider (LimitedWindow / Disabled / Custom)</li>
+        <li><span class="accent">.systemMessage(...)</span> &mdash; guardrails, role, constraints</li>
+        <li><span class="accent">.tools(this, ...)</span> &mdash; objects or classes hosting <span class="accent">@FunctionTool</span> methods</li>
+        <li><span class="accent">.userMessage(...)</span> &mdash; the actual question</li>
+        <li><span class="accent">.thenReply()</span> &mdash; return the model's text response</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-12" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>The system message is the <span class="accent">contract</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">SupportAgent.SYSTEM_PROMPT</div>
+      <pre class="code-block">You are Akka Workshop Support &mdash; a customer-support
+assistant for the sample e-commerce service in the
+akka-workshop repository.
+
+Rules:
+- Never invent customer ids or order ids. Use the values
+  the user provides, verbatim.
+- Before answering, use the provided tools to look up real
+  data. Do not guess.
+- If a tool returns no data, say so plainly; do not fabricate.
+- Keep answers short and factual.
+- You have access to customer profiles, order lists,
+  individual order details, and audit history.</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Persona + boundaries + escalation policy in plain text</li>
+        <li>The model reads this before every question &mdash; even follow-ups</li>
+        <li>Prompt injection defence lives here first</li>
+        <li>Iterate this file; it's the highest-leverage line of code</li>
+        <li>PromptTemplate + template-id for i18n or per-tenant prompts</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-13" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2><span class="accent">@FunctionTool</span> &mdash; a method the model can call.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Anatomy of a tool method</div>
+      <pre class="code-block"><span class="anno">@FunctionTool</span>(description =
+    <span class="str">"Look up a customer's profile by customerId. "</span> +
+    <span class="str">"Returns first name, last name, deleted flag."</span>)
+<span class="kw">public</span> String getCustomer(
+    <span class="anno">@Description</span>(<span class="str">"The customer id, e.g. cust-001"</span>)
+    String customerId) {
+  <span class="kw">var</span> s = client.forEventSourcedEntity(customerId)
+      .method(CustomerEntity::get).invoke();
+  <span class="kw">if</span> (s.customerId() == <span class="kw">null</span>)
+    <span class="kw">return</span> <span class="str">"No customer found for "</span> + customerId;
+  <span class="kw">return</span> String.format(
+      <span class="str">"customerId=%s firstName=%s deleted=%s"</span>, ...);
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">description</span> is what the LLM reads to pick a tool</li>
+        <li><span class="accent">@Description</span> on params helps the LLM fill them right</li>
+        <li>Return <span class="accent">String</span> &mdash; that's what the model sees</li>
+        <li>Format the return so the model can quote it later</li>
+        <li>"No data" is a valid answer; never fabricate</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-14" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>SupportAgent's <span class="accent">four tools</span>.</h2>
+    <p>Each one hits a component we built on previous days. The LLM chooses which to call.</p>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Tool</span><span>What it queries</span></div>
+    <div class="matrix-row"><span>getCustomer(id)</span><span>CustomerEntity.get() &mdash; profile summary</span></div>
+    <div class="matrix-row"><span>listOrdersForCustomer(id)</span><span>OrdersView.byCustomer &mdash; all orders + statuses</span></div>
+    <div class="matrix-row"><span>getOrder(id)</span><span>OrderEntity.get() &mdash; single order full detail</span></div>
+    <div class="matrix-row"><span>getAudit(id)</span><span>AuditLogEntity.get() &mdash; account change history</span></div>
+  </div>
+  <div class="callout">The LLM orchestrates tools without your code deciding order. Give clear descriptions and it usually does the right thing.</div>
+</section>
+
+
+<section id="slide-15" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>Memory: <span class="accent">three built-in strategies</span>.</h2>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Provider</span><span>Behaviour</span></div>
+    <div class="matrix-row"><span>Disabled</span><span>No history. Each turn is a cold start.</span></div>
+    <div class="matrix-row"><span>LimitedWindow</span><span>Bounded history &mdash; last N messages or K bytes. Sample uses this.</span></div>
+    <div class="matrix-row"><span>FromConfig</span><span>Reads memory settings from application.conf. Central overrides.</span></div>
+    <div class="matrix-row"><span>Custom</span><span>Plug in your own SessionMemory implementation. Redis, external store, whatever.</span></div>
+  </div>
+  <div class="callout">Memory is persisted by the runtime &mdash; the same cluster mechanism as entities. No external cache needed.</div>
+</section>
+
+
+<section id="slide-16" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>LimitedWindow: <span class="accent">bounded and observable</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Common shapes</div>
+      <pre class="code-block"><span class="cmt">// last N messages, read and write</span>
+MemoryProvider.limitedWindow().readLast(10);
+
+<span class="cmt">// bounded by byte size (reference.conf default)</span>
+<span class="cmt">// akka.javasdk.agent.memory.limited-window.max-size = 510 KiB</span>
+
+<span class="cmt">// read only (agent sees history, doesn't record its turn)</span>
+MemoryProvider.limitedWindow().readOnly();
+
+<span class="cmt">// write only (record but don't feed back)</span>
+MemoryProvider.limitedWindow().writeOnly();
+
+<span class="cmt">// turn it off entirely</span>
+MemoryProvider.none();</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>FIFO eviction &mdash; oldest turn drops first</li>
+        <li>510 KiB default max &mdash; safe for cluster routing</li>
+        <li>readOnly for a passive observer agent</li>
+        <li>writeOnly for a "log-only" mode during rollout</li>
+        <li>Memory is <span class="accent">per session id</span>, shared across agents in the same session</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-17" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>Session id is the <span class="accent">router key</span>.</h2>
+    <p>Same session id &rarr; same memory. Different sessions &rarr; isolated conversations.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">SupportEndpoint</div>
+      <pre class="code-block"><span class="anno">@Post</span>(<span class="str">"/support/{sessionId}"</span>)
+<span class="kw">public</span> Answer ask(String sessionId, Question req) {
+  String answer = client.forAgent()
+      .inSession(sessionId)
+      .method(SupportAgent::ask)
+      .invoke(req.question());
+  <span class="kw">return new</span> Answer(sessionId, answer);
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Caller chooses the session id &mdash; per-user, per-ticket, per-thread</li>
+        <li><span class="accent">forAgent().inSession(id)</span> is how ComponentClient routes</li>
+        <li>Memory is scoped to the session &mdash; not the agent</li>
+        <li>Two different agents in the same session share memory</li>
+        <li>Sessions never explicitly end &mdash; memory bounds them naturally</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-18" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>Structured responses: <span class="accent">responseAs</span> &amp; <span class="accent">map</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Parsing model output</div>
+      <pre class="code-block"><span class="kw">public record</span> Summary(String status, String nextAction) {}
+
+<span class="kw">public</span> Effect&lt;Summary&gt; summarise(String orderId) {
+  <span class="kw">return</span> effects()
+      .systemMessage(<span class="str">"Return JSON matching the Summary schema."</span>)
+      .tools(<span class="kw">this</span>)
+      .userMessage(<span class="str">"Summarise order "</span> + orderId)
+      .responseAs(Summary.<span class="kw">class</span>)
+      .thenReply();
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">.responseAs(Type.class)</span> &mdash; deserialises JSON to a record</li>
+        <li><span class="accent">.map(fn)</span> &mdash; transform the raw string</li>
+        <li>Use for tickets, decisions, workflow inputs</li>
+        <li>The runtime handles parse errors as <span class="accent">JsonParsingException</span></li>
+        <li>Prompt the schema explicitly &mdash; the model can't infer field names</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-19" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>Failures the runtime <span class="accent">catches for you</span>.</h2>
+    <p>Agent effects have a first-class error taxonomy. Recover per case, don't blanket-catch.</p>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Exception</span><span>When</span></div>
+    <div class="matrix-row"><span>RateLimitException</span><span>Provider throttled you. Back off, retry, or degrade.</span></div>
+    <div class="matrix-row"><span>ModelTimeoutException</span><span>Model didn't respond in time. Consider a shorter prompt.</span></div>
+    <div class="matrix-row"><span>ToolCallLimitReachedException</span><span>Model tried to call tools too many times. Simplify or add a tool.</span></div>
+    <div class="matrix-row"><span>ToolCallExecutionException</span><span>Your tool threw. Fix the tool or return a plain error string.</span></div>
+    <div class="matrix-row"><span>JsonParsingException</span><span>Structured response didn't parse. Tighten the schema prompt.</span></div>
+    <div class="matrix-row"><span>InternalServerException</span><span>Provider 5xx. Retry with backoff.</span></div>
+  </div>
+  <div class="callout">Use <span class="accent">.onFailure(Function&lt;Throwable, String&gt;)</span> to substitute a graceful response per exception type.</div>
+</section>
+
+
+<section id="slide-20" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>Multi-agent systems, <span class="accent">without a framework</span>.</h2>
+    <p>Multiple agents in the same service, same runtime. Sharing sessions if they should, isolated if they shouldn't.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Same session</div><p>Agents share memory. A "triage" agent hands off to a "billing" agent, both see the transcript.</p></div>
+    <div class="locus"><div class="locus-title">Different sessions</div><p>Isolated. Useful for tenant separation or batch workers.</p></div>
+    <div class="locus"><div class="locus-title">AgentRegistry</div><p><span class="accent">@AgentDescription</span> makes agents discoverable so a supervisor agent can list &amp; delegate.</p></div>
+  </div>
+  <div class="callout">Multi-agent lives in the same Java service &mdash; no bus, no coordinator, no separate deployment.</div>
+</section>
+
+
+<section id="slide-21" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">MCP</div>
+    <h2>MCP: <span class="accent">tools your agents didn't write</span>.</h2>
+    <p>Model Context Protocol lets external LLM clients (Claude Desktop, Cursor, other agents) call tools you expose over HTTP.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">You expose</div><p>Tools, resources, prompts &mdash; via annotations on plain Java methods.</p></div>
+    <div class="locus"><div class="locus-title">Clients call</div><p>JSON-RPC over HTTP. Streamable. Discoverable via tools/list.</p></div>
+    <div class="locus"><div class="locus-title">Auth</div><p>Same <span class="accent">@Acl</span> annotations as any endpoint. Same identity model.</p></div>
+  </div>
+  <div class="callout">Two audiences for the same domain: your internal agent uses <span class="accent">@FunctionTool</span>; external clients use <span class="accent">@McpTool</span>.</div>
+</section>
+
+
+<section id="slide-22" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">MCP</div>
+    <h2>CustomerMcpServer, <span class="accent">annotated</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">mcp/CustomerMcpServer.java</div>
+      <pre class="code-block"><span class="anno">@McpEndpoint</span>(
+    path = <span class="str">"/mcp"</span>,
+    serverName = <span class="str">"akka-workshop-customer"</span>,
+    serverVersion = <span class="str">"0.1.0"</span>,
+    instructions = <span class="str">"Read-only customer and order lookup tools."</span>)
+<span class="anno">@Acl</span>(allow = <span class="anno">@Acl</span>.Matcher(principal = Acl.Principal.INTERNET))
+<span class="kw">public class</span> CustomerMcpServer {
+
+  <span class="anno">@McpTool</span>(description =
+      <span class="str">"List all orders for a given customer."</span>)
+  <span class="kw">public</span> String listOrdersForCustomer(
+      <span class="anno">@Description</span>(<span class="str">"Customer id"</span>) String customerId) {
+    ...
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">@McpEndpoint</span> declares the MCP server at a path</li>
+        <li><span class="accent">serverName / version</span> returned in the initialize handshake</li>
+        <li><span class="accent">@McpTool</span> methods must return String</li>
+        <li>JSON schema is <span class="accent">auto-derived</span> from Java params</li>
+        <li><span class="accent">@Description</span> on params gives the LLM context</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-23" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">MCP</div>
+    <h2>Wiring a real client &mdash; <span class="accent">Claude Desktop</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">~/.config/claude/claude_desktop_config.json</div>
+      <pre class="code-block">{
+  <span class="str">"mcpServers"</span>: {
+    <span class="str">"akka-workshop"</span>: {
+      <span class="str">"transport"</span>: <span class="str">"http"</span>,
+      <span class="str">"url"</span>: <span class="str">"http://localhost:9000/mcp"</span>
+    }
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Same MCP the Anthropic client already speaks</li>
+        <li>No plugin, no adapter code &mdash; just URL + name</li>
+        <li>Restart Claude Desktop; tools appear in the tool picker</li>
+        <li>Same setup pattern for Cursor, other agents, other services</li>
+        <li>Deploy to Akka runtime &rarr; publicly reachable MCP endpoint</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-24" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Hands-on &middot; 90 minutes</div>
+    <h2>Talk to your service.</h2>
+    <p>The agents branch is fully wired. Set the key, ask questions, connect an MCP client.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block">git checkout agents
+export OPENAI_API_KEY=sk-...
+mvn compile exec:java
+
+<span class="cmt"># create fixtures</span>
+curl -XPOST http://localhost:9000/api/customers ... -d <span class="str">'{...}'</span>
+curl -XPOST http://localhost:9000/api/orders    ... -d <span class="str">'{...}'</span>
+
+<span class="cmt"># ask the agent</span>
+curl -XPOST http://localhost:9000/api/support/s-1 \
+  -H <span class="str">'Content-Type: application/json'</span> \
+  -d <span class="str">'{"question":"Where are cust-ada'\''s orders?"}'</span>
+
+<span class="cmt"># follow up in the same session (memory!)</span>
+curl -XPOST http://localhost:9000/api/support/s-1 -d <span class="str">'{"question":"Dig into the FAILED one"}'</span></pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Add a fifth tool: <span class="accent">getInventoryStock()</span></li>
+        <li>Add error handling with <span class="accent">.onFailure(...)</span></li>
+        <li>Swap the model to <span class="accent">gpt-4o</span> and compare tool-use quality</li>
+        <li>Connect Claude Desktop to the MCP endpoint</li>
+        <li>Break the system prompt; watch guardrails fail</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-25" class="deck-slide title-slide" data-view>
+  <div class="brand-mark" aria-label="Akka">AKKA</div>
+  <div class="kicker">Day 4</div>
+  <h1 class="title-headline"><span class="accent">Tested</span></h1>
+  <div class="title-sub">TESTKITS &middot; INTEGRATION &middot; CHAOS &middot; CONTRACTS &middot; LOAD</div>
+  <div class="rule"></div>
+  <p class="title-copy">You've built a lot. Now: how confident are you that it won't fall over on Monday?</p>
+  <div class="session-meta">
+    <span>Discussion-heavy</span>
+    <span>Lab: extend the sample's test suite</span>
+    <span>~5 hours</span>
+  </div>
+</section>
+
+
+<section id="slide-26" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>The pyramid, <span class="accent">bent for stateful systems</span>.</h2>
+    <p>The classic unit &rarr; integration &rarr; e2e shape still applies, but each layer means something different when your components hold state.</p>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Layer</span><span>What to test</span></div>
+    <div class="matrix-row"><span>Unit (TestKit)</span><span>One component in isolation. State transitions, event emissions, tool calls.</span></div>
+    <div class="matrix-row"><span>Integration</span><span>Multiple components in the same JVM. Workflow + entity + view together.</span></div>
+    <div class="matrix-row"><span>Contract</span><span>Event schema evolution. Old events replayed by new code.</span></div>
+    <div class="matrix-row"><span>Chaos</span><span>Runtime failures. Kill the JVM mid-workflow; assert recovery.</span></div>
+    <div class="matrix-row"><span>Load</span><span>Throughput at target scale. Entity sharding under pressure.</span></div>
+  </div>
+  <div class="callout">If your tests all live at the top, you're testing HTTP shape. If they all live at the bottom, you're testing nothing that matters at 2am.</div>
+</section>
+
+
+<section id="slide-27" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Testing</div>
+    <h2>WorkflowTestKit &mdash; <span class="accent">step by step</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">OrderWorkflowTest.java (excerpt)</div>
+      <pre class="code-block"><span class="kw">var</span> testKit = WorkflowTestKit.of(OrderWorkflow::<span class="kw">new</span>);
+
+<span class="kw">var</span> started = testKit.method(OrderWorkflow::start)
+    .invoke(<span class="kw">new</span> StartOrder(<span class="str">"c1"</span>,
+        List.of(<span class="kw">new</span> OrderLine(<span class="str">"sku-1"</span>, 1, 100))));
+
+assertThat(started.getReply()).startsWith(<span class="str">"order-"</span>);
+assertThat(testKit.currentState().totalCents()).isEqualTo(100L);
+
+<span class="cmt">// advance one step at a time</span>
+<span class="kw">var</span> t1 = testKit.getTransition();
+assertThat(t1.stepName()).isEqualTo(<span class="str">"reserve"</span>);
+
+testKit.runStep(<span class="str">"reserve"</span>);
+<span class="kw">var</span> t2 = testKit.getTransition();
+assertThat(t2.stepName()).isEqualTo(<span class="str">"charge"</span>);</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>In-JVM, no cluster, no HTTP</li>
+        <li>Mock component clients per step for isolation</li>
+        <li>Assert transitions, state, scheduled timers</li>
+        <li>Run one step at a time or the whole workflow</li>
+        <li>Time is virtual &mdash; test 24h timers in milliseconds</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-28" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Testing</div>
+    <h2>EventSourcedTestKit, <span class="accent">for the Order entity</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">OrderEntityTest.java (shape)</div>
+      <pre class="code-block"><span class="kw">var</span> tk = EventSourcedTestKit.of(OrderEntity::<span class="kw">new</span>);
+
+<span class="cmt">// given: an order was placed</span>
+tk.method(OrderEntity::place)
+  .invoke(<span class="kw">new</span> PlaceOrder(<span class="str">"c1"</span>, lines));
+
+<span class="cmt">// when: mark reserved</span>
+<span class="kw">var</span> r = tk.method(OrderEntity::markReserved)
+    .invoke(<span class="kw">new</span> MarkReserved());
+
+<span class="cmt">// then</span>
+assertThat(r.getNextEventOfType(inventoryReserved.<span class="kw">class</span>))
+    .isNotNull();
+assertThat(tk.getState().status()).isEqualTo(OrderStatus.RESERVED);</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Fastest possible feedback for domain logic</li>
+        <li>Test replay: <span class="accent">tk.replayEvents(...)</span> and assert state</li>
+        <li>Test guard clauses &mdash; illegal transitions returned as errors</li>
+        <li>Snapshot a scenario with builders (see slide 36)</li>
+        <li>Milliseconds per test &mdash; run thousands in CI</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-29" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Testing</div>
+    <h2>Consumer testing: <span class="accent">feed events, assert calls</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">CustomerAuditConsumerTest.java (shape)</div>
+      <pre class="code-block"><span class="kw">var</span> tk = ConsumerTestKit.of(CustomerAuditConsumer::<span class="kw">new</span>);
+
+<span class="kw">var</span> result = tk.onEvent(
+    <span class="kw">new</span> customerCreated(<span class="str">"c-1"</span>, <span class="str">"Ada"</span>, <span class="str">"Lovelace"</span>));
+
+<span class="cmt">// side effects captured for assertion</span>
+<span class="kw">var</span> calls = result.getSideEffects();
+assertThat(calls).hasSize(1);
+assertThat(calls.get(0).targetComponent()).isEqualTo(<span class="str">"audit-log"</span>);
+
+<span class="cmt">// idempotency: same event twice</span>
+tk.onEvent(sameEvent);
+tk.onEvent(sameEvent);
+assertThat(auditEntity.getState().entries()).hasSize(1);</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Consumer effects are captured &mdash; nothing actually calls the network</li>
+        <li>Assert on the deferred calls the consumer would make</li>
+        <li>Test idempotency explicitly &mdash; feed the same event twice</li>
+        <li>Combine with an EventSourcedTestKit for full audit pipeline test</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-30" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Testing</div>
+    <h2>Agent testing: <span class="accent">mock the model</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">SupportAgentTest.java (shape)</div>
+      <pre class="code-block"><span class="kw">var</span> tk = AgentTestKit.of(SupportAgent::<span class="kw">new</span>)
+    .withMockedModel(<span class="str">"gpt-4o-mini"</span>, scriptedResponses);
+
+<span class="kw">var</span> answer = tk.method(SupportAgent::ask)
+    .inSession(<span class="str">"s-1"</span>)
+    .invoke(<span class="str">"where's order-42"</span>);
+
+assertThat(answer).contains(<span class="str">"SHIPPED"</span>);
+
+<span class="cmt">// assert that a specific tool was called</span>
+assertThat(tk.getToolCalls()).extracting(ToolCall::name)
+    .containsExactly(<span class="str">"getOrder"</span>);</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Mock model provider &mdash; no real API calls, deterministic output</li>
+        <li>Scripted responses drive branching test cases</li>
+        <li>Assert which tools were called, with what args</li>
+        <li>Test system-prompt regressions with fixed model output</li>
+        <li>Real-model tests belong in a separate, opt-in suite</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-31" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Integration: <span class="accent">real components, in one JVM</span>.</h2>
+    <p>TestKit supports full multi-component scenarios &mdash; entity + workflow + consumer + view &mdash; without leaving the JVM.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">TestKitSupport</div><p>Boots the runtime in-process. Same behaviour as prod, minus the network.</p></div>
+    <div class="locus"><div class="locus-title">Scenario tests</div><p>POST an order, wait for terminal status, assert view + audit log content.</p></div>
+    <div class="locus"><div class="locus-title">Awaitility</div><p>Eventually-consistent assertions with bounded polling. No sleep(2000) hacks.</p></div>
+  </div>
+  <div class="callout">One integration test per user-visible outcome. Ten unit tests per component. That's the ratio.</div>
+</section>
+
+
+<section id="slide-32" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Chaos: <span class="accent">assert what survives</span>.</h2>
+    <p>Not "does it work?" but "what happens when it doesn't?" Test the runtime's failure semantics on your workflow.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Mid-step kill</div><p>POST an order, watch it get to <span class="accent">charge</span>, kill the JVM, restart, assert SHIPPED.</p></div>
+    <div class="locus"><div class="locus-title">Consumer redelivery</div><p>Kill mid-consume; assert the same event is redelivered on restart; assert idempotency.</p></div>
+    <div class="locus"><div class="locus-title">Provider outage</div><p>Point OpenAI base URL at a broken host; assert onFailure handler engages, workflow doesn't corrupt.</p></div>
+  </div>
+  <div class="callout">Chaos tests are <span class="accent">expensive</span> to run and <span class="accent">priceless</span> when a production incident matches the scenario.</div>
+</section>
+
+
+<section id="slide-33" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Contract tests: <span class="accent">events are forever</span>.</h2>
+    <p>An event journaled today gets replayed by code you'll write in 2028. Break the schema, break the past.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Schema tests</div><p>Fixture files of historical event JSON. Assert the new record types can deserialize each one.</p></div>
+    <div class="locus"><div class="locus-title">Replay tests</div><p>Given a corpus of events, assert the current state matches the expected snapshot.</p></div>
+    <div class="locus"><div class="locus-title">Migration tests</div><p>When you must break, migrate: old event &rarr; new event via a translator. Test both sides.</p></div>
+  </div>
+  <div class="callout">Rule: adding a field is safe (with a default). Renaming, removing, changing type &mdash; assume it will break replay, and test accordingly.</div>
+</section>
+
+
+<section id="slide-34" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Load: what does <span class="accent">sharding look like</span> at 10k RPS?</h2>
+    <p>Load tests answer questions unit tests can't: throughput at your scale, tail latency, entity distribution, LLM token burn.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Tooling</div><p>k6, Gatling, or plain Go with worker pools. Whatever your team already runs.</p></div>
+    <div class="locus"><div class="locus-title">Scenarios</div><p>Not "1 endpoint, max RPS." "1000 concurrent workflows across 100 entities."</p></div>
+    <div class="locus"><div class="locus-title">Success signals</div><p>P99 latency, workflow completion time, view lag. Not just RPS.</p></div>
+  </div>
+  <div class="callout">If the load test doesn't distribute across entity ids, you're testing one shard &mdash; not the system.</div>
+</section>
+
+
+<section id="slide-35" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Idempotency: the <span class="accent">non-negotiable</span>.</h2>
+    <p>At-least-once delivery means "duplicates happen." Every command handler, every consumer, every timer target needs a test that says: "the second time is a no-op."</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Entity commands</div><p>Send the same command twice. Assert the second attempt is rejected or idempotent.</p></div>
+    <div class="locus"><div class="locus-title">Consumer handlers</div><p>Feed the same event twice. Assert the downstream state is identical to feeding it once.</p></div>
+    <div class="locus"><div class="locus-title">Timer targets</div><p>Test the command the timer calls, not the timer. Idempotence is the target's problem.</p></div>
+  </div>
+  <div class="callout">A test that only fires the command once tells you nothing about production. Fire it three times.</div>
+</section>
+
+
+<section id="slide-36" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Test data: <span class="accent">builders, not fixtures</span>.</h2>
+    <p>Ten integration tests that all take a full-order fixture become ten broken tests when you rename a field. Build the shape you need per test.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Fluent builders</div><p><span class="accent">OrderFixture.placed().withLine("sku-1", 2).build()</span> reads as intent.</p></div>
+    <div class="locus"><div class="locus-title">Property-based</div><p>Generate random valid inputs. Catch edge cases you'd never write.</p></div>
+    <div class="locus"><div class="locus-title">Golden files</div><p>Only for output-shape assertions. Not for input.</p></div>
+  </div>
+  <div class="callout">If two tests differ only in one field, the fixture is the wrong shape. Make it a parameter.</div>
+</section>
+
+
+<section id="slide-37" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>What <span class="accent">not</span> to test.</h2>
+    <p>Time and complexity are finite. Spend them on what changes when your code changes.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Don't test the runtime</div><p>"Does Akka persist events?" &mdash; that's their test, not yours.</p></div>
+    <div class="locus"><div class="locus-title">Don't test framework glue</div><p>Testing @ComponentClient wiring proves nothing. Test the behaviour it enables.</p></div>
+    <div class="locus"><div class="locus-title">Don't test the LLM</div><p>You can't. Test your prompt, your tools, your guardrails.</p></div>
+  </div>
+  <div class="callout">Rule of thumb: if the test would still pass after removing your code, you're testing the wrong thing.</div>
+</section>
+
+
+<section id="slide-38" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Staging is <span class="accent">not</span> a test environment.</h2>
+    <p>It's a rehearsal. What runs in staging should be identical to production &mdash; same runtime, same config, real data shapes.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">CI tests</div><p>Everything in the pyramid up through integration. No network egress. Deterministic.</p></div>
+    <div class="locus"><div class="locus-title">Staging</div><p>Full deploy. Real LLM keys (with lower quotas). Smoke tests. Chaos exercises on schedule.</p></div>
+    <div class="locus"><div class="locus-title">Production canary</div><p>Fraction of traffic to the new version. Real monitoring. Real rollback path.</p></div>
+  </div>
+  <div class="callout">If staging finds bugs that CI didn't, add the missing CI test. Staging is the last check, not the first.</div>
+</section>
+
+
+<section id="slide-39" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Hands-on &middot; 60 minutes</div>
+    <h2>Grow the sample's test suite.</h2>
+    <p>The sample repo has almost no tests. Pick one component and give it a real one.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># still on the agents branch</span>
+mkdir -p src/test/java/com/pradeepl/akkakata
+
+<span class="cmt"># start with the highest-risk component</span>
+touch src/test/java/com/pradeepl/akkakata/OrderWorkflowTest.java
+
+<span class="cmt"># run</span>
+mvn test</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Choose: OrderWorkflow, CustomerAuditConsumer, or SupportAgent</li>
+        <li>Write one happy-path and one failure test</li>
+        <li>Add an idempotency test &mdash; feed the input twice</li>
+        <li>Add a contract test &mdash; deserialize an old event fixture</li>
+        <li>Bonus: add a simple k6 script for OrderEndpoint load</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-40" class="deck-slide title-slide" data-view>
+  <div class="brand-mark" aria-label="Akka">AKKA</div>
+  <div class="kicker">Day 5</div>
+  <h1 class="title-headline"><span class="accent">Shipped</span></h1>
+  <div class="title-sub">DEPLOY &middot; MULTI-REGION &middot; OBSERVABILITY &middot; RUNBOOKS &middot; COST</div>
+  <div class="rule"></div>
+  <p class="title-copy">By 5pm, the sample is <span class="accent">running in your own Akka account</span> &mdash; traced, alerted, and documented.</p>
+  <div class="session-meta">
+    <span>You need: an Akka account</span>
+    <span>You need: your OpenAI key on the platform</span>
+    <span>~6 hours</span>
+  </div>
+</section>
+
+
+<section id="slide-41" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Deploy</div>
+    <h2>What Akka runs <span class="accent">for you</span>.</h2>
+    <p>You hand the platform a container image and a service name. The platform provides everything below.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Cluster</div><p>Nodes, membership, gossip, sharding. Autoscaled.</p></div>
+    <div class="locus"><div class="locus-title">Persistence</div><p>Event journal, entity snapshots, view tables, workflow state, session memory.</p></div>
+    <div class="locus"><div class="locus-title">Networking</div><p>HTTP ingress, gRPC internal, mTLS between services, TLS termination.</p></div>
+  </div>
+  <div class="loci-grid" style="margin-top: 18px;">
+    <div class="locus"><div class="locus-title">Deployment</div><p>Rolling upgrades, health checks, blue/green when needed.</p></div>
+    <div class="locus"><div class="locus-title">Observability</div><p>Metrics, logs, distributed traces, dashboards, alerts.</p></div>
+    <div class="locus"><div class="locus-title">Multi-region</div><p>Replication topology, per-region entities, active/active or active/standby.</p></div>
+  </div>
+</section>
+
+
+<section id="slide-42" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Deploy</div>
+    <h2>The <span class="accent">akka CLI</span>, in six commands.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># auth once per machine</span>
+akka auth login
+
+<span class="cmt"># projects group services + regions + config</span>
+akka projects new akka-workshop-prod
+akka config set project akka-workshop-prod
+
+<span class="cmt"># see what regions are available</span>
+akka regions list
+
+<span class="cmt"># see current deployments</span>
+akka services list
+
+<span class="cmt"># tail logs from anywhere</span>
+akka logs</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Single binary, no plugins</li>
+        <li>Auth is persistent per machine</li>
+        <li>Projects scope services, regions, secrets, ACLs</li>
+        <li>Config is namespaced &mdash; different terminal, different project</li>
+        <li>Everything the console does is scriptable via CLI</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-43" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Deploy</div>
+    <h2>Building the <span class="accent">container image</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># builds the jar and packages it as a container image</span>
+mvn install
+
+<span class="cmt"># tag and push to your registry</span>
+docker tag akka-workshop:1.0 \
+  ghcr.io/pradeepl/akka-workshop:1.0
+docker push ghcr.io/pradeepl/akka-workshop:1.0
+
+<span class="cmt"># confirm the registry has it</span>
+docker manifest inspect ghcr.io/pradeepl/akka-workshop:1.0</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Parent POM adds the JIB plugin &mdash; no Dockerfile needed</li>
+        <li>Any OCI registry works: GHCR, ECR, GAR, Docker Hub</li>
+        <li>Registry needs to be reachable by the Akka runtime</li>
+        <li>Private registries: add pull-secret to the project</li>
+        <li>Tag by version, not by <span class="accent">latest</span> &mdash; deploys should be reproducible</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-44" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Deploy</div>
+    <h2>First deploy: <span class="accent">akka services deploy</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># deploy the service</span>
+akka services deploy akka-workshop \
+    ghcr.io/pradeepl/akka-workshop:1.0
+
+<span class="cmt"># wait for it to be ready</span>
+akka services list
+<span class="cmt">## STATE: Ready  READY: 3/3</span>
+
+<span class="cmt"># expose it publicly (routes are project-scoped by default)</span>
+akka routes create workshop-route \
+    --service akka-workshop \
+    --port 9000
+
+<span class="cmt"># test it</span>
+curl https://workshop-abc.akka.app/api/customers</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Same command; the platform handles rolling deploys after the first</li>
+        <li>Routes give you a public HTTPS URL</li>
+        <li>Custom domains + certs configured per project</li>
+        <li>Health checks and readiness are inferred from the SDK</li>
+        <li>Ready to accept traffic in ~60s from image push</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-45" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Deploy</div>
+    <h2>Before you push the first image.</h2>
+    <p>A short checklist that saves you a Slack apology later.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Secrets</div><p>OPENAI_API_KEY, DB creds &mdash; via akka secrets, not the image.</p></div>
+    <div class="locus"><div class="locus-title">Resource limits</div><p>Memory + CPU per instance. Sensible defaults; tune based on load tests.</p></div>
+    <div class="locus"><div class="locus-title">Health checks</div><p>SDK provides them; assert readiness before promoting.</p></div>
+  </div>
+  <div class="loci-grid" style="margin-top: 18px;">
+    <div class="locus"><div class="locus-title">ACLs</div><p>What's public? Which endpoints require auth? Which are internal-only?</p></div>
+    <div class="locus"><div class="locus-title">Log level</div><p>INFO in prod. DEBUG on demand via config reload.</p></div>
+    <div class="locus"><div class="locus-title">Rollback path</div><p>Know how to <span class="accent">akka services deploy</span> the previous tag before you need to.</p></div>
+  </div>
+</section>
+
+
+<section id="slide-46" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Deploy</div>
+    <h2>Secrets: <span class="accent">env vars, not code</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># create a secret</span>
+akka secrets create generic openai-key \
+    --literal OPENAI_API_KEY=sk-...
+
+<span class="cmt"># wire it into the service's env</span>
+akka services deploy akka-workshop \
+    ghcr.io/pradeepl/akka-workshop:1.0 \
+    --secret-env openai-key
+
+<span class="cmt"># rotate</span>
+akka secrets update generic openai-key \
+    --literal OPENAI_API_KEY=sk-new...
+akka services rolling-update akka-workshop</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Secrets never appear in the image, config, or logs</li>
+        <li>Mounted as env vars &mdash; picked up by application.conf substitution</li>
+        <li>Rotate via <span class="accent">update</span> + <span class="accent">rolling-update</span></li>
+        <li>Access control: only the service can see its wired secrets</li>
+        <li>Audit trail on every read (see runbook slide 62)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-47" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Deploy</div>
+    <h2>Rolling upgrades: <span class="accent">no downtime by default</span>.</h2>
+    <p>The platform replaces instances one at a time. Sharded entities and workflows migrate as part of the process.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>1</b><small>New image pushed</small></div>
+    <div class="lifecycle-step"><b>2</b><small>1 new instance started, health-checked</small></div>
+    <div class="lifecycle-step"><b>3</b><small>Traffic shifted, entities rebalance to new instance</small></div>
+    <div class="lifecycle-step"><b>4</b><small>1 old instance drained + terminated</small></div>
+    <div class="lifecycle-step"><b>5</b><small>Repeat until all N instances are new</small></div>
+    <div class="lifecycle-step"><b>6</b><small>In-flight workflows resume on new instances via replay</small></div>
+  </div>
+  <div class="callout">Requires backward-compatible event schemas. See contract tests (slide 33).</div>
+</section>
+
+
+<section id="slide-48" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Deploy</div>
+    <h2>Autoscale: <span class="accent">request rate + entity distribution</span>.</h2>
+    <p>Scale on what actually matters for stateful workloads: not just CPU, but shard load and workflow queue depth.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Signals</div><p>Request rate, active workflows, entity shard imbalance, LLM queue depth.</p></div>
+    <div class="locus"><div class="locus-title">Bounds</div><p>Min instances (never scale to zero for stateful services). Max, based on cost budget.</p></div>
+    <div class="locus"><div class="locus-title">Cooldown</div><p>Scale-up fast, scale-down slow. Entity migration has a real cost.</p></div>
+  </div>
+  <div class="callout">Scale-to-zero on a stateful service means cold-start rehydration and lost session memory. Don't.</div>
+</section>
+
+
+<section id="slide-49" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Multi-region</div>
+    <h2>Why go multi-region?</h2>
+    <p>Three reasons. Different from each other. Each drives a different topology.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Latency</div><p>Users on three continents. Serving them from one region hurts them.</p></div>
+    <div class="locus"><div class="locus-title">Availability</div><p>Regional outages are real. You need to survive AWS-us-east-1 going down.</p></div>
+    <div class="locus"><div class="locus-title">Sovereignty</div><p>EU customer data stays in EU regions. Regulatory. Non-negotiable.</p></div>
+  </div>
+  <div class="callout">Different reasons; different topologies. Don't build for all three when you only need one.</div>
+</section>
+
+
+<section id="slide-50" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Multi-region</div>
+    <h2>Two shapes: <span class="accent">active/active</span> vs <span class="accent">primary/replica</span>.</h2>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-col active">
+      <div class="compare-label">Active/active</div>
+      <ul>
+        <li>Every region writes and reads locally</li>
+        <li>Entities replicated across regions</li>
+        <li>Local reads always; local writes when the entity is "home" here</li>
+        <li>Best for latency + availability</li>
+        <li>Conflict resolution matters (usually last-write-wins per entity)</li>
+      </ul>
+    </div>
+    <div class="compare-col blue">
+      <div class="compare-label">Primary/replica</div>
+      <ul>
+        <li>One region owns writes for a slice of entities</li>
+        <li>Replicas serve local reads only</li>
+        <li>Failover on primary loss = promotion</li>
+        <li>Best for sovereignty + simpler consistency</li>
+        <li>Slightly higher write latency for far-away callers</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-51" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Multi-region</div>
+    <h2>Config-first: <span class="accent">no code changes</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># create a project spanning three regions</span>
+akka projects new akka-workshop-prod \
+    --region gcp-us-east1 \
+    --region gcp-europe-west1 \
+    --region gcp-asia-southeast1
+
+<span class="cmt"># set primary region for a service</span>
+akka services deploy akka-workshop \
+    ghcr.io/pradeepl/akka-workshop:1.0 \
+    --region gcp-us-east1
+
+<span class="cmt"># add a replica region</span>
+akka services replicate akka-workshop \
+    --to gcp-europe-west1</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Regions are project-level; services opt in</li>
+        <li><span class="accent">Sample code compiles unchanged</span> &mdash; the runtime handles replication</li>
+        <li>Entity id determines which region "owns" it (consistent hashing)</li>
+        <li>Views project locally per region</li>
+        <li>Workflows resume in the region where they started</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-52" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Multi-region</div>
+    <h2>Entity semantics <span class="accent">across regions</span>.</h2>
+    <p>The mental model shifts slightly. Local reads always. Writes go to the entity's home region.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Reads</div><p>Always local. Views project per region, entity state is replicated with bounded staleness.</p></div>
+    <div class="locus"><div class="locus-title">Writes</div><p>Routed to the entity's home region &mdash; usually one round-trip more if the caller is elsewhere.</p></div>
+    <div class="locus"><div class="locus-title">Consistency</div><p>Single-writer per entity globally. No conflicting writes at the entity level.</p></div>
+  </div>
+  <div class="callout">CustomerEntity for customer-42 has one home region. Reads happen anywhere. Writes go to <span class="accent">customer-42's</span> region.</div>
+</section>
+
+
+<section id="slide-53" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Multi-region</div>
+    <h2>Workflows &amp; timers <span class="accent">across regions</span>.</h2>
+    <p>Workflows are like entities: one home region per instance. Timers persist with the workflow.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Workflow home</div><p>Determined by the workflowId. OrderWorkflow for order-abc runs in one region for its whole life.</p></div>
+    <div class="locus"><div class="locus-title">Timers</div><p>Fire in the workflow's home region. Not affected by request routing.</p></div>
+    <div class="locus"><div class="locus-title">Cross-region calls</div><p>Workflow calls entities in their home regions. Latency-aware; SDK handles it.</p></div>
+  </div>
+  <div class="callout">Design tip: keep tightly-coupled aggregates (Order + its Customer) in the same region if you can &mdash; the SDK does this by default when they share an id prefix.</div>
+</section>
+
+
+<section id="slide-54" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Multi-region</div>
+    <h2>When a region <span class="accent">disappears</span>.</h2>
+    <p>Failover isn't a manual playbook &mdash; it's part of the runtime. Your job is knowing what to expect.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>1</b><small>Region A becomes unreachable</small></div>
+    <div class="lifecycle-step"><b>2</b><small>Traffic reroutes to nearest healthy region</small></div>
+    <div class="lifecycle-step"><b>3</b><small>Entities homed in A are promoted in surviving regions</small></div>
+    <div class="lifecycle-step"><b>4</b><small>Workflows resume from last checkpoint elsewhere</small></div>
+    <div class="lifecycle-step"><b>5</b><small>Bounded window of stale reads until replication catches up</small></div>
+    <div class="lifecycle-step"><b>6</b><small>Region A returns &rarr; replicas resync, ownership rebalances</small></div>
+  </div>
+  <div class="callout">Test it: <span class="accent">akka regions drain gcp-us-east1</span> in staging. Watch what actually happens.</div>
+</section>
+
+
+<section id="slide-55" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Observability</div>
+    <h2>What the runtime <span class="accent">exports by default</span>.</h2>
+    <p>Every component emits metrics, structured logs, and traces without any wiring on your part. You can layer custom metrics on top.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Metrics</div><p>Prometheus format. Request rate, latency histograms, entity active count, workflow completion.</p></div>
+    <div class="locus"><div class="locus-title">Logs</div><p>Structured JSON. Component id, session id, trace id on every line.</p></div>
+    <div class="locus"><div class="locus-title">Traces</div><p>OpenTelemetry. Endpoint &rarr; entity &rarr; consumer chain shows up as one trace.</p></div>
+  </div>
+  <div class="callout">All three are on by default in the managed runtime. In dev, hit <span class="accent">/metrics</span> and <span class="accent">/actuator/health</span> yourself.</div>
+</section>
+
+
+<section id="slide-56" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Observability</div>
+    <h2>Prometheus + Grafana: <span class="accent">plug it in</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># wire the service's metrics to your Grafana Cloud</span>
+akka observability metrics export prometheus \
+    --url https://prometheus-prod.grafana.net/api/prom/push \
+    --username <span class="str">"..."</span> \
+    --password-from-secret grafana-key
+
+<span class="cmt"># or scrape the /metrics endpoint from your own Prometheus</span>
+scrape_configs:
+  - job_name: akka-workshop
+    metrics_path: /metrics
+    static_configs:
+      - targets: [<span class="str">'workshop-abc.akka.app'</span>]</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Metrics available regardless of Prometheus setup</li>
+        <li>Dashboards: sample project comes with a starter JSON</li>
+        <li>Golden signals: rate, error, duration &mdash; per component type</li>
+        <li>Track: workflow queue depth, entity passivation rate, LLM latency</li>
+        <li>Alert on <span class="accent">workflow completion time p99</span> &mdash; not just endpoint latency</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-57" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Observability</div>
+    <h2>Distributed tracing: <span class="accent">one trace, whole saga</span>.</h2>
+    <p>An order placement spans endpoint &rarr; workflow &rarr; multiple entities &rarr; view. All in one trace, without you instrumenting anything.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Automatic spans</div><p>Every component invocation is a span. Parent-child from the HTTP request down.</p></div>
+    <div class="locus"><div class="locus-title">Trace context</div><p>Propagated automatically through workflow steps, timers, consumer subscriptions.</p></div>
+    <div class="locus"><div class="locus-title">Custom spans</div><p>Inject <span class="accent">Span</span> or <span class="accent">Tracer</span> into your components for domain-level instrumentation.</p></div>
+  </div>
+  <div class="callout">Ship traces to Tempo, Jaeger, Honeycomb, Datadog &mdash; any OTLP-compatible backend. Config-only.</div>
+</section>
+
+
+<section id="slide-58" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Observability</div>
+    <h2>Alerts that <span class="accent">page a human</span>.</h2>
+    <p>Stateful systems need different alerts. Endpoint 500-rate is one signal; a workflow that hasn't reached terminal state in 24h is another.</p>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Signal</span><span>Why it matters</span></div>
+    <div class="matrix-row"><span>HTTP 5xx rate</span><span>Endpoints are broken. Classic. Page.</span></div>
+    <div class="matrix-row"><span>Workflow stuck > N minutes</span><span>Saga jammed in a step. Data may be inconsistent. Page.</span></div>
+    <div class="matrix-row"><span>Entity passivation churn</span><span>Cluster instability or misconfigured resource limits. Investigate.</span></div>
+    <div class="matrix-row"><span>Consumer lag > N seconds</span><span>Event backlog. Views + audit going stale. Page.</span></div>
+    <div class="matrix-row"><span>LLM error rate</span><span>Provider outage or quota exhausted. Depends: page for prod, ignore in dev.</span></div>
+  </div>
+</section>
+
+
+<section id="slide-59" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Runbooks</div>
+    <h2>Runbooks: <span class="accent">what a tired oncall needs</span>.</h2>
+    <p>Not "here's how the system works." That's docs. A runbook answers "the alert fired &mdash; what do I do <em>right now</em>?"</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">The trigger</div><p>Exact alert name and severity. Not paraphrased.</p></div>
+    <div class="locus"><div class="locus-title">Verify</div><p>One command to confirm the alert is real. Screenshots of what the console should show.</p></div>
+    <div class="locus"><div class="locus-title">Mitigate</div><p>Numbered steps. Bounded. Reversible if possible. Escalation trigger if none work.</p></div>
+  </div>
+  <div class="callout">Rule: if the runbook says "investigate" without a next step, it's not a runbook. It's an aspiration.</div>
+</section>
+
+
+<section id="slide-60" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Runbook example</div>
+    <h2>Alert: <span class="accent">OrderWorkflow stuck &gt; 5min</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Steps</div>
+      <pre class="code-block">1. Verify:
+   akka logs --grep <span class="str">"workflow"</span> --tail 100
+   Open console: which workflow instance? Which step?
+
+2. Diagnose:
+   akka services describe akka-workshop
+   Look for InventoryEntity or PaymentEntity errors.
+
+3. Common causes:
+   - Payment provider outage (check status.stripe.com)
+   - Inventory reserved-orders leak (see runbook 61)
+   - Model provider timeout (check /metrics)
+
+4. Mitigate:
+   - Transient: wait for provider recovery
+   - Persistent: transition workflow to compensate:
+     akka services command akka-workshop \
+       order-workflow &lt;id&gt; forceCompensate
+
+5. Escalate if:
+   &gt; 20 workflows stuck OR provider outage &gt; 15min</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Specific alert name, no ambiguity</li>
+        <li>Verify step confirms it's real</li>
+        <li>Bounded diagnostic checks</li>
+        <li>Concrete mitigation commands</li>
+        <li>Clear escalation trigger</li>
+        <li>Living doc &mdash; update after every incident</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-61" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Runbook example</div>
+    <h2>Alert: <span class="accent">Entity shard unavailable</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Steps</div>
+      <pre class="code-block">1. Verify:
+   akka services status akka-workshop
+   Look for READY count &lt; expected instances.
+
+2. Diagnose:
+   Which shards are affected? Which entity ids fall in them?
+   akka logs --grep <span class="str">"shard"</span> --level warn --tail 200
+
+3. Common causes:
+   - Rolling deploy in progress (transient, wait it out)
+   - Region-level networking issue (check status page)
+   - Persistence backend hiccup
+
+4. Mitigate:
+   - If rolling deploy: monitor, do nothing, alert stops
+   - If region issue: multi-region traffic will reroute
+   - If backend: escalate to platform team
+
+5. What NOT to do:
+   Do not force-restart the service. Sharding recovers on its own.</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Explicit "do not" section &mdash; wrong instincts documented</li>
+        <li>Distinguish transient from persistent</li>
+        <li>Multi-region behaviour called out (autonomic)</li>
+        <li>Escalation path clear</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-62" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Runbook example</div>
+    <h2>Alert: <span class="accent">LLM error rate &gt; 5%</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Steps</div>
+      <pre class="code-block">1. Verify:
+   akka logs --grep <span class="str">"RateLimit\|ModelTimeout"</span> --tail 50
+   Check exception classes; each has a different mitigation.
+
+2. Diagnose:
+   RateLimitException  &rarr; quota exhausted or throttled
+   ModelTimeoutException &rarr; provider slow or overloaded
+   InternalServerException &rarr; provider 5xx
+   ToolCallLimitReached &rarr; a bad system prompt is looping
+
+3. Mitigate (short-term):
+   - Rate-limit: enable backoff, drop non-critical requests
+   - Timeout: downshift to gpt-4o-mini if not already
+   - Provider 5xx: fail-open with cached last-known answer
+   - Tool loop: check git log for recent prompt changes
+
+4. Mitigate (long-term):
+   - Cost: pre-cache tool outputs; batch requests
+   - Reliability: multi-provider fallback (Anthropic secondary)
+
+5. Escalate if:
+   &gt; 30min sustained, business hours, customer-facing.</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Distinct handling per exception type</li>
+        <li>Short-term (mitigate) vs long-term (fix)</li>
+        <li>Fail-open policy called out explicitly</li>
+        <li>Multi-provider fallback as an option</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-63" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Ops</div>
+    <h2>Capacity planning: <span class="accent">what to size for</span>.</h2>
+    <p>Stateful workloads size on different dimensions than stateless ones. Instance count is only one lever.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Active entities</div><p>Entities in memory per node. Passivation reclaims idle ones.</p></div>
+    <div class="locus"><div class="locus-title">Workflow throughput</div><p>How many workflows can transition per second? Set by step call latency, not CPU.</p></div>
+    <div class="locus"><div class="locus-title">View lag</div><p>How stale can reads be? Sets consumer parallelism.</p></div>
+  </div>
+  <div class="loci-grid" style="margin-top: 18px;">
+    <div class="locus"><div class="locus-title">LLM tokens</div><p>Per-agent-call. Budget = model choice &times; memory window &times; tool calls.</p></div>
+    <div class="locus"><div class="locus-title">Storage</div><p>Journal grows forever unless you archive. Design event schema for retention early.</p></div>
+    <div class="locus"><div class="locus-title">Egress</div><p>LLM calls are egress. Multi-region calls are egress. Both add up.</p></div>
+  </div>
+</section>
+
+
+<section id="slide-64" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Ops</div>
+    <h2>Cost: <span class="accent">where the money actually goes</span>.</h2>
+    <p>For a typical Akka service with agents, LLM tokens dominate. Storage is a distant second. Compute is a rounding error.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">LLM tokens</div><p>Model choice matters &mdash; gpt-4o-mini vs gpt-4o is ~15x. Memory window doubles cost linearly.</p></div>
+    <div class="locus"><div class="locus-title">Storage</div><p>Event journal + snapshots. Grows forever unless you archive cold data.</p></div>
+    <div class="locus"><div class="locus-title">Compute</div><p>Managed runtime is priced per instance-hour. Small compared to LLM in most agentic services.</p></div>
+  </div>
+  <div class="callout">Guardrail: budget alarms per provider. If someone accidentally deploys gpt-4o to prod and forgets, you find out in an hour, not in the finance meeting.</div>
+</section>
+
+
+<section id="slide-65" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Hands-on &middot; 90 minutes</div>
+    <h2>Ship it to <span class="accent">your Akka account</span>.</h2>
+    <p>End-to-end deploy. Real image, real service, real URL. By the end of the lab you'll be curling a production endpoint.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block">akka auth login
+akka projects new my-workshop-prod
+akka config set project my-workshop-prod
+
+<span class="cmt"># build + push image</span>
+mvn install
+docker push ghcr.io/&lt;you&gt;/akka-workshop:1.0
+
+<span class="cmt"># store your OpenAI key</span>
+akka secrets create generic openai-key \
+    --literal OPENAI_API_KEY=$OPENAI_API_KEY
+
+<span class="cmt"># deploy</span>
+akka services deploy akka-workshop \
+    ghcr.io/&lt;you&gt;/akka-workshop:1.0 \
+    --secret-env openai-key
+
+<span class="cmt"># expose + smoke test</span>
+akka routes create workshop --service akka-workshop
+curl https://workshop-&lt;yours&gt;.akka.app/api/customers</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Bring your own image registry (GHCR free tier is fine)</li>
+        <li>Bring your OPENAI_API_KEY</li>
+        <li>Bonus: add a second region</li>
+        <li>Bonus: wire /metrics to Grafana Cloud</li>
+        <li>Bonus: connect Claude Desktop to <span class="accent">https://.../mcp</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section id="slide-66" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Beyond mastery</div>
+    <h2>What's still on the horizon.</h2>
+    <p>Five days covers a lot. These are the topics we saw coming and set aside for depth.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Choreographed sagas</div><p>Event-first coordination without a workflow. When looser coupling matters more than central control.</p></div>
+    <div class="locus"><div class="locus-title">Custom persistence</div><p>Own the journal backend. Rare, but real.</p></div>
+    <div class="locus"><div class="locus-title">Streaming agents</div><p>Token-by-token output. Better UX for long answers, harder to test.</p></div>
+  </div>
+  <div class="loci-grid" style="margin-top: 18px;">
+    <div class="locus"><div class="locus-title">Multi-agent orchestration</div><p>AgentRegistry + supervisor agents delegating to specialists.</p></div>
+    <div class="locus"><div class="locus-title">Advanced MCP</div><p>Resources, prompts, session state. Full protocol beyond just tools.</p></div>
+    <div class="locus"><div class="locus-title">Own the platform</div><p>Self-hosted Akka runtime. When managed doesn't fit your regulatory story.</p></div>
+  </div>
+</section>
+
+
+<section id="slide-67" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Where to go from here</div>
+    <h2>Keep <span class="accent">using it</span>.</h2>
+    <p>The best way to retain what you've learned is to build one small thing of your own with it. Then come back with questions.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Docs</div><p><span class="accent">docs.akka.io</span> &mdash; SDK reference, patterns, HOWTOs.</p></div>
+    <div class="locus"><div class="locus-title">Sample</div><p><span class="accent">github.com/PradeepLoganathan/akka-workshop</span> &mdash; the sample you built on.</p></div>
+    <div class="locus"><div class="locus-title">Community</div><p><span class="accent">akka.io/community</span> &mdash; forums, Discord, office hours.</p></div>
+  </div>
+  <div class="pill-row">
+    <span>github.com/PradeepLoganathan/akka-workshop</span>
+    <span>docs.akka.io</span>
+    <span>akka.io/community</span>
+    <span>console.akka.io</span>
+  </div>
+</section>
+
+
+<section id="slide-68" class="deck-slide title-slide" data-view>
+  <div class="brand-mark" aria-label="Akka">AKKA</div>
+  <div class="kicker">Thanks for the five days</div>
+  <h1 class="title-headline"><span class="accent">Go build.</span></h1>
+  <div class="title-sub">YOU HAVE THE COMPONENTS. YOU HAVE THE PATTERNS. YOU HAVE THE RUNTIME.</div>
+  <div class="rule"></div>
+  <p class="title-copy">The best next step is the one that scares you a little. Pick a real problem, small enough to finish in a week. Build it. Then rebuild it &mdash; better &mdash; the week after.</p>
+  <div class="session-meta">
+    <span>github.com/PradeepLoganathan/akka-workshop</span>
+    <span>docs.akka.io</span>
+  </div>
+</section>
+
+<script>
+
+
+(function() {
+  const views = Array.from(document.querySelectorAll('[data-view]'));
+  function top(el) { return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset); }
+  function current() {
+    const y = window.scrollY || window.pageYOffset;
+    let best = 0;
+    for (let i = 0; i < views.length; i++) if (top(views[i]) <= y + 12) best = i;
+    return best;
+  }
+  document.addEventListener('keydown', function(e) {
+    if (['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)) {
+      e.preventDefault();
+      const i = current();
+      if (i < views.length - 1) window.scrollTo({ top: top(views[i + 1]), behavior: 'smooth' });
+    }
+    if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) {
+      e.preventDefault();
+      const i = current();
+      const y = window.scrollY || window.pageYOffset;
+      if (y > top(views[i]) + 12) window.scrollTo({ top: top(views[i]), behavior: 'smooth' });
+      else if (i > 0) window.scrollTo({ top: top(views[i - 1]), behavior: 'smooth' });
+    }
+  });
+})();
+
+
+(function() {
+  if (!new URLSearchParams(location.search).has('kiosk')) return;
+  const views = Array.from(document.querySelectorAll('[data-view]'));
+  const seconds = Number(new URLSearchParams(location.search).get('kiosk')) || 35;
+  let i = 0;
+  function top(el) { return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset); }
+  setInterval(function() {
+    i = (i + 1) % views.length;
+    window.scrollTo({ top: top(views[i]), behavior: 'smooth' });
+  }, seconds * 1000);
+})();
+
+</script>
+</body>
+</html>

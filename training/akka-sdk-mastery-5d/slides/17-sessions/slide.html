@@ -1,0 +1,29 @@
+<section id="slide-17" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>Session id is the <span class="accent">router key</span>.</h2>
+    <p>Same session id &rarr; same memory. Different sessions &rarr; isolated conversations.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">SupportEndpoint</div>
+      <pre class="code-block"><span class="anno">@Post</span>(<span class="str">"/support/{sessionId}"</span>)
+<span class="kw">public</span> Answer ask(String sessionId, Question req) {
+  String answer = client.forAgent()
+      .inSession(sessionId)
+      .method(SupportAgent::ask)
+      .invoke(req.question());
+  <span class="kw">return new</span> Answer(sessionId, answer);
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Caller chooses the session id &mdash; per-user, per-ticket, per-thread</li>
+        <li><span class="accent">forAgent().inSession(id)</span> is how ComponentClient routes</li>
+        <li>Memory is scoped to the session &mdash; not the agent</li>
+        <li>Two different agents in the same session share memory</li>
+        <li>Sessions never explicitly end &mdash; memory bounds them naturally</li>
+      </ul>
+    </div>
+  </div>
+</section>

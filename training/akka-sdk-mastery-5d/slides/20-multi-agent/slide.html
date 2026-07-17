@@ -1,0 +1,13 @@
+<section id="slide-20" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>Multi-agent systems, <span class="accent">without a framework</span>.</h2>
+    <p>Multiple agents in the same service, same runtime. Sharing sessions if they should, isolated if they shouldn't.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Same session</div><p>Agents share memory. A "triage" agent hands off to a "billing" agent, both see the transcript.</p></div>
+    <div class="locus"><div class="locus-title">Different sessions</div><p>Isolated. Useful for tenant separation or batch workers.</p></div>
+    <div class="locus"><div class="locus-title">AgentRegistry</div><p><span class="accent">@AgentDescription</span> makes agents discoverable so a supervisor agent can list &amp; delegate.</p></div>
+  </div>
+  <div class="callout">Multi-agent lives in the same Java service &mdash; no bus, no coordinator, no separate deployment.</div>
+</section>

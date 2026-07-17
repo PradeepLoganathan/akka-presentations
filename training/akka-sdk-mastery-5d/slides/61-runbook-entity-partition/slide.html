@@ -1,0 +1,39 @@
+<section id="slide-61" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Runbook example</div>
+    <h2>Alert: <span class="accent">Entity shard unavailable</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Steps</div>
+      <pre class="code-block">1. Verify:
+   akka services status akka-workshop
+   Look for READY count &lt; expected instances.
+
+2. Diagnose:
+   Which shards are affected? Which entity ids fall in them?
+   akka logs --grep <span class="str">"shard"</span> --level warn --tail 200
+
+3. Common causes:
+   - Rolling deploy in progress (transient, wait it out)
+   - Region-level networking issue (check status page)
+   - Persistence backend hiccup
+
+4. Mitigate:
+   - If rolling deploy: monitor, do nothing, alert stops
+   - If region issue: multi-region traffic will reroute
+   - If backend: escalate to platform team
+
+5. What NOT to do:
+   Do not force-restart the service. Sharding recovers on its own.</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Explicit "do not" section &mdash; wrong instincts documented</li>
+        <li>Distinguish transient from persistent</li>
+        <li>Multi-region behaviour called out (autonomic)</li>
+        <li>Escalation path clear</li>
+      </ul>
+    </div>
+  </div>
+</section>

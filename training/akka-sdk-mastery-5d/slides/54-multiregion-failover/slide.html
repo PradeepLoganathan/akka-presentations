@@ -1,0 +1,16 @@
+<section id="slide-54" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Multi-region</div>
+    <h2>When a region <span class="accent">disappears</span>.</h2>
+    <p>Failover isn't a manual playbook &mdash; it's part of the runtime. Your job is knowing what to expect.</p>
+  </div>
+  <div class="lifecycle">
+    <div class="lifecycle-step"><b>1</b><small>Region A becomes unreachable</small></div>
+    <div class="lifecycle-step"><b>2</b><small>Traffic reroutes to nearest healthy region</small></div>
+    <div class="lifecycle-step"><b>3</b><small>Entities homed in A are promoted in surviving regions</small></div>
+    <div class="lifecycle-step"><b>4</b><small>Workflows resume from last checkpoint elsewhere</small></div>
+    <div class="lifecycle-step"><b>5</b><small>Bounded window of stale reads until replication catches up</small></div>
+    <div class="lifecycle-step"><b>6</b><small>Region A returns &rarr; replicas resync, ownership rebalances</small></div>
+  </div>
+  <div class="callout">Test it: <span class="accent">akka regions drain gcp-us-east1</span> in staging. Watch what actually happens.</div>
+</section>

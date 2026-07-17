@@ -1,0 +1,36 @@
+<section id="slide-24" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Hands-on &middot; 90 minutes</div>
+    <h2>Talk to your service.</h2>
+    <p>The agents branch is fully wired. Set the key, ask questions, connect an MCP client.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block">git checkout agents
+export OPENAI_API_KEY=sk-...
+mvn compile exec:java
+
+<span class="cmt"># create fixtures</span>
+curl -XPOST http://localhost:9000/api/customers ... -d <span class="str">'{...}'</span>
+curl -XPOST http://localhost:9000/api/orders    ... -d <span class="str">'{...}'</span>
+
+<span class="cmt"># ask the agent</span>
+curl -XPOST http://localhost:9000/api/support/s-1 \
+  -H <span class="str">'Content-Type: application/json'</span> \
+  -d <span class="str">'{"question":"Where are cust-ada'\''s orders?"}'</span>
+
+<span class="cmt"># follow up in the same session (memory!)</span>
+curl -XPOST http://localhost:9000/api/support/s-1 -d <span class="str">'{"question":"Dig into the FAILED one"}'</span></pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Add a fifth tool: <span class="accent">getInventoryStock()</span></li>
+        <li>Add error handling with <span class="accent">.onFailure(...)</span></li>
+        <li>Swap the model to <span class="accent">gpt-4o</span> and compare tool-use quality</li>
+        <li>Connect Claude Desktop to the MCP endpoint</li>
+        <li>Break the system prompt; watch guardrails fail</li>
+      </ul>
+    </div>
+  </div>
+</section>

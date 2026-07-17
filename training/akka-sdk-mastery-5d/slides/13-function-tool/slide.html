@@ -1,0 +1,33 @@
+<section id="slide-13" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2><span class="accent">@FunctionTool</span> &mdash; a method the model can call.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Anatomy of a tool method</div>
+      <pre class="code-block"><span class="anno">@FunctionTool</span>(description =
+    <span class="str">"Look up a customer's profile by customerId. "</span> +
+    <span class="str">"Returns first name, last name, deleted flag."</span>)
+<span class="kw">public</span> String getCustomer(
+    <span class="anno">@Description</span>(<span class="str">"The customer id, e.g. cust-001"</span>)
+    String customerId) {
+  <span class="kw">var</span> s = client.forEventSourcedEntity(customerId)
+      .method(CustomerEntity::get).invoke();
+  <span class="kw">if</span> (s.customerId() == <span class="kw">null</span>)
+    <span class="kw">return</span> <span class="str">"No customer found for "</span> + customerId;
+  <span class="kw">return</span> String.format(
+      <span class="str">"customerId=%s firstName=%s deleted=%s"</span>, ...);
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">description</span> is what the LLM reads to pick a tool</li>
+        <li><span class="accent">@Description</span> on params helps the LLM fill them right</li>
+        <li>Return <span class="accent">String</span> &mdash; that's what the model sees</li>
+        <li>Format the return so the model can quote it later</li>
+        <li>"No data" is a valid answer; never fabricate</li>
+      </ul>
+    </div>
+  </div>
+</section>

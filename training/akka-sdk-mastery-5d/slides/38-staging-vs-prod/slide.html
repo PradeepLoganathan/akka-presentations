@@ -1,0 +1,13 @@
+<section id="slide-38" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Staging is <span class="accent">not</span> a test environment.</h2>
+    <p>It's a rehearsal. What runs in staging should be identical to production &mdash; same runtime, same config, real data shapes.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">CI tests</div><p>Everything in the pyramid up through integration. No network egress. Deterministic.</p></div>
+    <div class="locus"><div class="locus-title">Staging</div><p>Full deploy. Real LLM keys (with lower quotas). Smoke tests. Chaos exercises on schedule.</p></div>
+    <div class="locus"><div class="locus-title">Production canary</div><p>Fraction of traffic to the new version. Real monitoring. Real rollback path.</p></div>
+  </div>
+  <div class="callout">If staging finds bugs that CI didn't, add the missing CI test. Staging is the last check, not the first.</div>
+</section>

@@ -1,0 +1,41 @@
+<section id="slide-62" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Runbook example</div>
+    <h2>Alert: <span class="accent">LLM error rate &gt; 5%</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Steps</div>
+      <pre class="code-block">1. Verify:
+   akka logs --grep <span class="str">"RateLimit\|ModelTimeout"</span> --tail 50
+   Check exception classes; each has a different mitigation.
+
+2. Diagnose:
+   RateLimitException  &rarr; quota exhausted or throttled
+   ModelTimeoutException &rarr; provider slow or overloaded
+   InternalServerException &rarr; provider 5xx
+   ToolCallLimitReached &rarr; a bad system prompt is looping
+
+3. Mitigate (short-term):
+   - Rate-limit: enable backoff, drop non-critical requests
+   - Timeout: downshift to gpt-4o-mini if not already
+   - Provider 5xx: fail-open with cached last-known answer
+   - Tool loop: check git log for recent prompt changes
+
+4. Mitigate (long-term):
+   - Cost: pre-cache tool outputs; batch requests
+   - Reliability: multi-provider fallback (Anthropic secondary)
+
+5. Escalate if:
+   &gt; 30min sustained, business hours, customer-facing.</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Distinct handling per exception type</li>
+        <li>Short-term (mitigate) vs long-term (fix)</li>
+        <li>Fail-open policy called out explicitly</li>
+        <li>Multi-provider fallback as an option</li>
+      </ul>
+    </div>
+  </div>
+</section>

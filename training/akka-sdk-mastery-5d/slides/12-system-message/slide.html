@@ -1,0 +1,33 @@
+<section id="slide-12" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>The system message is the <span class="accent">contract</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">SupportAgent.SYSTEM_PROMPT</div>
+      <pre class="code-block">You are Akka Workshop Support &mdash; a customer-support
+assistant for the sample e-commerce service in the
+akka-workshop repository.
+
+Rules:
+- Never invent customer ids or order ids. Use the values
+  the user provides, verbatim.
+- Before answering, use the provided tools to look up real
+  data. Do not guess.
+- If a tool returns no data, say so plainly; do not fabricate.
+- Keep answers short and factual.
+- You have access to customer profiles, order lists,
+  individual order details, and audit history.</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Persona + boundaries + escalation policy in plain text</li>
+        <li>The model reads this before every question &mdash; even follow-ups</li>
+        <li>Prompt injection defence lives here first</li>
+        <li>Iterate this file; it's the highest-leverage line of code</li>
+        <li>PromptTemplate + template-id for i18n or per-tenant prompts</li>
+      </ul>
+    </div>
+  </div>
+</section>

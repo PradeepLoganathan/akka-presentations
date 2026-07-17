@@ -1,0 +1,32 @@
+<section id="slide-30" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Testing</div>
+    <h2>Agent testing: <span class="accent">mock the model</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">SupportAgentTest.java (shape)</div>
+      <pre class="code-block"><span class="kw">var</span> tk = AgentTestKit.of(SupportAgent::<span class="kw">new</span>)
+    .withMockedModel(<span class="str">"gpt-4o-mini"</span>, scriptedResponses);
+
+<span class="kw">var</span> answer = tk.method(SupportAgent::ask)
+    .inSession(<span class="str">"s-1"</span>)
+    .invoke(<span class="str">"where's order-42"</span>);
+
+assertThat(answer).contains(<span class="str">"SHIPPED"</span>);
+
+<span class="cmt">// assert that a specific tool was called</span>
+assertThat(tk.getToolCalls()).extracting(ToolCall::name)
+    .containsExactly(<span class="str">"getOrder"</span>);</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Mock model provider &mdash; no real API calls, deterministic output</li>
+        <li>Scripted responses drive branching test cases</li>
+        <li>Assert which tools were called, with what args</li>
+        <li>Test system-prompt regressions with fixed model output</li>
+        <li>Real-model tests belong in a separate, opt-in suite</li>
+      </ul>
+    </div>
+  </div>
+</section>

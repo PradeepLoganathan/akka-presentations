@@ -1,0 +1,13 @@
+<section id="slide-36" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>Test data: <span class="accent">builders, not fixtures</span>.</h2>
+    <p>Ten integration tests that all take a full-order fixture become ten broken tests when you rename a field. Build the shape you need per test.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Fluent builders</div><p><span class="accent">OrderFixture.placed().withLine("sku-1", 2).build()</span> reads as intent.</p></div>
+    <div class="locus"><div class="locus-title">Property-based</div><p>Generate random valid inputs. Catch edge cases you'd never write.</p></div>
+    <div class="locus"><div class="locus-title">Golden files</div><p>Only for output-shape assertions. Not for input.</p></div>
+  </div>
+  <div class="callout">If two tests differ only in one field, the fixture is the wrong shape. Make it a parameter.</div>
+</section>

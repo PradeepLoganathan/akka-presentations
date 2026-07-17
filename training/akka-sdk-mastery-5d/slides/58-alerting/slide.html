@@ -1,0 +1,15 @@
+<section id="slide-58" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Observability</div>
+    <h2>Alerts that <span class="accent">page a human</span>.</h2>
+    <p>Stateful systems need different alerts. Endpoint 500-rate is one signal; a workflow that hasn't reached terminal state in 24h is another.</p>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Signal</span><span>Why it matters</span></div>
+    <div class="matrix-row"><span>HTTP 5xx rate</span><span>Endpoints are broken. Classic. Page.</span></div>
+    <div class="matrix-row"><span>Workflow stuck > N minutes</span><span>Saga jammed in a step. Data may be inconsistent. Page.</span></div>
+    <div class="matrix-row"><span>Entity passivation churn</span><span>Cluster instability or misconfigured resource limits. Investigate.</span></div>
+    <div class="matrix-row"><span>Consumer lag > N seconds</span><span>Event backlog. Views + audit going stale. Page.</span></div>
+    <div class="matrix-row"><span>LLM error rate</span><span>Provider outage or quota exhausted. Depends: page for prod, ignore in dev.</span></div>
+  </div>
+</section>

@@ -1,0 +1,13 @@
+<section id="slide-55" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Observability</div>
+    <h2>What the runtime <span class="accent">exports by default</span>.</h2>
+    <p>Every component emits metrics, structured logs, and traces without any wiring on your part. You can layer custom metrics on top.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Metrics</div><p>Prometheus format. Request rate, latency histograms, entity active count, workflow completion.</p></div>
+    <div class="locus"><div class="locus-title">Logs</div><p>Structured JSON. Component id, session id, trace id on every line.</p></div>
+    <div class="locus"><div class="locus-title">Traces</div><p>OpenTelemetry. Endpoint &rarr; entity &rarr; consumer chain shows up as one trace.</p></div>
+  </div>
+  <div class="callout">All three are on by default in the managed runtime. In dev, hit <span class="accent">/metrics</span> and <span class="accent">/actuator/health</span> yourself.</div>
+</section>

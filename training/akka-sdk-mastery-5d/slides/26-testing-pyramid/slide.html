@@ -1,0 +1,16 @@
+<section id="slide-26" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Testing</div>
+    <h2>The pyramid, <span class="accent">bent for stateful systems</span>.</h2>
+    <p>The classic unit &rarr; integration &rarr; e2e shape still applies, but each layer means something different when your components hold state.</p>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Layer</span><span>What to test</span></div>
+    <div class="matrix-row"><span>Unit (TestKit)</span><span>One component in isolation. State transitions, event emissions, tool calls.</span></div>
+    <div class="matrix-row"><span>Integration</span><span>Multiple components in the same JVM. Workflow + entity + view together.</span></div>
+    <div class="matrix-row"><span>Contract</span><span>Event schema evolution. Old events replayed by new code.</span></div>
+    <div class="matrix-row"><span>Chaos</span><span>Runtime failures. Kill the JVM mid-workflow; assert recovery.</span></div>
+    <div class="matrix-row"><span>Load</span><span>Throughput at target scale. Entity sharding under pressure.</span></div>
+  </div>
+  <div class="callout">If your tests all live at the top, you're testing HTTP shape. If they all live at the bottom, you're testing nothing that matters at 2am.</div>
+</section>

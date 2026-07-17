@@ -1,0 +1,33 @@
+<section id="slide-02" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Sample repo state</div>
+    <h2>Where we <span class="accent">check out from</span> today.</h2>
+    <p>Four branches, each a teaching checkpoint. Today's work happens on <span class="accent">agents</span>.</p>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Branch progression</div>
+      <pre class="code-block">git clone https://github.com/PradeepLoganathan/akka-workshop.git
+cd akka-workshop
+git branch -a
+
+  main       <span class="cmt">// Customer + Preferences (day 1)</span>
+  workflows  <span class="cmt">// + Order aggregate, workflow, timer (day 2 AM)</span>
+  consumers  <span class="cmt">// + audit consumer + AuditLogEntity (day 2 PM)</span>
+  agents     <span class="cmt">// + SupportAgent + CustomerMcpServer (today)</span>
+
+git checkout agents
+export OPENAI_API_KEY=sk-...
+mvn compile exec:java</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">git diff main agents</span> shows the whole three-day journey</li>
+        <li>Each branch compiles + runs on its own</li>
+        <li>Bug fixes on <span class="accent">main</span> merge forward</li>
+        <li>OPENAI_API_KEY is only needed on <span class="accent">agents</span></li>
+        <li>Day 5 deploys the same code &mdash; unchanged</li>
+      </ul>
+    </div>
+  </div>
+</section>

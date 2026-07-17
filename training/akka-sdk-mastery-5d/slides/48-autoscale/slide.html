@@ -1,0 +1,13 @@
+<section id="slide-48" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Deploy</div>
+    <h2>Autoscale: <span class="accent">request rate + entity distribution</span>.</h2>
+    <p>Scale on what actually matters for stateful workloads: not just CPU, but shard load and workflow queue depth.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Signals</div><p>Request rate, active workflows, entity shard imbalance, LLM queue depth.</p></div>
+    <div class="locus"><div class="locus-title">Bounds</div><p>Min instances (never scale to zero for stateful services). Max, based on cost budget.</p></div>
+    <div class="locus"><div class="locus-title">Cooldown</div><p>Scale-up fast, scale-down slow. Entity migration has a real cost.</p></div>
+  </div>
+  <div class="callout">Scale-to-zero on a stateful service means cold-start rehydration and lost session memory. Don't.</div>
+</section>

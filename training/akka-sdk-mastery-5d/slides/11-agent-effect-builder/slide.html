@@ -1,0 +1,28 @@
+<section id="slide-11" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Agents</div>
+    <h2>The <span class="accent">Effect.Builder</span>, one call at a time.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">SupportAgent.ask()</div>
+      <pre class="code-block"><span class="kw">public</span> Effect&lt;String&gt; ask(String question) {
+  <span class="kw">return</span> effects()
+      .memory(MemoryProvider.limitedWindow().readLast(10))
+      .systemMessage(SYSTEM_PROMPT)
+      .tools(<span class="kw">this</span>)              <span class="cmt">// scan @FunctionTool methods on this class</span>
+      .userMessage(question)
+      .thenReply();
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">.memory(...)</span> &mdash; MemoryProvider (LimitedWindow / Disabled / Custom)</li>
+        <li><span class="accent">.systemMessage(...)</span> &mdash; guardrails, role, constraints</li>
+        <li><span class="accent">.tools(this, ...)</span> &mdash; objects or classes hosting <span class="accent">@FunctionTool</span> methods</li>
+        <li><span class="accent">.userMessage(...)</span> &mdash; the actual question</li>
+        <li><span class="accent">.thenReply()</span> &mdash; return the model's text response</li>
+      </ul>
+    </div>
+  </div>
+</section>

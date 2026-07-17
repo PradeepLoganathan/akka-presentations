@@ -1,0 +1,17 @@
+<section id="slide-19" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>Failures the runtime <span class="accent">catches for you</span>.</h2>
+    <p>Agent effects have a first-class error taxonomy. Recover per case, don't blanket-catch.</p>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Exception</span><span>When</span></div>
+    <div class="matrix-row"><span>RateLimitException</span><span>Provider throttled you. Back off, retry, or degrade.</span></div>
+    <div class="matrix-row"><span>ModelTimeoutException</span><span>Model didn't respond in time. Consider a shorter prompt.</span></div>
+    <div class="matrix-row"><span>ToolCallLimitReachedException</span><span>Model tried to call tools too many times. Simplify or add a tool.</span></div>
+    <div class="matrix-row"><span>ToolCallExecutionException</span><span>Your tool threw. Fix the tool or return a plain error string.</span></div>
+    <div class="matrix-row"><span>JsonParsingException</span><span>Structured response didn't parse. Tighten the schema prompt.</span></div>
+    <div class="matrix-row"><span>InternalServerException</span><span>Provider 5xx. Retry with backoff.</span></div>
+  </div>
+  <div class="callout">Use <span class="accent">.onFailure(Function&lt;Throwable, String&gt;)</span> to substitute a graceful response per exception type.</div>
+</section>

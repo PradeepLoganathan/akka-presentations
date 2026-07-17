@@ -1,0 +1,35 @@
+<section id="slide-22" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">MCP</div>
+    <h2>CustomerMcpServer, <span class="accent">annotated</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">mcp/CustomerMcpServer.java</div>
+      <pre class="code-block"><span class="anno">@McpEndpoint</span>(
+    path = <span class="str">"/mcp"</span>,
+    serverName = <span class="str">"akka-workshop-customer"</span>,
+    serverVersion = <span class="str">"0.1.0"</span>,
+    instructions = <span class="str">"Read-only customer and order lookup tools."</span>)
+<span class="anno">@Acl</span>(allow = <span class="anno">@Acl</span>.Matcher(principal = Acl.Principal.INTERNET))
+<span class="kw">public class</span> CustomerMcpServer {
+
+  <span class="anno">@McpTool</span>(description =
+      <span class="str">"List all orders for a given customer."</span>)
+  <span class="kw">public</span> String listOrdersForCustomer(
+      <span class="anno">@Description</span>(<span class="str">"Customer id"</span>) String customerId) {
+    ...
+  }
+}</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li><span class="accent">@McpEndpoint</span> declares the MCP server at a path</li>
+        <li><span class="accent">serverName / version</span> returned in the initialize handshake</li>
+        <li><span class="accent">@McpTool</span> methods must return String</li>
+        <li>JSON schema is <span class="accent">auto-derived</span> from Java params</li>
+        <li><span class="accent">@Description</span> on params gives the LLM context</li>
+      </ul>
+    </div>
+  </div>
+</section>

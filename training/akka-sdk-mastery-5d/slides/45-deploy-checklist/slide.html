@@ -1,0 +1,17 @@
+<section id="slide-45" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Deploy</div>
+    <h2>Before you push the first image.</h2>
+    <p>A short checklist that saves you a Slack apology later.</p>
+  </div>
+  <div class="loci-grid">
+    <div class="locus"><div class="locus-title">Secrets</div><p>OPENAI_API_KEY, DB creds &mdash; via akka secrets, not the image.</p></div>
+    <div class="locus"><div class="locus-title">Resource limits</div><p>Memory + CPU per instance. Sensible defaults; tune based on load tests.</p></div>
+    <div class="locus"><div class="locus-title">Health checks</div><p>SDK provides them; assert readiness before promoting.</p></div>
+  </div>
+  <div class="loci-grid" style="margin-top: 18px;">
+    <div class="locus"><div class="locus-title">ACLs</div><p>What's public? Which endpoints require auth? Which are internal-only?</p></div>
+    <div class="locus"><div class="locus-title">Log level</div><p>INFO in prod. DEBUG on demand via config reload.</p></div>
+    <div class="locus"><div class="locus-title">Rollback path</div><p>Know how to <span class="accent">akka services deploy</span> the previous tag before you need to.</p></div>
+  </div>
+</section>

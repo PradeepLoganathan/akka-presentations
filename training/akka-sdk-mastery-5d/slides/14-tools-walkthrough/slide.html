@@ -1,0 +1,15 @@
+<section id="slide-14" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Agents</div>
+    <h2>SupportAgent's <span class="accent">four tools</span>.</h2>
+    <p>Each one hits a component we built on previous days. The LLM chooses which to call.</p>
+  </div>
+  <div class="matrix-card">
+    <div class="matrix-row matrix-head"><span>Tool</span><span>What it queries</span></div>
+    <div class="matrix-row"><span>getCustomer(id)</span><span>CustomerEntity.get() &mdash; profile summary</span></div>
+    <div class="matrix-row"><span>listOrdersForCustomer(id)</span><span>OrdersView.byCustomer &mdash; all orders + statuses</span></div>
+    <div class="matrix-row"><span>getOrder(id)</span><span>OrderEntity.get() &mdash; single order full detail</span></div>
+    <div class="matrix-row"><span>getAudit(id)</span><span>AuditLogEntity.get() &mdash; account change history</span></div>
+  </div>
+  <div class="callout">The LLM orchestrates tools without your code deciding order. Give clear descriptions and it usually does the right thing.</div>
+</section>

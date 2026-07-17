@@ -1,0 +1,32 @@
+<section id="slide-56" class="deck-slide" data-view>
+  <div class="slide-head compact">
+    <div class="eyebrow">Observability</div>
+    <h2>Prometheus + Grafana: <span class="accent">plug it in</span>.</h2>
+  </div>
+  <div class="two-code">
+    <div>
+      <div class="file-tag">Terminal</div>
+      <pre class="code-block"><span class="cmt"># wire the service's metrics to your Grafana Cloud</span>
+akka observability metrics export prometheus \
+    --url https://prometheus-prod.grafana.net/api/prom/push \
+    --username <span class="str">"..."</span> \
+    --password-from-secret grafana-key
+
+<span class="cmt"># or scrape the /metrics endpoint from your own Prometheus</span>
+scrape_configs:
+  - job_name: akka-workshop
+    metrics_path: /metrics
+    static_configs:
+      - targets: [<span class="str">'workshop-abc.akka.app'</span>]</pre>
+    </div>
+    <div>
+      <ul class="bullets">
+        <li>Metrics available regardless of Prometheus setup</li>
+        <li>Dashboards: sample project comes with a starter JSON</li>
+        <li>Golden signals: rate, error, duration &mdash; per component type</li>
+        <li>Track: workflow queue depth, entity passivation rate, LLM latency</li>
+        <li>Alert on <span class="accent">workflow completion time p99</span> &mdash; not just endpoint latency</li>
+      </ul>
+    </div>
+  </div>
+</section>
