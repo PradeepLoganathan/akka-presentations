@@ -2,6 +2,7 @@
   "slides": [
     { "id": "recap",                       "folder": "slides/recap" },
     { "id": "40-day5-opener",              "folder": "slides/40-day5-opener" },
+    { "id": "39-agenda",                   "folder": "slides/39-agenda" },
     { "id": "41-deploy-topology",          "folder": "slides/41-deploy-topology" },
     { "id": "42-akka-cli",                 "folder": "slides/42-akka-cli" },
     { "id": "43-container-image",          "folder": "slides/43-container-image" },

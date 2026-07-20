@@ -3,6 +3,7 @@
     { "id": "01-where-we-are",             "folder": "slides/01-where-we-are" },
     { "id": "02-sample-repo-state",        "folder": "slides/02-sample-repo-state" },
     { "id": "04-day3-opener",              "folder": "slides/04-day3-opener" },
+    { "id": "03-agenda",                   "folder": "slides/03-agenda" },
     { "id": "05-why-agents",               "folder": "slides/05-why-agents" },
     { "id": "06-what-is-an-agent",         "folder": "slides/06-what-is-an-agent" },
     { "id": "07-agent-lifecycle",          "folder": "slides/07-agent-lifecycle" },

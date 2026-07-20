@@ -1,12 +1,42 @@
 (function() {
   const slides = document.querySelectorAll('.deck-slide');
   const total = slides.length;
+
+  // Deck name from the document title: "Akka SDK Fundamentals — Akka" -> "AKKA SDK FUNDAMENTALS"
+  const deckName = (document.title || '')
+    .replace(/\s*[—–-]\s*Akka\s*$/i, '')
+    .trim()
+    .toUpperCase();
+
+  // Per-slide wayfinding rail (skipped on centred title / thanks slides).
   slides.forEach(function(slide, i) {
-    const num = document.createElement('div');
-    num.className = 'slide-number';
+    if (slide.classList.contains('title-slide')) return;
+    const footer = document.createElement('div');
+    footer.className = 'deck-footer';
+    const brand = document.createElement('span');
+    brand.className = 'deck-footer-brand';
+    brand.textContent = deckName;
+    const num = document.createElement('span');
+    num.className = 'deck-footer-num';
     num.textContent = (i + 1) + ' / ' + total;
-    slide.appendChild(num);
+    footer.appendChild(brand);
+    footer.appendChild(num);
+    slide.appendChild(footer);
   });
+
+  // Global scroll-progress bar, anchored to the bottom edge of the viewport.
+  const progress = document.createElement('div');
+  progress.className = 'deck-progress';
+  document.body.appendChild(progress);
+  function updateProgress() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const y = window.scrollY || window.pageYOffset;
+    const pct = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+    progress.style.transform = 'scaleX(' + pct + ')';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
 
   const views = Array.from(document.querySelectorAll('[data-view]'));
   function top(el) { return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset); }

@@ -12,14 +12,21 @@
 :root {
   --yellow: #F5C518;
   --black: #000;
-  --panel: #101116;
-  --line: #27282f;
+  --panel: #14151c;
+  --panel-2: #0d0e13;
+  --line: #2a2b33;
+  --line-soft: #202129;
   --muted: #8b8d98;
   --white: #fff;
   --green: #3fb950;
   --blue: #7EC8E3;
   --red: #ff5f57;
   --pad: 96px;
+  --radius: 10px;
+  --card-pad: 28px;
+  --card-bg: linear-gradient(180deg, rgba(22,23,30,.92), rgba(13,14,19,.92));
+  --card-shadow: 0 10px 30px -14px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.045);
+  --card-ease: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 @media (max-width: 900px) { :root { --pad: 28px; } }
 html { background: var(--black); scroll-behavior: smooth; }
@@ -46,15 +53,16 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(245,197,24,0.06) 1px, transparent 1px);
-  background-size: 48px 48px;
+  background-image: radial-gradient(circle, rgba(245,197,24,0.05) 1px, transparent 1px);
+  background-size: 46px 46px;
   pointer-events: none;
 }
 .deck-slide::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, rgba(0,0,0,0.95), rgba(0,0,0,0.78) 55%, rgba(0,0,0,0.98));
+  /* depth vignette — keeps the dot texture visible while framing the content */
+  background: radial-gradient(ellipse 130% 100% at 50% 26%, transparent 42%, rgba(0,0,0,0.72) 100%);
   pointer-events: none;
 }
 .deck-slide > * { position: relative; z-index: 1; }
@@ -140,8 +148,8 @@ body {
   font-weight: 700;
   letter-spacing: .4px;
 }
-.slide-head { max-width: 1050px; margin-bottom: 58px; }
-.slide-head.compact { margin-bottom: 38px; }
+.slide-head { max-width: 1050px; margin-bottom: 48px; }
+.slide-head.compact { margin-bottom: 32px; }
 .slide-head h2 {
   font-size: 58px;
   line-height: 1.04;
@@ -162,10 +170,19 @@ body {
 }
 .three-stat { grid-template-columns: repeat(3, 1fr); }
 .stat-block, .compare-col, .output-col, .locus, .phase, .question, .matrix-card, .rd-boundary {
-  background: rgba(16,17,22,.88);
-  border: 1px solid var(--line);
+  background: var(--card-bg);
+  border: 1px solid var(--line-soft);
   border-left: 3px solid var(--yellow);
-  padding: 26px;
+  border-radius: var(--radius);
+  padding: var(--card-pad);
+  box-shadow: var(--card-shadow);
+  transition: var(--card-ease);
+}
+.stat-block:hover, .compare-col:hover, .output-col:hover, .locus:hover,
+.phase:hover, .question:hover, .matrix-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -16px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.06);
+  border-color: var(--line);
 }
 .stat-num, .phase-num {
   color: var(--yellow);
@@ -175,7 +192,7 @@ body {
   margin-bottom: 18px;
 }
 .stat-title, .compare-label, .output-kicker, .locus-title {
-  color: var(--yellow);
+  color: #cfd1da;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 12px;
@@ -212,8 +229,10 @@ body {
   gap: 18px;
 }
 .loop-node, .lane, .conv-box, .conv-result, .stack-layer, .stack-output {
-  border: 1px solid var(--line);
-  background: rgba(16,17,22,.9);
+  border: 1px solid var(--line-soft);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
   padding: 28px;
 }
 .loop-node { flex: 1; border-top: 3px solid var(--yellow); }
@@ -301,9 +320,11 @@ body {
   gap: 16px;
 }
 .move-card {
-  background: rgba(16,17,22,.9);
-  border: 1px solid var(--line);
+  background: var(--card-bg);
+  border: 1px solid var(--line-soft);
   border-left: 3px solid var(--yellow);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
   padding: 24px;
   min-height: 178px;
 }
@@ -353,17 +374,18 @@ body {
 
 /* Training deck additions */
 .code-block {
-  background: rgba(16,17,22,.92);
-  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(18,19,25,.96), rgba(11,12,16,.96));
+  border: 1px solid var(--line-soft);
   border-left: 3px solid var(--yellow);
-  padding: 20px 24px;
+  padding: 22px 26px;
   font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 15px;
   line-height: 1.55;
   color: #e6e7ec;
   overflow-x: auto;
   white-space: pre;
-  border-radius: 2px;
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
 }
 .code-block .cmt { color: #8b8d98; font-style: italic; }
 .code-block .kw  { color: var(--yellow); }
@@ -395,17 +417,19 @@ body {
 .callout {
   margin-top: 26px;
   padding: 18px 22px;
-  border: 1px solid rgba(126,200,227,.35);
-  background: rgba(126,200,227,.06);
+  border: 1px solid rgba(126,200,227,.32);
+  background: linear-gradient(180deg, rgba(126,200,227,.10), rgba(126,200,227,.04));
   color: #cfe6f4;
   font-size: 17px;
   line-height: 1.45;
   border-left: 3px solid var(--blue);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
 }
 .pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
 .pill-row span { border: 1px solid rgba(245,197,24,.28); background: rgba(245,197,24,.06); color: #ece2ad; border-radius: 999px; padding: 8px 13px; font-size: 12px; font-weight: 700; letter-spacing: .4px; }
 .lifecycle { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; align-items: stretch; margin-top: 8px; }
-.lifecycle-step { background: rgba(16,17,22,.9); border: 1px solid var(--line); border-top: 3px solid var(--yellow); padding: 18px 16px; }
+.lifecycle-step { background: var(--card-bg); border: 1px solid var(--line-soft); border-top: 3px solid var(--yellow); border-radius: var(--radius); box-shadow: var(--card-shadow); padding: 18px 16px; }
 .lifecycle-step b { display: block; color: var(--yellow); font-size: 11px; letter-spacing: 2px; margin-bottom: 8px; }
 .lifecycle-step small { color: #cfd1d8; font-size: 14px; line-height: 1.35; }
 @media (max-width: 1000px) { .lifecycle { grid-template-columns: 1fr 1fr; } }
@@ -512,18 +536,113 @@ body {
   .agenda-step-body { font-size: 18px; }
 }
 
-/* Slide number in bottom right — injected by nav.js */
-.slide-number {
+/* Agenda as a numbered card grid — fills the canvas, matches the deck card system */
+.agenda-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.agenda-card {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--line-soft);
+  border-left: 3px solid var(--yellow);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  padding: 24px 26px 26px;
+  min-height: 172px;
+  transition: var(--card-ease);
+}
+.agenda-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -16px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.06);
+  border-color: var(--line);
+}
+.agenda-card-num {
+  color: var(--yellow);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 16px;
+}
+.agenda-card h3 {
+  font-size: 21px;
+  line-height: 1.14;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+.agenda-card p {
+  color: #b9bbc4;
+  font-size: 15px;
+  line-height: 1.42;
+}
+@media (max-width: 1000px) {
+  .agenda-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .agenda-grid { grid-template-columns: 1fr; }
+  .agenda-card { min-height: 0; }
+}
+/* Four-up variant for eight-chapter agendas */
+.agenda-grid.four { grid-template-columns: repeat(4, 1fr); }
+.agenda-grid.four .agenda-card { min-height: 150px; padding: 20px 22px 22px; }
+.agenda-grid.four .agenda-card-num { margin-bottom: 12px; }
+.agenda-grid.four .agenda-card h3 { font-size: 19px; }
+.agenda-grid.four .agenda-card p { font-size: 14px; }
+@media (max-width: 1100px) {
+  .agenda-grid.four { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .agenda-grid.four { grid-template-columns: 1fr; }
+}
+
+/* Bottom wayfinding rail — injected per slide by nav.js */
+.deck-footer {
   position: absolute;
-  bottom: 24px;
-  right: 32px;
+  left: var(--pad);
+  right: var(--pad);
+  bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  z-index: 2;
+}
+.deck-footer-brand {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+}
+.deck-footer-num {
   color: var(--muted);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 2px;
-  z-index: 2;
-  opacity: 0.6;
+  opacity: .8;
   font-variant-numeric: tabular-nums;
+}
+@media (max-width: 900px) {
+  .deck-footer { bottom: 20px; }
+  .deck-footer-brand { font-size: 10px; letter-spacing: 1.5px; }
+}
+
+/* Global scroll-progress bar pinned to the bottom edge */
+.deck-progress {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: var(--yellow);
+  box-shadow: 0 0 12px rgba(245,197,24,.5);
+  z-index: 50;
+  pointer-events: none;
+  transition: transform .1s linear;
 }
 
 
@@ -533,6 +652,10 @@ body {
 
 
 /* 40-day5-opener */
+/* Slide-specific overrides intentionally minimal. */
+
+
+/* 39-agenda */
 /* Slide-specific overrides intentionally minimal. */
 
 
@@ -676,6 +799,47 @@ body {
     <span>You need: an Akka account</span>
     <span>You need: your OpenAI key on the platform</span>
     <span>~6 hours</span>
+  </div>
+</section>
+
+
+<section id="slide-39" class="deck-slide" data-view>
+  <div class="slide-head">
+    <div class="eyebrow">Day 5 &middot; Agenda</div>
+    <h2>Six chapters from <span class="accent">build to production</span>.</h2>
+    <p>By the end, the sample is running in your own Akka account &mdash; traced, alerted, documented.</p>
+  </div>
+  <div class="agenda-grid">
+    <div class="agenda-card">
+      <div class="agenda-card-num">01</div>
+      <h3>Deploy</h3>
+      <p>The akka CLI, container image, first deploy, secrets, rolling upgrades, autoscale.</p>
+    </div>
+    <div class="agenda-card">
+      <div class="agenda-card-num">02</div>
+      <h3>Multi-region</h3>
+      <p>Active/active vs primary/replica &mdash; config-first, no code changes.</p>
+    </div>
+    <div class="agenda-card">
+      <div class="agenda-card-num">03</div>
+      <h3>Observability</h3>
+      <p>Metrics, Prometheus + Grafana, distributed tracing, alerts that page.</p>
+    </div>
+    <div class="agenda-card">
+      <div class="agenda-card-num">04</div>
+      <h3>Runbooks</h3>
+      <p>Stuck workflows, shard loss, LLM quota &mdash; what a tired oncall needs.</p>
+    </div>
+    <div class="agenda-card">
+      <div class="agenda-card-num">05</div>
+      <h3>Capacity &amp; cost</h3>
+      <p>Size for the right things; know where the money actually goes.</p>
+    </div>
+    <div class="agenda-card">
+      <div class="agenda-card-num">06</div>
+      <h3>Hands-on</h3>
+      <p>Ship it to your Akka account &mdash; a 90-minute lab.</p>
+    </div>
   </div>
 </section>
 
@@ -1373,6 +1537,14 @@ curl https://workshop-&lt;yours&gt;.akka.app/api/customers</pre>
     <span>docs.akka.io</span>
   </div>
   
+  <div class="title-presenter">
+    <div class="title-presenter-name">
+      <a href="https://www.linkedin.com/in/pradeeploganathan/" target="_blank">Pradeep Loganathan</a>
+    </div>
+    <div class="title-presenter-title">Field CTO</div>
+    <div class="title-presenter-email">pradeepdotloganathanatakkadotio</div>
+  </div>
+  
 </section>
 
 <script>
@@ -1381,12 +1553,42 @@ curl https://workshop-&lt;yours&gt;.akka.app/api/customers</pre>
 (function() {
   const slides = document.querySelectorAll('.deck-slide');
   const total = slides.length;
+
+  // Deck name from the document title: "Akka SDK Fundamentals — Akka" -> "AKKA SDK FUNDAMENTALS"
+  const deckName = (document.title || '')
+    .replace(/\s*[—–-]\s*Akka\s*$/i, '')
+    .trim()
+    .toUpperCase();
+
+  // Per-slide wayfinding rail (skipped on centred title / thanks slides).
   slides.forEach(function(slide, i) {
-    const num = document.createElement('div');
-    num.className = 'slide-number';
+    if (slide.classList.contains('title-slide')) return;
+    const footer = document.createElement('div');
+    footer.className = 'deck-footer';
+    const brand = document.createElement('span');
+    brand.className = 'deck-footer-brand';
+    brand.textContent = deckName;
+    const num = document.createElement('span');
+    num.className = 'deck-footer-num';
     num.textContent = (i + 1) + ' / ' + total;
-    slide.appendChild(num);
+    footer.appendChild(brand);
+    footer.appendChild(num);
+    slide.appendChild(footer);
   });
+
+  // Global scroll-progress bar, anchored to the bottom edge of the viewport.
+  const progress = document.createElement('div');
+  progress.className = 'deck-progress';
+  document.body.appendChild(progress);
+  function updateProgress() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const y = window.scrollY || window.pageYOffset;
+    const pct = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+    progress.style.transform = 'scaleX(' + pct + ')';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
 
   const views = Array.from(document.querySelectorAll('[data-view]'));
   function top(el) { return el.getBoundingClientRect().top + (window.scrollY || window.pageYOffset); }

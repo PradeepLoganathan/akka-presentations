@@ -2,6 +2,7 @@
   "slides": [
     { "id": "recap",                       "folder": "slides/recap" },
     { "id": "25-day4-opener",              "folder": "slides/25-day4-opener" },
+    { "id": "24-agenda",                   "folder": "slides/24-agenda" },
     { "id": "26-testing-pyramid",          "folder": "slides/26-testing-pyramid" },
     { "id": "27-workflow-testkit-deep",    "folder": "slides/27-workflow-testkit-deep" },
     { "id": "28-entity-testkit",           "folder": "slides/28-entity-testkit" },
