@@ -17,7 +17,7 @@ A collection of Akka presentation decks that are assembled from per-slide source
 ## Repo layout
 
 ```
-<name>-presentation/
+<deck>/                  every deck (core OR training) has this shape:
   slides/NN-*/           one folder per slide: slide.html / slide.css / slide.js / meta.json
   shell/                 shell.html template + shared.css + nav.js (+ kiosk.js)
   builder/build.py       assembles slides → generated/<mode>/index.html
@@ -25,23 +25,53 @@ A collection of Akka presentation decks that are assembled from per-slide source
   presenters/*.json      per-presenter name/title/email/linkedin for personalized builds
   generated/             build output served by Pages (partially tracked — see per-deck .gitignore)
 
-build-index.py           regenerates root index.html landing page
-index.html               landing page (GENERATED — never hand-edit)
+sales-presentation/ gartner-presentation/ dev-presentation/   the three core decks
+training/<deck>/         developer-training decks (same shape) — see "Training decks" below
+website/                 akka.io marketing IA: per-industry pages (.md + .html), mega-menu/footer,
+                         handoff notes — TRACKED (⇒ public) but NOT linked from the landing page
 case-studies/            standalone case-study HTML files + case-study-rules.md
 battlecard-*.{html,md,pdf}   standalone competitive briefs at repo root
+build-index.py           regenerates root index.html landing page
+index.html               landing page (GENERATED — never hand-edit)
 ```
 
-The three decks are `sales-presentation/`, `gartner-presentation/`, and `dev-presentation/`. Gartner additionally has `builder/bundle.py` which produces a single-file HTML with images inlined as base64 data URIs.
+**Core decks** — `sales-presentation/`, `gartner-presentation/`, `dev-presentation/`.
+- Gartner additionally has `builder/bundle.py` (single-file HTML with images inlined as base64 data URIs) plus `inline_external.py`, `migrate.py`, and `image-registry.json`.
+- Sales carries two parallel slide sets in one `slides/` folder — `NN-*` (overview / token-shredder builds) and `sp-NN-*` (the "specify" build) — and publishes four variants: `overview/`, `specify/`, `token-shredder/`, `token-shredder-6/`.
+
+## Training decks (`training/`)
+
+Five **source** decks, one per training day, each with the standard deck shape:
+
+| Folder | Day | Topic |
+|--------|-----|-------|
+| `akka-sdk-fundamentals` | 1 | SDK fundamentals |
+| `akka-sdk-workflows`    | 2 | Workflows |
+| `akka-sdk-agents`       | 3 | Agents, tools, memory, MCP |
+| `akka-sdk-testing`      | 4 | Testkits, integration, chaos, contracts, load |
+| `akka-sdk-deploy`       | 5 | Deploy, multi-region, observability, runbooks, cost |
+
+Their `build.py` supports `--mode overview|shareable`, `--out`, and `--presenter` (only `presenters/pradeep.json` exists). CI (`.github/workflows/pages.yml`) rebuilds all five with `--presenter pradeep` on every push to `main`, so the personalized `generated/overview/` is produced fresh in CI — do not commit a personalized build by hand.
+
+Three sibling folders — `akka-sdk-fundamentals-3h`, `akka-sdk-workflows-day`, `akka-sdk-mastery-5d` — are **legacy redirect stubs** left by the folder rename (commit `241062a`). Each is only a `generated/overview/index.html` that meta-refreshes to a renamed deck (→ `fundamentals`, `workflows`, `agents` respectively). They have no source, no builder, and are not in `build-index.py` or CI — keep them so old URLs don't 404, but don't treat them as real decks.
 
 ## Build commands
 
 All builds are `python3` (no venv, no requirements). Run from the repo root; each build script resolves paths from its own location.
 
 ```bash
-# Standard build (each deck)
+# Standard build (each core deck)
 python3 sales-presentation/builder/build.py
 python3 gartner-presentation/builder/build.py
 python3 dev-presentation/builder/build.py
+
+# Training decks — CI builds all five with --presenter pradeep on every push to main.
+# Each also takes --mode shareable / --presenter <name> / --out, like the core decks.
+python3 training/akka-sdk-fundamentals/builder/build.py
+python3 training/akka-sdk-workflows/builder/build.py
+python3 training/akka-sdk-agents/builder/build.py
+python3 training/akka-sdk-testing/builder/build.py
+python3 training/akka-sdk-deploy/builder/build.py
 
 # Personalized (sales & gartner) — reads presenters/<name>.json
 python3 sales-presentation/builder/build.py --presenter <name>
@@ -72,9 +102,11 @@ Per-deck `.gitignore` files govern what lands in git:
 
 | Deck | Tracked in git |
 |------|----------------|
-| `sales-presentation` | Only `generated/overview/` and `generated/specify/` |
+| `sales-presentation` | Only `generated/overview/`, `generated/specify/`, `generated/token-shredder/`, `generated/token-shredder-6/` |
 | `gartner-presentation` | The full built HTML + assets (both `generated/overview/` and `generated/akka-gartner-deck.html`) |
 | `dev-presentation` | Full built output except zips |
+| `training/<source deck>` | Full `generated/` except `*.zip` — CI regenerates the personalized `overview/` on push |
+| `training/*-3h`, `*-day`, `*-mastery-5d` | The committed redirect stub only (no build) |
 
 **Never blanket-ignore a presentation's published build from the root `.gitignore`** — each deck's own `.gitignore` is the source of truth, and the root file must not override it.
 
@@ -97,8 +129,9 @@ Root `index.html` is generated by `build-index.py` — **never hand-edit it**. T
 - Reads the "Last updated" date from `git log -1 --format=%cs -- <linked-file>` (falls back to `"unpublished"` for uncommitted files).
 - Orders decks and battlecards latest-updated first, keyed by the last commit touching the *linked file* (finer than the displayed YYYY-MM-DD).
 - Battlecards are the standalone `battlecard-*.html` files at repo root, listed in the `BATTLECARDS` array in `build-index.py`.
+- Training decks live in a separate `TRAININGS` array and render under a "Training" heading; battlecards render under "Competitive briefs". The redirect-stub training folders are intentionally left out of all three arrays.
 
-To add a deck or battlecard, append to the `PRESENTATIONS` or `BATTLECARDS` list at the top of `build-index.py`, re-run it, and commit `index.html`.
+To add a deck, training deck, or battlecard, append to the `PRESENTATIONS`, `TRAININGS`, or `BATTLECARDS` list at the top of `build-index.py`, re-run it, and commit `index.html`. Note CI already runs `build-index.py` after building the training decks, so on `main` the regenerated `index.html` also comes from CI.
 
 ## Case studies
 

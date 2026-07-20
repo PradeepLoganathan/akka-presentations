@@ -1,8 +1,8 @@
 # Presentations
 
-Akka presentation decks. Each deck lives in its own `<name>-presentation/` folder,
-is built from per-slide source files into self-contained HTML, and is published via
-GitHub Pages.
+Akka presentation decks. The three core decks live in their own `<name>-presentation/`
+folders; developer-training decks live under `training/`. Each deck is built from
+per-slide source files into self-contained HTML and published via GitHub Pages.
 
 **Live index:** https://pradeeploganathan.github.io/akka-presentations/
 
@@ -27,13 +27,17 @@ adding a file, ask *"Am I OK with this on the public internet?"* — if no, it g
 ## Layout
 
 ```
-<name>-presentation/
+<deck>/               a deck (core deck OR training/<deck>) has this shape:
   slides/NN-*/        one folder per slide (slide.html / slide.css / slide.js / meta.json)
   shell/              shell.html template + shared.css + nav.js (+ kiosk.js)
   builder/build.py    assembles slides -> generated/<mode>/index.html
   builder/bundle.py   (Gartner) inlines images -> single-file generated/akka-gartner-deck.html
   presenters/*.json   name / title / email / linkedin for personalized builds
   generated/          build output served by Pages
+sales-presentation/ gartner-presentation/ dev-presentation/   the three core decks
+training/             developer-training decks (five day-by-day source decks + legacy
+                      redirect stubs); CI rebuilds these with --presenter pradeep on push
+website/              akka.io marketing IA pages — tracked (public) but not on the landing page
 build-index.py        regenerates index.html (titles from slides, dates from git log)
 index.html            the landing page that lists every deck (generated — do not hand-edit)
 .nojekyll             tells Pages to serve files verbatim (do not delete)
@@ -64,7 +68,8 @@ index.html            the landing page that lists every deck (generated — do n
 ### 4. What gets committed
 - Track only the build that is meant to be shared:
   - **Gartner** — the generated HTML + assets (`overview/` and `akka-gartner-deck.html`).
-  - **Sales** — only `generated/overview/` (the personalized overview).
+  - **Sales** — the four published variants: `generated/overview/`, `specify/`, `token-shredder/`, `token-shredder-6/`.
+  - **Dev & training** — the full `generated/` output (training decks are re-personalized in CI).
 - **Never commit the build `*.zip` archives** — they stay git-ignored.
 - Each presentation's own `.gitignore` governs its `generated/`; the root `.gitignore`
   must not blanket-ignore a presentation's published build.
@@ -82,10 +87,11 @@ slide's subtitle, and the `Last updated` date from the last commit on the linked
 (`git log -1 --format=%cs`). Each deck is listed once, **ordered latest-updated first**
 (by the linked file's last commit time).
 
-To add a presentation, append an entry to the `PRESENTATIONS` list at the top of
-`build-index.py` — its `dir` and the published `link` (e.g.
-`<name>-presentation/generated/overview/` or a single-file deck) — then re-run it and
-commit `index.html`.
+To add a deck, append an entry at the top of `build-index.py` — to `PRESENTATIONS` for a
+core deck, `TRAININGS` for a training deck, or `BATTLECARDS` for a competitive brief — with
+its `dir` and published `link` (e.g. `training/<deck>/generated/overview/` or a single-file
+deck), then re-run it and commit `index.html`. Training decks render under a "Training"
+heading and battlecards under "Competitive briefs".
 
 ## Publishing
 
