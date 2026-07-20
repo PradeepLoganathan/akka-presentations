@@ -61,7 +61,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  /* depth vignette — keeps the dot texture visible while framing the content */
+  /* depth vignette - keeps the dot texture visible while framing the content */
   background: radial-gradient(ellipse 130% 100% at 50% 26%, transparent 42%, rgba(0,0,0,0.72) 100%);
   pointer-events: none;
 }
@@ -536,7 +536,7 @@ body {
   .agenda-step-body { font-size: 18px; }
 }
 
-/* Agenda as a numbered card grid — fills the canvas, matches the deck card system */
+/* Agenda as a numbered card grid - fills the canvas, matches the deck card system */
 .agenda-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -597,7 +597,7 @@ body {
   .agenda-grid.four { grid-template-columns: 1fr; }
 }
 
-/* Bottom wayfinding rail — injected per slide by nav.js */
+/* Bottom wayfinding rail - injected per slide by nav.js */
 .deck-footer {
   position: absolute;
   left: var(--pad);
@@ -764,7 +764,7 @@ body {
     <div class="stat-block"><div class="stat-num">Day 2 &middot; AM</div><div class="stat-title">Workflows</div><div class="stat-text">Second aggregate (Order), OrderWorkflow with compensation, abandon-cart timer.</div></div>
     <div class="stat-block"><div class="stat-num">Day 2 &middot; PM</div><div class="stat-title">Consumers</div><div class="stat-text">CustomerAuditConsumer, AuditLogEntity. Reactive processing that isn't a view.</div></div>
   </div>
-  <div class="callout">If any of that is fuzzy, ask &mdash; today's material builds on it directly.</div>
+  <div class="callout">If any of that is fuzzy, ask - today's material builds on it directly.</div>
 </section>
 
 
@@ -796,7 +796,7 @@ mvn compile exec:java</pre>
         <li>Each branch compiles + runs on its own</li>
         <li>Bug fixes on <span class="accent">main</span> merge forward</li>
         <li>OPENAI_API_KEY is only needed on <span class="accent">agents</span></li>
-        <li>Day 5 deploys the same code &mdash; unchanged</li>
+        <li>Day 5 deploys the same code - unchanged</li>
       </ul>
     </div>
   </div>
@@ -809,7 +809,7 @@ mvn compile exec:java</pre>
   <h1 class="title-headline"><span class="accent">Agentic</span></h1>
   <div class="title-sub">AGENTS, TOOLS, MEMORY, MCP</div>
   <div class="rule"></div>
-  <p class="title-copy">Add an LLM to the mix &mdash; not as a wrapper, as a component that participates in the same runtime.</p>
+  <p class="title-copy">Add an LLM to the mix - not as a wrapper, as a component that participates in the same runtime.</p>
   <div class="session-meta">
     <span>Sample branch: agents</span>
     <span>OpenAI gpt-4o-mini</span>
@@ -828,12 +828,12 @@ mvn compile exec:java</pre>
     <div class="agenda-card">
       <div class="agenda-card-num">01</div>
       <h3>Why agents belong here</h3>
-      <p>A stateful, addressable, reactive LLM caller &mdash; a real component.</p>
+      <p>A stateful, addressable, reactive LLM caller - a real component.</p>
     </div>
     <div class="agenda-card">
       <div class="agenda-card-num">02</div>
       <h3>Anatomy &amp; lifecycle</h3>
-      <p>The Effect.Builder, the system message, model providers &mdash; all in config.</p>
+      <p>The Effect.Builder, the system message, model providers - all in config.</p>
     </div>
     <div class="agenda-card">
       <div class="agenda-card-num">03</div>
@@ -853,7 +853,7 @@ mvn compile exec:java</pre>
     <div class="agenda-card">
       <div class="agenda-card-num">06</div>
       <h3>Hands-on</h3>
-      <p>Talk to your service &mdash; a 90-minute lab.</p>
+      <p>Talk to your service - a 90-minute lab.</p>
     </div>
   </div>
 </section>
@@ -863,12 +863,12 @@ mvn compile exec:java</pre>
   <div class="slide-head">
     <div class="eyebrow">Why agents belong here</div>
     <h2>An agent is a <span class="accent">stateful, addressable, reactive</span> LLM caller.</h2>
-    <p>That's a mouthful. Look at each word &mdash; you already have infrastructure for it.</p>
+    <p>That's a mouthful. Look at each word - you already have infrastructure for it.</p>
   </div>
   <div class="loci-grid">
     <div class="locus"><div class="locus-title">Stateful</div><p>Session memory persists across turns. Same runtime the entities use.</p></div>
     <div class="locus"><div class="locus-title">Addressable</div><p>Session id routes you to the same agent instance. Same sharding as entities.</p></div>
-    <div class="locus"><div class="locus-title">Reactive</div><p>Agents can be called from workflows, consumers, endpoints &mdash; anywhere a component can.</p></div>
+    <div class="locus"><div class="locus-title">Reactive</div><p>Agents can be called from workflows, consumers, endpoints - anywhere a component can.</p></div>
   </div>
   <div class="callout">You don't bolt an LLM onto Akka. You <span class="accent">host</span> it as a component and get the whole runtime for free.</div>
 </section>
@@ -895,7 +895,7 @@ mvn compile exec:java</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li><span class="accent">extends Agent</span> &mdash; component base class</li>
+        <li><span class="accent">extends Agent</span> - component base class</li>
         <li><span class="accent">@ComponentId</span> gives it identity for storage &amp; routing</li>
         <li><span class="accent">effects()</span> builds an LLM interaction description</li>
         <li><span class="accent">systemMessage / userMessage</span> mirror the OpenAI chat contract</li>
@@ -928,7 +928,7 @@ mvn compile exec:java</pre>
 <section id="slide-08" class="deck-slide" data-view>
   <div class="slide-head compact">
     <div class="eyebrow">Agents</div>
-    <h2>Model providers &mdash; <span class="accent">first-class in the SDK</span>.</h2>
+    <h2>Model providers - <span class="accent">first-class in the SDK</span>.</h2>
   </div>
   <div class="matrix-card">
     <div class="matrix-row matrix-head"><span>Provider</span><span>Where it fits</span></div>
@@ -938,7 +938,7 @@ mvn compile exec:java</pre>
     <div class="matrix-row"><span>HuggingFace</span><span>Any hosted model with an HF endpoint.</span></div>
     <div class="matrix-row"><span>Ollama / LocalAI</span><span>Air-gapped or dev-loop with a local model. No cloud API key.</span></div>
   </div>
-  <div class="callout">Different agents in the same service can use different providers. Config-driven &mdash; no code change to switch models.</div>
+  <div class="callout">Different agents in the same service can use different providers. Config-driven - no code change to switch models.</div>
 </section>
 
 
@@ -966,7 +966,7 @@ mvn compile exec:java</pre>
     <div>
       <ul class="bullets">
         <li>SDK ships default openai/anthropic/gemini configs</li>
-        <li>Override only what you need &mdash; model name, temperature, base URL</li>
+        <li>Override only what you need - model name, temperature, base URL</li>
         <li><span class="accent">api-key = ${?OPENAI_API_KEY}</span> is already in the reference config</li>
         <li>Fail-fast on startup if the key is missing</li>
         <li>Individual agents can override via <span class="accent">.model(ModelProvider.openAi(...))</span></li>
@@ -979,7 +979,7 @@ mvn compile exec:java</pre>
 <section id="slide-10" class="deck-slide" data-view>
   <div class="slide-head">
     <div class="eyebrow">The sample</div>
-    <h2>SupportAgent &mdash; the real one.</h2>
+    <h2>SupportAgent - the real one.</h2>
     <p>A customer-support agent that answers "where's my order?" using the sample's data as tools.</p>
   </div>
   <div class="loci-grid">
@@ -1010,11 +1010,11 @@ mvn compile exec:java</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li><span class="accent">.memory(...)</span> &mdash; MemoryProvider (LimitedWindow / Disabled / Custom)</li>
-        <li><span class="accent">.systemMessage(...)</span> &mdash; guardrails, role, constraints</li>
-        <li><span class="accent">.tools(this, ...)</span> &mdash; objects or classes hosting <span class="accent">@FunctionTool</span> methods</li>
-        <li><span class="accent">.userMessage(...)</span> &mdash; the actual question</li>
-        <li><span class="accent">.thenReply()</span> &mdash; return the model's text response</li>
+        <li><span class="accent">.memory(...)</span> - MemoryProvider (LimitedWindow / Disabled / Custom)</li>
+        <li><span class="accent">.systemMessage(...)</span> - guardrails, role, constraints</li>
+        <li><span class="accent">.tools(this, ...)</span> - objects or classes hosting <span class="accent">@FunctionTool</span> methods</li>
+        <li><span class="accent">.userMessage(...)</span> - the actual question</li>
+        <li><span class="accent">.thenReply()</span> - return the model's text response</li>
       </ul>
     </div>
   </div>
@@ -1029,7 +1029,7 @@ mvn compile exec:java</pre>
   <div class="two-code">
     <div>
       <div class="file-tag">SupportAgent.SYSTEM_PROMPT</div>
-      <pre class="code-block">You are Akka Workshop Support &mdash; a customer-support
+      <pre class="code-block">You are Akka Workshop Support - a customer-support
 assistant for the sample e-commerce service in the
 akka-workshop repository.
 
@@ -1046,7 +1046,7 @@ Rules:
     <div>
       <ul class="bullets">
         <li>Persona + boundaries + escalation policy in plain text</li>
-        <li>The model reads this before every question &mdash; even follow-ups</li>
+        <li>The model reads this before every question - even follow-ups</li>
         <li>Prompt injection defence lives here first</li>
         <li>Iterate this file; it's the highest-leverage line of code</li>
         <li>PromptTemplate + template-id for i18n or per-tenant prompts</li>
@@ -1059,7 +1059,7 @@ Rules:
 <section id="slide-13" class="deck-slide" data-view>
   <div class="slide-head compact">
     <div class="eyebrow">Agents</div>
-    <h2><span class="accent">@FunctionTool</span> &mdash; a method the model can call.</h2>
+    <h2><span class="accent">@FunctionTool</span> - a method the model can call.</h2>
   </div>
   <div class="two-code">
     <div>
@@ -1082,7 +1082,7 @@ Rules:
       <ul class="bullets">
         <li><span class="accent">description</span> is what the LLM reads to pick a tool</li>
         <li><span class="accent">@Description</span> on params helps the LLM fill them right</li>
-        <li>Return <span class="accent">String</span> &mdash; that's what the model sees</li>
+        <li>Return <span class="accent">String</span> - that's what the model sees</li>
         <li>Format the return so the model can quote it later</li>
         <li>"No data" is a valid answer; never fabricate</li>
       </ul>
@@ -1099,10 +1099,10 @@ Rules:
   </div>
   <div class="matrix-card">
     <div class="matrix-row matrix-head"><span>Tool</span><span>What it queries</span></div>
-    <div class="matrix-row"><span>getCustomer(id)</span><span>CustomerEntity.get() &mdash; profile summary</span></div>
-    <div class="matrix-row"><span>listOrdersForCustomer(id)</span><span>OrdersView.byCustomer &mdash; all orders + statuses</span></div>
-    <div class="matrix-row"><span>getOrder(id)</span><span>OrderEntity.get() &mdash; single order full detail</span></div>
-    <div class="matrix-row"><span>getAudit(id)</span><span>AuditLogEntity.get() &mdash; account change history</span></div>
+    <div class="matrix-row"><span>getCustomer(id)</span><span>CustomerEntity.get() - profile summary</span></div>
+    <div class="matrix-row"><span>listOrdersForCustomer(id)</span><span>OrdersView.byCustomer - all orders + statuses</span></div>
+    <div class="matrix-row"><span>getOrder(id)</span><span>OrderEntity.get() - single order full detail</span></div>
+    <div class="matrix-row"><span>getAudit(id)</span><span>AuditLogEntity.get() - account change history</span></div>
   </div>
   <div class="callout">The LLM orchestrates tools without your code deciding order. Give clear descriptions and it usually does the right thing.</div>
 </section>
@@ -1116,11 +1116,11 @@ Rules:
   <div class="matrix-card">
     <div class="matrix-row matrix-head"><span>Provider</span><span>Behaviour</span></div>
     <div class="matrix-row"><span>Disabled</span><span>No history. Each turn is a cold start.</span></div>
-    <div class="matrix-row"><span>LimitedWindow</span><span>Bounded history &mdash; last N messages or K bytes. Sample uses this.</span></div>
+    <div class="matrix-row"><span>LimitedWindow</span><span>Bounded history - last N messages or K bytes. Sample uses this.</span></div>
     <div class="matrix-row"><span>FromConfig</span><span>Reads memory settings from application.conf. Central overrides.</span></div>
     <div class="matrix-row"><span>Custom</span><span>Plug in your own SessionMemory implementation. Redis, external store, whatever.</span></div>
   </div>
-  <div class="callout">Memory is persisted by the runtime &mdash; the same cluster mechanism as entities. No external cache needed.</div>
+  <div class="callout">Memory is persisted by the runtime - the same cluster mechanism as entities. No external cache needed.</div>
 </section>
 
 
@@ -1149,8 +1149,8 @@ MemoryProvider.none();</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li>FIFO eviction &mdash; oldest turn drops first</li>
-        <li>510 KiB default max &mdash; safe for cluster routing</li>
+        <li>FIFO eviction - oldest turn drops first</li>
+        <li>510 KiB default max - safe for cluster routing</li>
         <li>readOnly for a passive observer agent</li>
         <li>writeOnly for a "log-only" mode during rollout</li>
         <li>Memory is <span class="accent">per session id</span>, shared across agents in the same session</li>
@@ -1180,11 +1180,11 @@ MemoryProvider.none();</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li>Caller chooses the session id &mdash; per-user, per-ticket, per-thread</li>
+        <li>Caller chooses the session id - per-user, per-ticket, per-thread</li>
         <li><span class="accent">forAgent().inSession(id)</span> is how ComponentClient routes</li>
-        <li>Memory is scoped to the session &mdash; not the agent</li>
+        <li>Memory is scoped to the session - not the agent</li>
         <li>Two different agents in the same session share memory</li>
-        <li>Sessions never explicitly end &mdash; memory bounds them naturally</li>
+        <li>Sessions never explicitly end - memory bounds them naturally</li>
       </ul>
     </div>
   </div>
@@ -1212,11 +1212,11 @@ MemoryProvider.none();</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li><span class="accent">.responseAs(Type.class)</span> &mdash; deserialises JSON to a record</li>
-        <li><span class="accent">.map(fn)</span> &mdash; transform the raw string</li>
+        <li><span class="accent">.responseAs(Type.class)</span> - deserialises JSON to a record</li>
+        <li><span class="accent">.map(fn)</span> - transform the raw string</li>
         <li>Use for tickets, decisions, workflow inputs</li>
         <li>The runtime handles parse errors as <span class="accent">JsonParsingException</span></li>
-        <li>Prompt the schema explicitly &mdash; the model can't infer field names</li>
+        <li>Prompt the schema explicitly - the model can't infer field names</li>
       </ul>
     </div>
   </div>
@@ -1253,7 +1253,7 @@ MemoryProvider.none();</pre>
     <div class="locus"><div class="locus-title">Different sessions</div><p>Isolated. Useful for tenant separation or batch workers.</p></div>
     <div class="locus"><div class="locus-title">AgentRegistry</div><p><span class="accent">@AgentDescription</span> makes agents discoverable so a supervisor agent can list &amp; delegate.</p></div>
   </div>
-  <div class="callout">Multi-agent lives in the same Java service &mdash; no bus, no coordinator, no separate deployment.</div>
+  <div class="callout">Multi-agent lives in the same Java service - no bus, no coordinator, no separate deployment.</div>
 </section>
 
 
@@ -1264,7 +1264,7 @@ MemoryProvider.none();</pre>
     <p>Model Context Protocol lets external LLM clients (Claude Desktop, Cursor, other agents) call tools you expose over HTTP.</p>
   </div>
   <div class="loci-grid">
-    <div class="locus"><div class="locus-title">You expose</div><p>Tools, resources, prompts &mdash; via annotations on plain Java methods.</p></div>
+    <div class="locus"><div class="locus-title">You expose</div><p>Tools, resources, prompts - via annotations on plain Java methods.</p></div>
     <div class="locus"><div class="locus-title">Clients call</div><p>JSON-RPC over HTTP. Streamable. Discoverable via tools/list.</p></div>
     <div class="locus"><div class="locus-title">Auth</div><p>Same <span class="accent">@Acl</span> annotations as any endpoint. Same identity model.</p></div>
   </div>
@@ -1312,7 +1312,7 @@ MemoryProvider.none();</pre>
 <section id="slide-23" class="deck-slide" data-view>
   <div class="slide-head compact">
     <div class="eyebrow">MCP</div>
-    <h2>Wiring a real client &mdash; <span class="accent">Claude Desktop</span>.</h2>
+    <h2>Wiring a real client - <span class="accent">Claude Desktop</span>.</h2>
   </div>
   <div class="two-code">
     <div>
@@ -1329,7 +1329,7 @@ MemoryProvider.none();</pre>
     <div>
       <ul class="bullets">
         <li>Same MCP the Anthropic client already speaks</li>
-        <li>No plugin, no adapter code &mdash; just URL + name</li>
+        <li>No plugin, no adapter code - just URL + name</li>
         <li>Restart Claude Desktop; tools appear in the tool picker</li>
         <li>Same setup pattern for Cursor, other agents, other services</li>
         <li>Deploy to Akka runtime &rarr; publicly reachable MCP endpoint</li>
@@ -1384,9 +1384,9 @@ curl -XPOST http://localhost:9000/api/support/s-1 -d <span class="str">'{"questi
     <p>The best way to retain what you've learned is to build one small thing of your own with it. Then come back with questions.</p>
   </div>
   <div class="loci-grid">
-    <div class="locus"><div class="locus-title">Docs</div><p><span class="accent">docs.akka.io</span> &mdash; SDK reference, patterns, HOWTOs.</p></div>
-    <div class="locus"><div class="locus-title">Sample</div><p><span class="accent">github.com/PradeepLoganathan/akka-workshop</span> &mdash; the sample you built on.</p></div>
-    <div class="locus"><div class="locus-title">Community</div><p><span class="accent">akka.io/community</span> &mdash; forums, Discord, office hours.</p></div>
+    <div class="locus"><div class="locus-title">Docs</div><p><span class="accent">docs.akka.io</span> - SDK reference, patterns, HOWTOs.</p></div>
+    <div class="locus"><div class="locus-title">Sample</div><p><span class="accent">github.com/PradeepLoganathan/akka-workshop</span> - the sample you built on.</p></div>
+    <div class="locus"><div class="locus-title">Community</div><p><span class="accent">akka.io/community</span> - forums, Discord, office hours.</p></div>
   </div>
   <div class="pill-row">
     <span>github.com/PradeepLoganathan/akka-workshop</span>
@@ -1403,7 +1403,7 @@ curl -XPOST http://localhost:9000/api/support/s-1 -d <span class="str">'{"questi
   <h1 class="title-headline"><span class="accent">Questions?</span></h1>
   <div class="title-sub">TOMORROW: TESTING WHAT YOU JUST BUILT</div>
   <div class="rule"></div>
-  <p class="title-copy">You've wired an LLM in as a first-class component &mdash; tools, memory, MCP, all backed by the same runtime. Play with the sample tonight. Break the system prompt on purpose. Add a fifth tool.</p>
+  <p class="title-copy">You've wired an LLM in as a first-class component - tools, memory, MCP, all backed by the same runtime. Play with the sample tonight. Break the system prompt on purpose. Add a fifth tool.</p>
   <div class="session-meta">
     <span>github.com/PradeepLoganathan/akka-workshop</span>
     <span>docs.akka.io</span>

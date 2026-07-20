@@ -5,7 +5,7 @@
     <p>For a typical Akka service with agents, LLM tokens dominate. Storage is a distant second. Compute is a rounding error.</p>
   </div>
   <div class="loci-grid">
-    <div class="locus"><div class="locus-title">LLM tokens</div><p>Model choice matters &mdash; gpt-4o-mini vs gpt-4o is ~15x. Memory window doubles cost linearly.</p></div>
+    <div class="locus"><div class="locus-title">LLM tokens</div><p>Model choice matters - gpt-4o-mini vs gpt-4o is ~15x. Memory window doubles cost linearly.</p></div>
     <div class="locus"><div class="locus-title">Storage</div><p>Event journal + snapshots. Grows forever unless you archive cold data.</p></div>
     <div class="locus"><div class="locus-title">Compute</div><p>Managed runtime is priced per instance-hour. Small compared to LLM in most agentic services.</p></div>
   </div>

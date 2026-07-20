@@ -23,9 +23,9 @@ assertThat(auditEntity.getState().entries()).hasSize(1);</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li>Consumer effects are captured &mdash; nothing actually calls the network</li>
+        <li>Consumer effects are captured - nothing actually calls the network</li>
         <li>Assert on the deferred calls the consumer would make</li>
-        <li>Test idempotency explicitly &mdash; feed the same event twice</li>
+        <li>Test idempotency explicitly - feed the same event twice</li>
         <li>Combine with an EventSourcedTestKit for full audit pipeline test</li>
       </ul>
     </div>

@@ -61,7 +61,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  /* depth vignette — keeps the dot texture visible while framing the content */
+  /* depth vignette - keeps the dot texture visible while framing the content */
   background: radial-gradient(ellipse 130% 100% at 50% 26%, transparent 42%, rgba(0,0,0,0.72) 100%);
   pointer-events: none;
 }
@@ -536,7 +536,7 @@ body {
   .agenda-step-body { font-size: 18px; }
 }
 
-/* Agenda as a numbered card grid — fills the canvas, matches the deck card system */
+/* Agenda as a numbered card grid - fills the canvas, matches the deck card system */
 .agenda-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -597,7 +597,7 @@ body {
   .agenda-grid.four { grid-template-columns: 1fr; }
 }
 
-/* Bottom wayfinding rail — injected per slide by nav.js */
+/* Bottom wayfinding rail - injected per slide by nav.js */
 .deck-footer {
   position: absolute;
   left: var(--pad);
@@ -734,7 +734,7 @@ body {
   <div class="three-stat">
     <div class="stat-block"><div class="stat-num">01</div><div class="stat-title">SupportAgent</div><div class="stat-text">LLM-backed component with four function tools and last-10-turn session memory.</div></div>
     <div class="stat-block"><div class="stat-num">02</div><div class="stat-title">MCP server</div><div class="stat-text">Three read-only tools exposed to external clients like Claude Desktop.</div></div>
-    <div class="stat-block"><div class="stat-num">03</div><div class="stat-title">Same runtime</div><div class="stat-text">Agents, workflows, entities, consumers &mdash; all in the same JVM, same cluster.</div></div>
+    <div class="stat-block"><div class="stat-num">03</div><div class="stat-title">Same runtime</div><div class="stat-text">Agents, workflows, entities, consumers - all in the same JVM, same cluster.</div></div>
   </div>
   <div class="callout">Today: prove it doesn't fall over.</div>
 </section>
@@ -759,7 +759,7 @@ body {
   <div class="slide-head">
     <div class="eyebrow">Day 4 &middot; Agenda</div>
     <h2>Six ways to <span class="accent">trust the system</span>.</h2>
-    <p>From unit TestKits to chaos and contracts &mdash; then you extend the sample's suite yourself.</p>
+    <p>From unit TestKits to chaos and contracts - then you extend the sample's suite yourself.</p>
   </div>
   <div class="agenda-grid">
     <div class="agenda-card">
@@ -770,7 +770,7 @@ body {
     <div class="agenda-card">
       <div class="agenda-card-num">02</div>
       <h3>TestKits per component</h3>
-      <p>Workflow, entity, consumer, and agent &mdash; each has one.</p>
+      <p>Workflow, entity, consumer, and agent - each has one.</p>
     </div>
     <div class="agenda-card">
       <div class="agenda-card-num">03</div>
@@ -790,7 +790,7 @@ body {
     <div class="agenda-card">
       <div class="agenda-card-num">06</div>
       <h3>Hands-on</h3>
-      <p>Grow the sample's test suite &mdash; a 60-minute lab.</p>
+      <p>Grow the sample's test suite - a 60-minute lab.</p>
     </div>
   </div>
 </section>
@@ -817,7 +817,7 @@ body {
 <section id="slide-27" class="deck-slide" data-view>
   <div class="slide-head compact">
     <div class="eyebrow">Testing</div>
-    <h2>WorkflowTestKit &mdash; <span class="accent">step by step</span>.</h2>
+    <h2>WorkflowTestKit - <span class="accent">step by step</span>.</h2>
   </div>
   <div class="two-code">
     <div>
@@ -845,7 +845,7 @@ assertThat(t2.stepName()).isEqualTo(<span class="str">"charge"</span>);</pre>
         <li>Mock component clients per step for isolation</li>
         <li>Assert transitions, state, scheduled timers</li>
         <li>Run one step at a time or the whole workflow</li>
-        <li>Time is virtual &mdash; test 24h timers in milliseconds</li>
+        <li>Time is virtual - test 24h timers in milliseconds</li>
       </ul>
     </div>
   </div>
@@ -879,9 +879,9 @@ assertThat(tk.getState().status()).isEqualTo(OrderStatus.RESERVED);</pre>
       <ul class="bullets">
         <li>Fastest possible feedback for domain logic</li>
         <li>Test replay: <span class="accent">tk.replayEvents(...)</span> and assert state</li>
-        <li>Test guard clauses &mdash; illegal transitions returned as errors</li>
+        <li>Test guard clauses - illegal transitions returned as errors</li>
         <li>Snapshot a scenario with builders (see slide 36)</li>
-        <li>Milliseconds per test &mdash; run thousands in CI</li>
+        <li>Milliseconds per test - run thousands in CI</li>
       </ul>
     </div>
   </div>
@@ -913,9 +913,9 @@ assertThat(auditEntity.getState().entries()).hasSize(1);</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li>Consumer effects are captured &mdash; nothing actually calls the network</li>
+        <li>Consumer effects are captured - nothing actually calls the network</li>
         <li>Assert on the deferred calls the consumer would make</li>
-        <li>Test idempotency explicitly &mdash; feed the same event twice</li>
+        <li>Test idempotency explicitly - feed the same event twice</li>
         <li>Combine with an EventSourcedTestKit for full audit pipeline test</li>
       </ul>
     </div>
@@ -946,7 +946,7 @@ assertThat(tk.getToolCalls()).extracting(ToolCall::name)
     </div>
     <div>
       <ul class="bullets">
-        <li>Mock model provider &mdash; no real API calls, deterministic output</li>
+        <li>Mock model provider - no real API calls, deterministic output</li>
         <li>Scripted responses drive branching test cases</li>
         <li>Assert which tools were called, with what args</li>
         <li>Test system-prompt regressions with fixed model output</li>
@@ -961,7 +961,7 @@ assertThat(tk.getToolCalls()).extracting(ToolCall::name)
   <div class="slide-head">
     <div class="eyebrow">Testing</div>
     <h2>Integration: <span class="accent">real components, in one JVM</span>.</h2>
-    <p>TestKit supports full multi-component scenarios &mdash; entity + workflow + consumer + view &mdash; without leaving the JVM.</p>
+    <p>TestKit supports full multi-component scenarios - entity + workflow + consumer + view - without leaving the JVM.</p>
   </div>
   <div class="loci-grid">
     <div class="locus"><div class="locus-title">TestKitSupport</div><p>Boots the runtime in-process. Same behaviour as prod, minus the network.</p></div>
@@ -998,7 +998,7 @@ assertThat(tk.getToolCalls()).extracting(ToolCall::name)
     <div class="locus"><div class="locus-title">Replay tests</div><p>Given a corpus of events, assert the current state matches the expected snapshot.</p></div>
     <div class="locus"><div class="locus-title">Migration tests</div><p>When you must break, migrate: old event &rarr; new event via a translator. Test both sides.</p></div>
   </div>
-  <div class="callout">Rule: adding a field is safe (with a default). Renaming, removing, changing type &mdash; assume it will break replay, and test accordingly.</div>
+  <div class="callout">Rule: adding a field is safe (with a default). Renaming, removing, changing type - assume it will break replay, and test accordingly.</div>
 </section>
 
 
@@ -1013,7 +1013,7 @@ assertThat(tk.getToolCalls()).extracting(ToolCall::name)
     <div class="locus"><div class="locus-title">Scenarios</div><p>Not "1 endpoint, max RPS." "1000 concurrent workflows across 100 entities."</p></div>
     <div class="locus"><div class="locus-title">Success signals</div><p>P99 latency, workflow completion time, view lag. Not just RPS.</p></div>
   </div>
-  <div class="callout">If the load test doesn't distribute across entity ids, you're testing one shard &mdash; not the system.</div>
+  <div class="callout">If the load test doesn't distribute across entity ids, you're testing one shard - not the system.</div>
 </section>
 
 
@@ -1054,7 +1054,7 @@ assertThat(tk.getToolCalls()).extracting(ToolCall::name)
     <p>Time and complexity are finite. Spend them on what changes when your code changes.</p>
   </div>
   <div class="loci-grid">
-    <div class="locus"><div class="locus-title">Don't test the runtime</div><p>"Does Akka persist events?" &mdash; that's their test, not yours.</p></div>
+    <div class="locus"><div class="locus-title">Don't test the runtime</div><p>"Does Akka persist events?" - that's their test, not yours.</p></div>
     <div class="locus"><div class="locus-title">Don't test framework glue</div><p>Testing @ComponentClient wiring proves nothing. Test the behaviour it enables.</p></div>
     <div class="locus"><div class="locus-title">Don't test the LLM</div><p>You can't. Test your prompt, your tools, your guardrails.</p></div>
   </div>
@@ -1066,7 +1066,7 @@ assertThat(tk.getToolCalls()).extracting(ToolCall::name)
   <div class="slide-head">
     <div class="eyebrow">Testing</div>
     <h2>Staging is <span class="accent">not</span> a test environment.</h2>
-    <p>It's a rehearsal. What runs in staging should be identical to production &mdash; same runtime, same config, real data shapes.</p>
+    <p>It's a rehearsal. What runs in staging should be identical to production - same runtime, same config, real data shapes.</p>
   </div>
   <div class="loci-grid">
     <div class="locus"><div class="locus-title">CI tests</div><p>Everything in the pyramid up through integration. No network egress. Deterministic.</p></div>
@@ -1099,8 +1099,8 @@ mvn test</pre>
       <ul class="bullets">
         <li>Choose: OrderWorkflow, CustomerAuditConsumer, or SupportAgent</li>
         <li>Write one happy-path and one failure test</li>
-        <li>Add an idempotency test &mdash; feed the input twice</li>
-        <li>Add a contract test &mdash; deserialize an old event fixture</li>
+        <li>Add an idempotency test - feed the input twice</li>
+        <li>Add a contract test - deserialize an old event fixture</li>
         <li>Bonus: add a simple k6 script for OrderEndpoint load</li>
       </ul>
     </div>
@@ -1115,9 +1115,9 @@ mvn test</pre>
     <p>The best way to retain what you've learned is to build one small thing of your own with it. Then come back with questions.</p>
   </div>
   <div class="loci-grid">
-    <div class="locus"><div class="locus-title">Docs</div><p><span class="accent">docs.akka.io</span> &mdash; SDK reference, patterns, HOWTOs.</p></div>
-    <div class="locus"><div class="locus-title">Sample</div><p><span class="accent">github.com/PradeepLoganathan/akka-workshop</span> &mdash; the sample you built on.</p></div>
-    <div class="locus"><div class="locus-title">Community</div><p><span class="accent">akka.io/community</span> &mdash; forums, Discord, office hours.</p></div>
+    <div class="locus"><div class="locus-title">Docs</div><p><span class="accent">docs.akka.io</span> - SDK reference, patterns, HOWTOs.</p></div>
+    <div class="locus"><div class="locus-title">Sample</div><p><span class="accent">github.com/PradeepLoganathan/akka-workshop</span> - the sample you built on.</p></div>
+    <div class="locus"><div class="locus-title">Community</div><p><span class="accent">akka.io/community</span> - forums, Discord, office hours.</p></div>
   </div>
   <div class="pill-row">
     <span>github.com/PradeepLoganathan/akka-workshop</span>
@@ -1134,7 +1134,7 @@ mvn test</pre>
   <h1 class="title-headline"><span class="accent">Questions?</span></h1>
   <div class="title-sub">TOMORROW: SHIP IT</div>
   <div class="rule"></div>
-  <p class="title-copy">You have opinions about what to test now. Tomorrow we take the tests you wrote and ship the whole thing to a real Akka account &mdash; deployed, traced, alerted.</p>
+  <p class="title-copy">You have opinions about what to test now. Tomorrow we take the tests you wrote and ship the whole thing to a real Akka account - deployed, traced, alerted.</p>
   <div class="session-meta">
     <span>github.com/PradeepLoganathan/akka-workshop</span>
     <span>docs.akka.io</span>

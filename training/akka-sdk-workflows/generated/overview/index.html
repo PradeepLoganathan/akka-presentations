@@ -61,7 +61,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  /* depth vignette — keeps the dot texture visible while framing the content */
+  /* depth vignette - keeps the dot texture visible while framing the content */
   background: radial-gradient(ellipse 130% 100% at 50% 26%, transparent 42%, rgba(0,0,0,0.72) 100%);
   pointer-events: none;
 }
@@ -536,7 +536,7 @@ body {
   .agenda-step-body { font-size: 18px; }
 }
 
-/* Agenda as a numbered card grid — fills the canvas, matches the deck card system */
+/* Agenda as a numbered card grid - fills the canvas, matches the deck card system */
 .agenda-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -597,7 +597,7 @@ body {
   .agenda-grid.four { grid-template-columns: 1fr; }
 }
 
-/* Bottom wayfinding rail — injected per slide by nav.js */
+/* Bottom wayfinding rail - injected per slide by nav.js */
 .deck-footer {
   position: absolute;
   left: var(--pad);
@@ -829,7 +829,7 @@ body {
   <div class="brand-mark" aria-label="Akka">AKKA</div>
   <div class="kicker">Developer training &middot; day-long</div>
   <h1 class="title-headline"><span class="accent">Workflows &amp; Consumers</span></h1>
-  <div class="title-sub">ORCHESTRATION, TIMERS &amp; REACTIVE PROCESSING &mdash; IN JAVA</div>
+  <div class="title-sub">ORCHESTRATION, TIMERS &amp; REACTIVE PROCESSING - IN JAVA</div>
   <div class="rule"></div>
   <p class="title-copy">Take one small service from &laquo;single entity&raquo; to &laquo;multi&#8209;step saga with abandonment timers and audit trails.&raquo;</p>
   <div class="session-meta">
@@ -904,7 +904,7 @@ body {
   <div class="slide-head">
     <div class="eyebrow">Where we were</div>
     <h2>You already have the vocabulary.</h2>
-    <p>Fast recap for anyone who wasn't in the 3&#8209;hour block. If this list feels new, ask &mdash; today assumes it.</p>
+    <p>Fast recap for anyone who wasn't in the 3&#8209;hour block. If this list feels new, ask - today assumes it.</p>
   </div>
   <div class="three-stat">
     <div class="stat-block"><div class="stat-num">01</div><div class="stat-title">Entity</div><div class="stat-text">Stateful thing, addressed by ID. Value or event-sourced.</div></div>
@@ -956,7 +956,7 @@ body {
 <span class="kw">public</span> String place(PlaceOrder req) {
   <span class="cmt">// step 1</span>
   inventory.reserve(req);
-  <span class="cmt">// step 2 &mdash; if this throws...</span>
+  <span class="cmt">// step 2 - if this throws...</span>
   payment.charge(req);
   <span class="cmt">// ...step 3 never runs and inventory is stuck reserved</span>
   fulfillment.ship(req);
@@ -965,9 +965,9 @@ body {
     </div>
     <div>
       <ul class="bullets">
-        <li>Not durable &mdash; if the endpoint process dies mid-flight, work is lost</li>
-        <li>No compensation &mdash; nothing rolls back the inventory reservation</li>
-        <li>No retry &mdash; caller has to know to retry, and safely</li>
+        <li>Not durable - if the endpoint process dies mid-flight, work is lost</li>
+        <li>No compensation - nothing rolls back the inventory reservation</li>
+        <li>No retry - caller has to know to retry, and safely</li>
         <li>State lives in the caller's head, not on disk</li>
         <li>You'll rebuild half a workflow engine before the demo</li>
       </ul>
@@ -1108,7 +1108,7 @@ body {
     <div>
       <ul class="bullets">
         <li><span class="accent">@ComponentId</span> like any component</li>
-        <li><span class="accent">Workflow&lt;State&gt;</span> &mdash; typed on the workflow's own state</li>
+        <li><span class="accent">Workflow&lt;State&gt;</span> - typed on the workflow's own state</li>
         <li>Constructor accepts <span class="accent">ComponentClient</span> to call entities</li>
         <li><span class="accent">definition()</span> lists the steps in scope</li>
         <li>Method references keep the code shape narrow</li>
@@ -1178,10 +1178,10 @@ body {
     </div>
     <div>
       <ul class="bullets">
-        <li><span class="accent">step("name")</span> &mdash; unique, referenced in transitions</li>
-        <li><span class="accent">.call(Supplier)</span> &mdash; the action the step performs</li>
-        <li><span class="accent">.andThen(Class, Function)</span> &mdash; decide the next step from the call's result</li>
-        <li><span class="accent">transitionTo("name")</span> &mdash; where to go next</li>
+        <li><span class="accent">step("name")</span> - unique, referenced in transitions</li>
+        <li><span class="accent">.call(Supplier)</span> - the action the step performs</li>
+        <li><span class="accent">.andThen(Class, Function)</span> - decide the next step from the call's result</li>
+        <li><span class="accent">transitionTo("name")</span> - where to go next</li>
         <li>Call retries on failure; andThen only runs on success</li>
       </ul>
     </div>
@@ -1193,7 +1193,7 @@ body {
   <div class="slide-head">
     <div class="eyebrow">The superpower</div>
     <h2>Workflows call <span class="accent">other components</span>.</h2>
-    <p>Entities can't call other entities. Workflows can. That's the point &mdash; workflows are where cross-aggregate coordination lives.</p>
+    <p>Entities can't call other entities. Workflows can. That's the point - workflows are where cross-aggregate coordination lives.</p>
   </div>
   <div class="loci-grid">
     <div class="locus"><div class="locus-title">Workflow &rarr; KVE</div><p>InventoryEntity (KVE) reserve. Idempotent by orderId.</p></div>
@@ -1233,9 +1233,9 @@ body {
       <ul class="bullets">
         <li>Any step can transition here with a <span class="accent">reason string</span></li>
         <li>Releases the inventory reservation (the earlier work)</li>
-        <li>Marks the order failed &mdash; entity records the fact</li>
-        <li>Cancels the abandon timer &mdash; no ghost cancellations later</li>
-        <li>Ends the workflow &mdash; no more transitions</li>
+        <li>Marks the order failed - entity records the fact</li>
+        <li>Cancels the abandon timer - no ghost cancellations later</li>
+        <li>Ends the workflow - no more transitions</li>
       </ul>
     </div>
   </div>
@@ -1284,8 +1284,8 @@ body {
     <div>
       <ul class="bullets">
         <li>Default: retry with <span class="accent">exponential backoff</span>, forever</li>
-        <li><span class="accent">maxRetries(n)</span> &mdash; give up after n</li>
-        <li><span class="accent">.failoverTo("stepName")</span> &mdash; on give-up, jump here</li>
+        <li><span class="accent">maxRetries(n)</span> - give up after n</li>
+        <li><span class="accent">.failoverTo("stepName")</span> - on give-up, jump here</li>
         <li>Applied per step via <span class="accent">addStep(step, strategy)</span></li>
         <li>Combine with a compensate step for saga-style rollback</li>
       </ul>
@@ -1407,7 +1407,7 @@ curl -XPOST http://localhost:9000/api/orders \
     </div>
     <div>
       <ul class="bullets">
-        <li>Watch the log while orders run &mdash; step transitions are logged</li>
+        <li>Watch the log while orders run - step transitions are logged</li>
         <li>Try shortening the workflow timeout; see failover fire</li>
         <li>Try adding a fourth step; add it to <span class="accent">definition()</span> too</li>
         <li>Try removing the guard in <span class="accent">markPaid</span> and observe replay</li>
@@ -1422,7 +1422,7 @@ curl -XPOST http://localhost:9000/api/orders \
   <div class="slide-head">
     <div class="eyebrow">Timers</div>
     <h2>Send a command to your future self.</h2>
-    <p>Timers schedule a component call for later &mdash; a durable "check back on this in 30 minutes."</p>
+    <p>Timers schedule a component call for later - a durable "check back on this in 30 minutes."</p>
   </div>
   <div class="loci-grid">
     <div class="locus"><div class="locus-title">Durable</div><p>Persisted. Fires even if the JVM restarts before the delay elapses.</p></div>
@@ -1455,9 +1455,9 @@ timers().delete(<span class="str">"abandon-order-42"</span>);</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li><span class="accent">timers()</span> &mdash; available in workflows, entities, consumers</li>
+        <li><span class="accent">timers()</span> - available in workflows, entities, consumers</li>
         <li><span class="accent">createSingleTimer(name, delay, deferredCall)</span></li>
-        <li><span class="accent">.deferred(cmd)</span> &mdash; describes the future call but doesn't run it</li>
+        <li><span class="accent">.deferred(cmd)</span> - describes the future call but doesn't run it</li>
         <li>Re-registering the same name replaces the pending timer</li>
         <li><span class="accent">delete(name)</span> cancels a pending timer</li>
       </ul>
@@ -1526,7 +1526,7 @@ timers().delete(<span class="str">"abandon-order-42"</span>);</pre>
 });</pre>
     </div>
     <div>
-      <div class="file-tag">Fixed &mdash; move it into call()</div>
+      <div class="file-tag">Fixed - move it into call()</div>
       <pre class="code-block">.call(() -&gt; {
   String result = client.forKeyValueEntity(orderId)
       .method(PaymentEntity::charge).invoke(...);
@@ -1583,14 +1583,14 @@ timers().delete(<span class="str">"abandon-order-42"</span>);</pre>
     <div class="matrix-row"><span>Purpose</span><span>Serve queries</span></div>
     <div class="matrix-row"><span>Output</span><span>A queryable table (rows keyed by entity)</span></div>
     <div class="matrix-row"><span>Effect API</span><span>updateRow(row)</span></div>
-    <div class="matrix-row"><span>Side effects?</span><span>No &mdash; keep it pure</span></div>
+    <div class="matrix-row"><span>Side effects?</span><span>No - keep it pure</span></div>
   </div>
   <div class="matrix-card" style="margin-top: 18px;">
     <div class="matrix-row matrix-head"><span></span><span>Consumer</span></div>
     <div class="matrix-row"><span>Purpose</span><span>React to events with side effects</span></div>
-    <div class="matrix-row"><span>Output</span><span>Whatever the handler does &mdash; usually a call to another component</span></div>
+    <div class="matrix-row"><span>Output</span><span>Whatever the handler does - usually a call to another component</span></div>
     <div class="matrix-row"><span>Effect API</span><span>done() &middot; produce(msg) &middot; ignore()</span></div>
-    <div class="matrix-row"><span>Side effects?</span><span>Yes &mdash; that's the whole point</span></div>
+    <div class="matrix-row"><span>Side effects?</span><span>Yes - that's the whole point</span></div>
   </div>
 </section>
 
@@ -1620,10 +1620,10 @@ timers().delete(<span class="str">"abandon-order-42"</span>);</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li><span class="accent">FromEventSourcedEntity</span> &mdash; the event log</li>
-        <li><span class="accent">FromKeyValueEntity</span> &mdash; state-change stream</li>
-        <li><span class="accent">FromTopic</span> &mdash; external pub-sub</li>
-        <li><span class="accent">FromServiceStream</span> &mdash; another Akka service's stream</li>
+        <li><span class="accent">FromEventSourcedEntity</span> - the event log</li>
+        <li><span class="accent">FromKeyValueEntity</span> - state-change stream</li>
+        <li><span class="accent">FromTopic</span> - external pub-sub</li>
+        <li><span class="accent">FromServiceStream</span> - another Akka service's stream</li>
         <li>One consumer = one subscription</li>
       </ul>
     </div>
@@ -1662,10 +1662,10 @@ timers().delete(<span class="str">"abandon-order-42"</span>);</pre>
     <div>
       <ul class="bullets">
         <li>One <span class="accent">onEvent</span> for the sealed interface; switch on subtype</li>
-        <li>Or one <span class="accent">onEvent(subtype)</span> per event type &mdash; both work</li>
+        <li>Or one <span class="accent">onEvent(subtype)</span> per event type - both work</li>
         <li>Handler calls the <span class="accent">AuditLogEntity</span> to append</li>
         <li>Returns an <span class="accent">Effect</span> to say "processed"</li>
-        <li>Consumer is stateless &mdash; state lives in the entities it calls</li>
+        <li>Consumer is stateless - state lives in the entities it calls</li>
       </ul>
     </div>
   </div>
@@ -1691,9 +1691,9 @@ timers().delete(<span class="str">"abandon-order-42"</span>);</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li><span class="accent">done()</span> &mdash; success. Move to next event.</li>
-        <li><span class="accent">produce(msg)</span> &mdash; publish a derived message. Also acknowledges.</li>
-        <li><span class="accent">ignore()</span> &mdash; skip. Won't be retried.</li>
+        <li><span class="accent">done()</span> - success. Move to next event.</li>
+        <li><span class="accent">produce(msg)</span> - publish a derived message. Also acknowledges.</li>
+        <li><span class="accent">ignore()</span> - skip. Won't be retried.</li>
         <li>Async variants exist for CompletionStage-returning code</li>
         <li>Throwing an exception = retry (at-least-once)</li>
       </ul>
@@ -1731,7 +1731,7 @@ timers().delete(<span class="str">"abandon-order-42"</span>);</pre>
     <div class="lifecycle-step"><b>5</b><small>View writes a row per message</small></div>
     <div class="lifecycle-step"><b>6</b><small>Query returns the feed</small></div>
   </div>
-  <div class="callout">This is why the sample's <span class="accent">AuditLogEntity</span> holds the log itself &mdash; a feed view is out of scope for today.</div>
+  <div class="callout">This is why the sample's <span class="accent">AuditLogEntity</span> holds the log itself - a feed view is out of scope for today.</div>
 </section>
 
 
@@ -1764,7 +1764,7 @@ curl http://localhost:9000/api/audit/customers/c-audit</pre>
         <li>Consumer sees the event and appends asynchronously</li>
         <li>Try: add an OrderAuditConsumer subscribing to OrderEvents</li>
         <li>Try: publish audit events to a topic via <span class="accent">produce()</span></li>
-        <li>Try: kill the JVM between create and delete &mdash; consumer still catches up</li>
+        <li>Try: kill the JVM between create and delete - consumer still catches up</li>
       </ul>
     </div>
   </div>
@@ -1799,7 +1799,7 @@ curl http://localhost:9000/api/audit/customers/c-audit</pre>
     <div class="locus"><div class="locus-title">Consumer crash mid-event</div><p>Event redelivered on restart. Idempotent target handler pays off.</p></div>
     <div class="locus"><div class="locus-title">Cluster node loss</div><p>Sharding rehomes entities and workflows to surviving nodes. Timers persist.</p></div>
   </div>
-  <div class="callout">"Durable" is doing a lot of heavy lifting. The runtime is <span class="accent">designed</span> for these failures &mdash; not merely tolerant of them.</div>
+  <div class="callout">"Durable" is doing a lot of heavy lifting. The runtime is <span class="accent">designed</span> for these failures - not merely tolerant of them.</div>
 </section>
 
 
@@ -1814,7 +1814,7 @@ curl http://localhost:9000/api/audit/customers/c-audit</pre>
     <div class="locus"><div class="locus-title">Compensation, not rollback</div><p>You cannot undo a charged card. You issue a refund. Compensation is business-visible.</p></div>
     <div class="locus"><div class="locus-title">Idempotent participants</div><p>Each step's target must tolerate replay. Payment providers offer idempotency keys for this.</p></div>
   </div>
-  <div class="callout">Two-phase commit doesn't survive real networks. Sagas do &mdash; because they were designed <span class="accent">for</span> failure.</div>
+  <div class="callout">Two-phase commit doesn't survive real networks. Sagas do - because they were designed <span class="accent">for</span> failure.</div>
 </section>
 
 
@@ -1843,7 +1843,7 @@ assertThat(transition.stepName()).isEqualTo(<span class="str">"reserve"</span>);
         <li>In-JVM. No cluster, no runtime.</li>
         <li>Feed commands; inspect state after each</li>
         <li>Assert step transitions and timer schedules</li>
-        <li>Mock component clients via testkit config &mdash; or use real ones for integration-style tests</li>
+        <li>Mock component clients via testkit config - or use real ones for integration-style tests</li>
         <li>Fast: whole saga in milliseconds</li>
       </ul>
     </div>
@@ -1870,7 +1870,7 @@ assertThat(result.getSideEffects()).hasSize(1);
     <div>
       <ul class="bullets">
         <li>Same shape as EventSourcedTestKit: instantiate, feed, assert</li>
-        <li>Side effects captured &mdash; you assert on the deferred calls</li>
+        <li>Side effects captured - you assert on the deferred calls</li>
         <li>Nothing actually calls the network</li>
         <li>Test idempotency by feeding the same event twice</li>
         <li>Combine with a WorkflowTestKit for end-to-end scenarios</li>
@@ -1889,7 +1889,7 @@ assertThat(result.getSideEffects()).hasSize(1);
   <div class="loci-grid">
     <div class="locus"><div class="locus-title">Workflows tab</div><p>See in-flight workflows. Click into one to inspect state, current step, transition history.</p></div>
     <div class="locus"><div class="locus-title">Timers tab</div><p>All scheduled timers with delay, target, and name. Delete or trigger manually while debugging.</p></div>
-    <div class="locus"><div class="locus-title">Entities tab</div><p>Any entity by id &mdash; state and event log. See exactly what the workflow persisted.</p></div>
+    <div class="locus"><div class="locus-title">Entities tab</div><p>Any entity by id - state and event log. See exactly what the workflow persisted.</p></div>
   </div>
   <div class="callout">Nothing has to be right the first time. The console tells you what actually happened, event by event.</div>
 </section>
@@ -1922,7 +1922,7 @@ akka services deploy customers \
         <li>Console at <span class="accent">localhost:9000/akka/console</span></li>
         <li>Logs to stdout. Tail with your favourite tool.</li>
         <li>Same code deploys unchanged to the managed runtime</li>
-        <li>Workflows survive restarts even in dev &mdash; the local journal is real</li>
+        <li>Workflows survive restarts even in dev - the local journal is real</li>
       </ul>
     </div>
   </div>

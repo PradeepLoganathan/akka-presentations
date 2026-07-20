@@ -1,7 +1,7 @@
 <section id="slide-15" class="deck-slide" data-view>
   <div class="slide-head compact">
     <div class="eyebrow">Entities</div>
-    <h2><span class="accent">applyEvent</span> &mdash; the reducer.</h2>
+    <h2><span class="accent">applyEvent</span> - the reducer.</h2>
     <p>One method. One event in, one new state out. Called on every new event and on every replay.</p>
   </div>
   <div class="two-code">
@@ -24,7 +24,7 @@
         <li>Pure function. <span class="accent">No I/O</span>, no side effects.</li>
         <li>Runs during command handling <span class="accent">and</span> during restart replay</li>
         <li>Sealed events + switch expression = compiler-checked exhaustive</li>
-        <li>Return a new record &mdash; states are immutable</li>
+        <li>Return a new record - states are immutable</li>
         <li>Adding an event? Adding a switch case is required by the compiler.</li>
       </ul>
     </div>

@@ -10,7 +10,7 @@
 <span class="kw">public</span> String place(PlaceOrder req) {
   <span class="cmt">// step 1</span>
   inventory.reserve(req);
-  <span class="cmt">// step 2 &mdash; if this throws...</span>
+  <span class="cmt">// step 2 - if this throws...</span>
   payment.charge(req);
   <span class="cmt">// ...step 3 never runs and inventory is stuck reserved</span>
   fulfillment.ship(req);
@@ -19,9 +19,9 @@
     </div>
     <div>
       <ul class="bullets">
-        <li>Not durable &mdash; if the endpoint process dies mid-flight, work is lost</li>
-        <li>No compensation &mdash; nothing rolls back the inventory reservation</li>
-        <li>No retry &mdash; caller has to know to retry, and safely</li>
+        <li>Not durable - if the endpoint process dies mid-flight, work is lost</li>
+        <li>No compensation - nothing rolls back the inventory reservation</li>
+        <li>No retry - caller has to know to retry, and safely</li>
         <li>State lives in the caller's head, not on disk</li>
         <li>You'll rebuild half a workflow engine before the demo</li>
       </ul>

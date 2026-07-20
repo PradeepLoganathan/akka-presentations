@@ -23,7 +23,7 @@ akka services rolling-update akka-workshop</pre>
     <div>
       <ul class="bullets">
         <li>Secrets never appear in the image, config, or logs</li>
-        <li>Mounted as env vars &mdash; picked up by application.conf substitution</li>
+        <li>Mounted as env vars - picked up by application.conf substitution</li>
         <li>Rotate via <span class="accent">update</span> + <span class="accent">rolling-update</span></li>
         <li>Access control: only the service can see its wired secrets</li>
         <li>Audit trail on every read (see runbook slide 62)</li>

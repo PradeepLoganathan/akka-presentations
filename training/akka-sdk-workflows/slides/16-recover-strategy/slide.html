@@ -22,8 +22,8 @@
     <div>
       <ul class="bullets">
         <li>Default: retry with <span class="accent">exponential backoff</span>, forever</li>
-        <li><span class="accent">maxRetries(n)</span> &mdash; give up after n</li>
-        <li><span class="accent">.failoverTo("stepName")</span> &mdash; on give-up, jump here</li>
+        <li><span class="accent">maxRetries(n)</span> - give up after n</li>
+        <li><span class="accent">.failoverTo("stepName")</span> - on give-up, jump here</li>
         <li>Applied per step via <span class="accent">addStep(step, strategy)</span></li>
         <li>Combine with a compensate step for saga-style rollback</li>
       </ul>

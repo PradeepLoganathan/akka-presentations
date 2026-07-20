@@ -61,7 +61,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  /* depth vignette — keeps the dot texture visible while framing the content */
+  /* depth vignette - keeps the dot texture visible while framing the content */
   background: radial-gradient(ellipse 130% 100% at 50% 26%, transparent 42%, rgba(0,0,0,0.72) 100%);
   pointer-events: none;
 }
@@ -536,7 +536,7 @@ body {
   .agenda-step-body { font-size: 18px; }
 }
 
-/* Agenda as a numbered card grid — fills the canvas, matches the deck card system */
+/* Agenda as a numbered card grid - fills the canvas, matches the deck card system */
 .agenda-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -597,7 +597,7 @@ body {
   .agenda-grid.four { grid-template-columns: 1fr; }
 }
 
-/* Bottom wayfinding rail — injected per slide by nav.js */
+/* Bottom wayfinding rail - injected per slide by nav.js */
 .deck-footer {
   position: absolute;
   left: var(--pad);
@@ -780,7 +780,7 @@ body {
     <p>Quick recap of the tests you wrote before we go and deploy.</p>
   </div>
   <div class="three-stat">
-    <div class="stat-block"><div class="stat-num">01</div><div class="stat-title">TestKits</div><div class="stat-text">WorkflowTestKit, EventSourcedTestKit, ConsumerTestKit &mdash; in-JVM, deterministic, fast.</div></div>
+    <div class="stat-block"><div class="stat-num">01</div><div class="stat-title">TestKits</div><div class="stat-text">WorkflowTestKit, EventSourcedTestKit, ConsumerTestKit - in-JVM, deterministic, fast.</div></div>
     <div class="stat-block"><div class="stat-num">02</div><div class="stat-title">Right layers</div><div class="stat-text">Unit for logic. Integration for wiring. Chaos for the runtime's promise. Contract for schema evolution.</div></div>
     <div class="stat-block"><div class="stat-num">03</div><div class="stat-title">Idempotency</div><div class="stat-text">Every consumer and workflow retry-target has a "second time is a no-op" test.</div></div>
   </div>
@@ -794,7 +794,7 @@ body {
   <h1 class="title-headline"><span class="accent">Shipped</span></h1>
   <div class="title-sub">DEPLOY &middot; MULTI-REGION &middot; OBSERVABILITY &middot; RUNBOOKS &middot; COST</div>
   <div class="rule"></div>
-  <p class="title-copy">By 5pm, the sample is <span class="accent">running in your own Akka account</span> &mdash; traced, alerted, and documented.</p>
+  <p class="title-copy">By 5pm, the sample is <span class="accent">running in your own Akka account</span> - traced, alerted, and documented.</p>
   <div class="session-meta">
     <span>You need: an Akka account</span>
     <span>You need: your OpenAI key on the platform</span>
@@ -807,7 +807,7 @@ body {
   <div class="slide-head">
     <div class="eyebrow">Day 5 &middot; Agenda</div>
     <h2>Six chapters from <span class="accent">build to production</span>.</h2>
-    <p>By the end, the sample is running in your own Akka account &mdash; traced, alerted, documented.</p>
+    <p>By the end, the sample is running in your own Akka account - traced, alerted, documented.</p>
   </div>
   <div class="agenda-grid">
     <div class="agenda-card">
@@ -818,7 +818,7 @@ body {
     <div class="agenda-card">
       <div class="agenda-card-num">02</div>
       <h3>Multi-region</h3>
-      <p>Active/active vs primary/replica &mdash; config-first, no code changes.</p>
+      <p>Active/active vs primary/replica - config-first, no code changes.</p>
     </div>
     <div class="agenda-card">
       <div class="agenda-card-num">03</div>
@@ -828,7 +828,7 @@ body {
     <div class="agenda-card">
       <div class="agenda-card-num">04</div>
       <h3>Runbooks</h3>
-      <p>Stuck workflows, shard loss, LLM quota &mdash; what a tired oncall needs.</p>
+      <p>Stuck workflows, shard loss, LLM quota - what a tired oncall needs.</p>
     </div>
     <div class="agenda-card">
       <div class="agenda-card-num">05</div>
@@ -838,7 +838,7 @@ body {
     <div class="agenda-card">
       <div class="agenda-card-num">06</div>
       <h3>Hands-on</h3>
-      <p>Ship it to your Akka account &mdash; a 90-minute lab.</p>
+      <p>Ship it to your Akka account - a 90-minute lab.</p>
     </div>
   </div>
 </section>
@@ -892,7 +892,7 @@ akka logs</pre>
         <li>Single binary, no plugins</li>
         <li>Auth is persistent per machine</li>
         <li>Projects scope services, regions, secrets, ACLs</li>
-        <li>Config is namespaced &mdash; different terminal, different project</li>
+        <li>Config is namespaced - different terminal, different project</li>
         <li>Everything the console does is scriptable via CLI</li>
       </ul>
     </div>
@@ -921,11 +921,11 @@ docker manifest inspect ghcr.io/pradeepl/akka-workshop:1.0</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li>Parent POM adds the JIB plugin &mdash; no Dockerfile needed</li>
+        <li>Parent POM adds the JIB plugin - no Dockerfile needed</li>
         <li>Any OCI registry works: GHCR, ECR, GAR, Docker Hub</li>
         <li>Registry needs to be reachable by the Akka runtime</li>
         <li>Private registries: add pull-secret to the project</li>
-        <li>Tag by version, not by <span class="accent">latest</span> &mdash; deploys should be reproducible</li>
+        <li>Tag by version, not by <span class="accent">latest</span> - deploys should be reproducible</li>
       </ul>
     </div>
   </div>
@@ -976,7 +976,7 @@ curl https://workshop-abc.akka.app/api/customers</pre>
     <p>A short checklist that saves you a Slack apology later.</p>
   </div>
   <div class="loci-grid">
-    <div class="locus"><div class="locus-title">Secrets</div><p>OPENAI_API_KEY, DB creds &mdash; via akka secrets, not the image.</p></div>
+    <div class="locus"><div class="locus-title">Secrets</div><p>OPENAI_API_KEY, DB creds - via akka secrets, not the image.</p></div>
     <div class="locus"><div class="locus-title">Resource limits</div><p>Memory + CPU per instance. Sensible defaults; tune based on load tests.</p></div>
     <div class="locus"><div class="locus-title">Health checks</div><p>SDK provides them; assert readiness before promoting.</p></div>
   </div>
@@ -1013,7 +1013,7 @@ akka services rolling-update akka-workshop</pre>
     <div>
       <ul class="bullets">
         <li>Secrets never appear in the image, config, or logs</li>
-        <li>Mounted as env vars &mdash; picked up by application.conf substitution</li>
+        <li>Mounted as env vars - picked up by application.conf substitution</li>
         <li>Rotate via <span class="accent">update</span> + <span class="accent">rolling-update</span></li>
         <li>Access control: only the service can see its wired secrets</li>
         <li>Audit trail on every read (see runbook slide 62)</li>
@@ -1127,7 +1127,7 @@ akka services replicate akka-workshop \
     <div>
       <ul class="bullets">
         <li>Regions are project-level; services opt in</li>
-        <li><span class="accent">Sample code compiles unchanged</span> &mdash; the runtime handles replication</li>
+        <li><span class="accent">Sample code compiles unchanged</span> - the runtime handles replication</li>
         <li>Entity id determines which region "owns" it (consistent hashing)</li>
         <li>Views project locally per region</li>
         <li>Workflows resume in the region where they started</li>
@@ -1145,7 +1145,7 @@ akka services replicate akka-workshop \
   </div>
   <div class="loci-grid">
     <div class="locus"><div class="locus-title">Reads</div><p>Always local. Views project per region, entity state is replicated with bounded staleness.</p></div>
-    <div class="locus"><div class="locus-title">Writes</div><p>Routed to the entity's home region &mdash; usually one round-trip more if the caller is elsewhere.</p></div>
+    <div class="locus"><div class="locus-title">Writes</div><p>Routed to the entity's home region - usually one round-trip more if the caller is elsewhere.</p></div>
     <div class="locus"><div class="locus-title">Consistency</div><p>Single-writer per entity globally. No conflicting writes at the entity level.</p></div>
   </div>
   <div class="callout">CustomerEntity for customer-42 has one home region. Reads happen anywhere. Writes go to <span class="accent">customer-42's</span> region.</div>
@@ -1163,7 +1163,7 @@ akka services replicate akka-workshop \
     <div class="locus"><div class="locus-title">Timers</div><p>Fire in the workflow's home region. Not affected by request routing.</p></div>
     <div class="locus"><div class="locus-title">Cross-region calls</div><p>Workflow calls entities in their home regions. Latency-aware; SDK handles it.</p></div>
   </div>
-  <div class="callout">Design tip: keep tightly-coupled aggregates (Order + its Customer) in the same region if you can &mdash; the SDK does this by default when they share an id prefix.</div>
+  <div class="callout">Design tip: keep tightly-coupled aggregates (Order + its Customer) in the same region if you can - the SDK does this by default when they share an id prefix.</div>
 </section>
 
 
@@ -1171,7 +1171,7 @@ akka services replicate akka-workshop \
   <div class="slide-head compact">
     <div class="eyebrow">Multi-region</div>
     <h2>When a region <span class="accent">disappears</span>.</h2>
-    <p>Failover isn't a manual playbook &mdash; it's part of the runtime. Your job is knowing what to expect.</p>
+    <p>Failover isn't a manual playbook - it's part of the runtime. Your job is knowing what to expect.</p>
   </div>
   <div class="lifecycle">
     <div class="lifecycle-step"><b>1</b><small>Region A becomes unreachable</small></div>
@@ -1225,9 +1225,9 @@ scrape_configs:
       <ul class="bullets">
         <li>Metrics available regardless of Prometheus setup</li>
         <li>Dashboards: sample project comes with a starter JSON</li>
-        <li>Golden signals: rate, error, duration &mdash; per component type</li>
+        <li>Golden signals: rate, error, duration - per component type</li>
         <li>Track: workflow queue depth, entity passivation rate, LLM latency</li>
-        <li>Alert on <span class="accent">workflow completion time p99</span> &mdash; not just endpoint latency</li>
+        <li>Alert on <span class="accent">workflow completion time p99</span> - not just endpoint latency</li>
       </ul>
     </div>
   </div>
@@ -1245,7 +1245,7 @@ scrape_configs:
     <div class="locus"><div class="locus-title">Trace context</div><p>Propagated automatically through workflow steps, timers, consumer subscriptions.</p></div>
     <div class="locus"><div class="locus-title">Custom spans</div><p>Inject <span class="accent">Span</span> or <span class="accent">Tracer</span> into your components for domain-level instrumentation.</p></div>
   </div>
-  <div class="callout">Ship traces to Tempo, Jaeger, Honeycomb, Datadog &mdash; any OTLP-compatible backend. Config-only.</div>
+  <div class="callout">Ship traces to Tempo, Jaeger, Honeycomb, Datadog - any OTLP-compatible backend. Config-only.</div>
 </section>
 
 
@@ -1270,7 +1270,7 @@ scrape_configs:
   <div class="slide-head">
     <div class="eyebrow">Runbooks</div>
     <h2>Runbooks: <span class="accent">what a tired oncall needs</span>.</h2>
-    <p>Not "here's how the system works." That's docs. A runbook answers "the alert fired &mdash; what do I do <em>right now</em>?"</p>
+    <p>Not "here's how the system works." That's docs. A runbook answers "the alert fired - what do I do <em>right now</em>?"</p>
   </div>
   <div class="loci-grid">
     <div class="locus"><div class="locus-title">The trigger</div><p>Exact alert name and severity. Not paraphrased.</p></div>
@@ -1318,7 +1318,7 @@ scrape_configs:
         <li>Bounded diagnostic checks</li>
         <li>Concrete mitigation commands</li>
         <li>Clear escalation trigger</li>
-        <li>Living doc &mdash; update after every incident</li>
+        <li>Living doc - update after every incident</li>
       </ul>
     </div>
   </div>
@@ -1356,7 +1356,7 @@ scrape_configs:
     </div>
     <div>
       <ul class="bullets">
-        <li>Explicit "do not" section &mdash; wrong instincts documented</li>
+        <li>Explicit "do not" section - wrong instincts documented</li>
         <li>Distinguish transient from persistent</li>
         <li>Multi-region behaviour called out (autonomic)</li>
         <li>Escalation path clear</li>
@@ -1435,7 +1435,7 @@ scrape_configs:
     <p>For a typical Akka service with agents, LLM tokens dominate. Storage is a distant second. Compute is a rounding error.</p>
   </div>
   <div class="loci-grid">
-    <div class="locus"><div class="locus-title">LLM tokens</div><p>Model choice matters &mdash; gpt-4o-mini vs gpt-4o is ~15x. Memory window doubles cost linearly.</p></div>
+    <div class="locus"><div class="locus-title">LLM tokens</div><p>Model choice matters - gpt-4o-mini vs gpt-4o is ~15x. Memory window doubles cost linearly.</p></div>
     <div class="locus"><div class="locus-title">Storage</div><p>Event journal + snapshots. Grows forever unless you archive cold data.</p></div>
     <div class="locus"><div class="locus-title">Compute</div><p>Managed runtime is priced per instance-hour. Small compared to LLM in most agentic services.</p></div>
   </div>
@@ -1512,9 +1512,9 @@ curl https://workshop-&lt;yours&gt;.akka.app/api/customers</pre>
     <p>The best way to retain what you've learned is to build one small thing of your own with it. Then come back with questions.</p>
   </div>
   <div class="loci-grid">
-    <div class="locus"><div class="locus-title">Docs</div><p><span class="accent">docs.akka.io</span> &mdash; SDK reference, patterns, HOWTOs.</p></div>
-    <div class="locus"><div class="locus-title">Sample</div><p><span class="accent">github.com/PradeepLoganathan/akka-workshop</span> &mdash; the sample you built on.</p></div>
-    <div class="locus"><div class="locus-title">Community</div><p><span class="accent">akka.io/community</span> &mdash; forums, Discord, office hours.</p></div>
+    <div class="locus"><div class="locus-title">Docs</div><p><span class="accent">docs.akka.io</span> - SDK reference, patterns, HOWTOs.</p></div>
+    <div class="locus"><div class="locus-title">Sample</div><p><span class="accent">github.com/PradeepLoganathan/akka-workshop</span> - the sample you built on.</p></div>
+    <div class="locus"><div class="locus-title">Community</div><p><span class="accent">akka.io/community</span> - forums, Discord, office hours.</p></div>
   </div>
   <div class="pill-row">
     <span>github.com/PradeepLoganathan/akka-workshop</span>
@@ -1531,7 +1531,7 @@ curl https://workshop-&lt;yours&gt;.akka.app/api/customers</pre>
   <h1 class="title-headline"><span class="accent">Go build.</span></h1>
   <div class="title-sub">YOU HAVE THE COMPONENTS. YOU HAVE THE PATTERNS. YOU HAVE THE RUNTIME.</div>
   <div class="rule"></div>
-  <p class="title-copy">The best next step is the one that scares you a little. Pick a real problem, small enough to finish in a week. Build it. Then rebuild it &mdash; better &mdash; the week after.</p>
+  <p class="title-copy">The best next step is the one that scares you a little. Pick a real problem, small enough to finish in a week. Build it. Then rebuild it - better - the week after.</p>
   <div class="session-meta">
     <span>github.com/PradeepLoganathan/akka-workshop</span>
     <span>docs.akka.io</span>

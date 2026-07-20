@@ -61,7 +61,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  /* depth vignette — keeps the dot texture visible while framing the content */
+  /* depth vignette - keeps the dot texture visible while framing the content */
   background: radial-gradient(ellipse 130% 100% at 50% 26%, transparent 42%, rgba(0,0,0,0.72) 100%);
   pointer-events: none;
 }
@@ -536,7 +536,7 @@ body {
   .agenda-step-body { font-size: 18px; }
 }
 
-/* Agenda as a numbered card grid — fills the canvas, matches the deck card system */
+/* Agenda as a numbered card grid - fills the canvas, matches the deck card system */
 .agenda-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -597,7 +597,7 @@ body {
   .agenda-grid.four { grid-template-columns: 1fr; }
 }
 
-/* Bottom wayfinding rail — injected per slide by nav.js */
+/* Bottom wayfinding rail - injected per slide by nav.js */
 .deck-footer {
   position: absolute;
   left: var(--pad);
@@ -773,7 +773,7 @@ body {
   <div class="brand-mark" aria-label="Akka">AKKA</div>
   <div class="kicker">Developer training &middot; 3 hours</div>
   <h1 class="title-headline"><span class="accent">Akka SDK Fundamentals</span></h1>
-  <div class="title-sub">EVENT SOURCING, ENTITIES, VIEWS &amp; ENDPOINTS &mdash; IN JAVA</div>
+  <div class="title-sub">EVENT SOURCING, ENTITIES, VIEWS &amp; ENDPOINTS - IN JAVA</div>
   <div class="rule"></div>
   <p class="title-copy">Build one small Akka service end&#8209;to&#8209;end. By the end, you can read, run, and extend the sample repo.</p>
   <div class="session-meta">
@@ -808,7 +808,7 @@ body {
     <div class="agenda-card">
       <div class="agenda-card-num">02</div>
       <h3>Event sourcing</h3>
-      <p>State as a log of facts — from first principles.</p>
+      <p>State as a log of facts - from first principles.</p>
     </div>
     <div class="agenda-card">
       <div class="agenda-card-num">03</div>
@@ -845,7 +845,7 @@ body {
       <ul>
         <li>Components: entities, views, endpoints, workflows, timers, consumers, agents</li>
         <li>Plain Java records &amp; classes with a few annotations</li>
-        <li>Maven module &mdash; nothing exotic</li>
+        <li>Maven module - nothing exotic</li>
       </ul>
     </div>
     <div class="compare-col blue">
@@ -865,8 +865,8 @@ body {
 <section id="slide-03" class="deck-slide" data-view>
   <div class="slide-head compact">
     <div class="eyebrow">The sample</div>
-    <h2>akka-workshop &mdash; <span class="accent">one entity, one view, one endpoint</span>.</h2>
-    <p>Everything we cover today maps to a file in this repo. Clone it now &mdash; we'll come back to it after every block.</p>
+    <h2>akka-workshop - <span class="accent">one entity, one view, one endpoint</span>.</h2>
+    <p>Everything we cover today maps to a file in this repo. Clone it now - we'll come back to it after every block.</p>
   </div>
   <div class="two-code">
     <div>
@@ -909,7 +909,7 @@ mvn compile exec:java</pre>
   <div class="three-stat" style="margin-top: 18px;">
     <div class="stat-block"><div class="stat-num">04</div><div class="stat-title">View</div><div class="stat-text">A read-optimized projection over entity data.</div></div>
     <div class="stat-block"><div class="stat-num">05</div><div class="stat-title">Endpoint</div><div class="stat-text">The HTTP surface. Talks to entities &amp; views via a client.</div></div>
-    <div class="stat-block" style="border-left-color: var(--blue);"><div class="stat-num" style="color: var(--blue);">+</div><div class="stat-title" style="color: var(--blue);">Later</div><div class="stat-text">Workflows, timers, consumers, agents &mdash; same shape.</div></div>
+    <div class="stat-block" style="border-left-color: var(--blue);"><div class="stat-num" style="color: var(--blue);">+</div><div class="stat-title" style="color: var(--blue);">Later</div><div class="stat-text">Workflows, timers, consumers, agents - same shape.</div></div>
   </div>
 </section>
 
@@ -971,7 +971,7 @@ mvn compile exec:java</pre>
     <div class="compare-col active">
       <div class="compare-label">Reach for it when</div>
       <ul>
-        <li>History matters &mdash; audit, compliance, disputes</li>
+        <li>History matters - audit, compliance, disputes</li>
         <li>Multiple read models over the same domain</li>
         <li>"What did X look like on Tuesday?" is a real question</li>
         <li>Domain has a natural event vocabulary</li>
@@ -980,14 +980,14 @@ mvn compile exec:java</pre>
     <div class="compare-col blue">
       <div class="compare-label">Skip it when</div>
       <ul>
-        <li>State is a settings page &mdash; latest is all you need</li>
+        <li>State is a settings page - latest is all you need</li>
         <li>You have no domain narrative, just CRUD</li>
         <li>Aggregate would grow an unbounded event stream you'll never trim</li>
         <li>Team hasn't internalized eventual consistency yet</li>
       </ul>
     </div>
   </div>
-  <div class="callout">Rule of thumb: if <span class="accent">who changed what, when, and why</span> matters &mdash; event source it.</div>
+  <div class="callout">Rule of thumb: if <span class="accent">who changed what, when, and why</span> matters - event source it.</div>
 </section>
 
 
@@ -1012,7 +1012,7 @@ mvn compile exec:java</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li>Named in the imperative &mdash; <span class="accent">CreateCustomer</span>, not CustomerCreated</li>
+        <li>Named in the imperative - <span class="accent">CreateCustomer</span>, not CustomerCreated</li>
         <li>Present tense: "do this"</li>
         <li>Plain Java records: the field list is the contract</li>
         <li>Can be rejected: <span class="accent">"Customer already exists"</span></li>
@@ -1049,10 +1049,10 @@ mvn compile exec:java</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li>Past tense &mdash; <span class="accent">customerCreated</span></li>
+        <li>Past tense - <span class="accent">customerCreated</span></li>
         <li>Immutable. Journaled forever.</li>
         <li><span class="accent">sealed interface</span> &rarr; the reducer's switch is exhaustive</li>
-        <li>Serialized to storage &mdash; treat schema changes with care</li>
+        <li>Serialized to storage - treat schema changes with care</li>
         <li>Downstream views &amp; consumers subscribe to them</li>
       </ul>
     </div>
@@ -1068,18 +1068,18 @@ mvn compile exec:java</pre>
   <div class="matrix-card">
     <div class="matrix-row matrix-head"><span></span><span>Command</span></div>
     <div class="matrix-row"><span>Direction</span><span>Into the entity</span></div>
-    <div class="matrix-row"><span>Semantics</span><span>Intent &mdash; "please do this"</span></div>
+    <div class="matrix-row"><span>Semantics</span><span>Intent - "please do this"</span></div>
     <div class="matrix-row"><span>Tense</span><span>Present, imperative</span></div>
     <div class="matrix-row"><span>Can be rejected?</span><span>Yes</span></div>
-    <div class="matrix-row"><span>Stored?</span><span>No &mdash; transient</span></div>
+    <div class="matrix-row"><span>Stored?</span><span>No - transient</span></div>
   </div>
   <div class="matrix-card" style="margin-top: 18px;">
     <div class="matrix-row matrix-head"><span></span><span>Event</span></div>
     <div class="matrix-row"><span>Direction</span><span>Out of the entity</span></div>
-    <div class="matrix-row"><span>Semantics</span><span>Fact &mdash; "this already happened"</span></div>
+    <div class="matrix-row"><span>Semantics</span><span>Fact - "this already happened"</span></div>
     <div class="matrix-row"><span>Tense</span><span>Past</span></div>
     <div class="matrix-row"><span>Can be rejected?</span><span>Never</span></div>
-    <div class="matrix-row"><span>Stored?</span><span>Yes &mdash; forever</span></div>
+    <div class="matrix-row"><span>Stored?</span><span>Yes - forever</span></div>
   </div>
 </section>
 
@@ -1133,10 +1133,10 @@ mvn compile exec:java</pre>
     <div>
       <ul class="bullets">
         <li>Extends <span class="accent">KeyValueEntity&lt;State&gt;</span></li>
-        <li>No events, no reducer &mdash; just <span class="accent">updateState(next)</span></li>
+        <li>No events, no reducer - just <span class="accent">updateState(next)</span></li>
         <li>Runtime persists the latest state atomically</li>
         <li>Great for preferences, sessions, feature flags</li>
-        <li>Loses history &mdash; last write wins</li>
+        <li>Loses history - last write wins</li>
       </ul>
     </div>
   </div>
@@ -1177,7 +1177,7 @@ mvn compile exec:java</pre>
         <li><span class="accent">@ComponentId</span> = stable identifier used for storage</li>
         <li>Validate first, then <span class="accent">.persist(event)</span></li>
         <li><span class="accent">commandContext().entityId()</span> = which instance this is</li>
-        <li>State is not mutated here &mdash; the reducer does that</li>
+        <li>State is not mutated here - the reducer does that</li>
       </ul>
     </div>
   </div>
@@ -1207,10 +1207,10 @@ effects().reply(currentState());</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li><span class="accent">persist(&hellip;)</span> &mdash; journal one or more events atomically</li>
-        <li><span class="accent">thenReply(state -&gt; &hellip;)</span> &mdash; runs after persistence, with new state</li>
-        <li><span class="accent">error(&hellip;)</span> &mdash; reject the command, nothing persisted</li>
-        <li><span class="accent">reply(&hellip;)</span> &mdash; query-only, no events</li>
+        <li><span class="accent">persist(&hellip;)</span> - journal one or more events atomically</li>
+        <li><span class="accent">thenReply(state -&gt; &hellip;)</span> - runs after persistence, with new state</li>
+        <li><span class="accent">error(&hellip;)</span> - reject the command, nothing persisted</li>
+        <li><span class="accent">reply(&hellip;)</span> - query-only, no events</li>
         <li>You never write to storage directly. Ever.</li>
       </ul>
     </div>
@@ -1221,7 +1221,7 @@ effects().reply(currentState());</pre>
 <section id="slide-15" class="deck-slide" data-view>
   <div class="slide-head compact">
     <div class="eyebrow">Entities</div>
-    <h2><span class="accent">applyEvent</span> &mdash; the reducer.</h2>
+    <h2><span class="accent">applyEvent</span> - the reducer.</h2>
     <p>One method. One event in, one new state out. Called on every new event and on every replay.</p>
   </div>
   <div class="two-code">
@@ -1244,7 +1244,7 @@ effects().reply(currentState());</pre>
         <li>Pure function. <span class="accent">No I/O</span>, no side effects.</li>
         <li>Runs during command handling <span class="accent">and</span> during restart replay</li>
         <li>Sealed events + switch expression = compiler-checked exhaustive</li>
-        <li>Return a new record &mdash; states are immutable</li>
+        <li>Return a new record - states are immutable</li>
         <li>Adding an event? Adding a switch case is required by the compiler.</li>
       </ul>
     </div>
@@ -1269,7 +1269,7 @@ effects().reply(currentState());</pre>
     <div class="matrix-row matrix-head"><span></span><span>Event-sourced entity</span></div>
     <div class="matrix-row"><span>Storage model</span><span>Append-only event log</span></div>
     <div class="matrix-row"><span>History</span><span>Complete, replayable</span></div>
-    <div class="matrix-row"><span>Best for</span><span>Domain aggregates with real narratives &mdash; orders, accounts, customers</span></div>
+    <div class="matrix-row"><span>Best for</span><span>Domain aggregates with real narratives - orders, accounts, customers</span></div>
     <div class="matrix-row"><span>Cost</span><span>More design work; schema evolution is a real topic</span></div>
   </div>
   <div class="callout">Migration is one-way. For a domain aggregate, start event-sourced when in doubt.</div>
@@ -1287,7 +1287,7 @@ effects().reply(currentState());</pre>
     <div class="locus"><div class="locus-title">Projects</div><p>Each event updates rows in a queryable table.</p></div>
     <div class="locus"><div class="locus-title">Serves queries</div><p><span class="accent">@Query</span> methods return rows filtered by criteria.</p></div>
   </div>
-  <div class="callout">Multiple views can subscribe to the same events. Different shape, same source of truth &mdash; classic CQRS.</div>
+  <div class="callout">Multiple views can subscribe to the same events. Different shape, same source of truth - classic CQRS.</div>
 </section>
 
 
@@ -1330,8 +1330,8 @@ effects().reply(currentState());</pre>
         <li><span class="accent">@Consume.FromEventSourcedEntity</span> wires the subscription</li>
         <li>One <span class="accent">onEvent(&hellip;)</span> per event type</li>
         <li><span class="accent">effects().updateRow(&hellip;)</span> writes into the table</li>
-        <li><span class="accent">@Query</span> is a SQL-like DSL &mdash; parameters bind to method args</li>
-        <li>No JPA, no repository &mdash; the runtime <em>is</em> your storage</li>
+        <li><span class="accent">@Query</span> is a SQL-like DSL - parameters bind to method args</li>
+        <li>No JPA, no repository - the runtime <em>is</em> your storage</li>
       </ul>
     </div>
   </div>
@@ -1365,7 +1365,7 @@ effects().reply(currentState());</pre>
   <div class="loci-grid">
     <div class="locus"><div class="locus-title">@HttpEndpoint</div><p>Class-level annotation with a base path.</p></div>
     <div class="locus"><div class="locus-title">@Get / @Post / @Put / @Delete</div><p>Method-level annotations that map to routes.</p></div>
-    <div class="locus"><div class="locus-title">@Acl</div><p>Access control &mdash; who can hit this endpoint.</p></div>
+    <div class="locus"><div class="locus-title">@Acl</div><p>Access control - who can hit this endpoint.</p></div>
   </div>
   <div class="callout">Endpoints are <span class="accent">stateless</span>. All state lives in entities and views. Endpoints just translate HTTP &harr; domain calls.</div>
 </section>
@@ -1408,7 +1408,7 @@ effects().reply(currentState());</pre>
     <div>
       <ul class="bullets">
         <li><span class="accent">ComponentClient</span> is how endpoints call components</li>
-        <li>Injected by the runtime &mdash; no DI setup</li>
+        <li>Injected by the runtime - no DI setup</li>
         <li><span class="accent">forEventSourcedEntity(id)</span> targets one entity instance</li>
         <li><span class="accent">forView()</span> queries a view</li>
         <li><span class="accent">.method(&hellip;::&hellip;)</span> is a method reference to the handler</li>
@@ -1439,7 +1439,7 @@ effects().reply(currentState());</pre>
       <ul>
         <li>Endpoint &rarr; ComponentClient &rarr; entity or view</li>
         <li>State lives in the entity; the runtime persists it</li>
-        <li>Single-writer per entity ID &mdash; no locking</li>
+        <li>Single-writer per entity ID - no locking</li>
         <li>Sharding, replication, retries: runtime concerns</li>
       </ul>
     </div>
@@ -1462,14 +1462,14 @@ effects().reply(currentState());</pre>
     <div class="lifecycle-step"><b>5 &middot; View</b><small>CustomersUpdater sees customerCreated, writes row</small></div>
     <div class="lifecycle-step"><b>6 &middot; GET</b><small>GET /api/customers returns the row</small></div>
   </div>
-  <div class="callout">Steps 4 and 5 happen in parallel from the caller's perspective &mdash; the 200 returns after step 4.</div>
+  <div class="callout">Steps 4 and 5 happen in parallel from the caller's perspective - the 200 returns after step 4.</div>
 </section>
 
 
 <section id="slide-24" class="deck-slide" data-view>
   <div class="slide-head compact">
     <div class="eyebrow">Testing</div>
-    <h2>TestKit &mdash; unit tests for <span class="accent">stateful things</span>.</h2>
+    <h2>TestKit - unit tests for <span class="accent">stateful things</span>.</h2>
     <p>No cluster, no HTTP. In-JVM, fast, deterministic.</p>
   </div>
   <div class="two-code">
@@ -1490,7 +1490,7 @@ assertThat(result.getNextEventOfType(customerCreated.<span class="kw">class</spa
         <li>Instantiates the entity in memory</li>
         <li>Feeds it commands; asserts on <span class="accent">emitted events</span> and <span class="accent">reply</span></li>
         <li>Chains multiple commands to test evolution</li>
-        <li>No mocking &mdash; the real entity, minus the cluster</li>
+        <li>No mocking - the real entity, minus the cluster</li>
         <li>Views &amp; endpoints have their own testkits too</li>
       </ul>
     </div>
@@ -1572,7 +1572,7 @@ akka services list</pre>
   <div class="loci-grid">
     <div class="locus"><div class="locus-title">Workflows</div><p>Long-running, durable, resumable orchestrations. Sagas, checkouts, onboarding.</p></div>
     <div class="locus"><div class="locus-title">Timers</div><p>Scheduled commands. Reminders, retries, TTLs.</p></div>
-    <div class="locus"><div class="locus-title">Consumers</div><p>Subscribe to external streams &mdash; Kafka, other Akka services.</p></div>
+    <div class="locus"><div class="locus-title">Consumers</div><p>Subscribe to external streams - Kafka, other Akka services.</p></div>
   </div>
   <div class="loci-grid" style="margin-top: 18px;">
     <div class="locus"><div class="locus-title">Agents</div><p>LLM-powered components with tools, memory, evaluations.</p></div>
@@ -1590,7 +1590,7 @@ akka services list</pre>
   </div>
   <div class="loci-grid">
     <div class="locus"><div class="locus-title">Extend the sample</div><p>Add an <span class="accent">Order</span> event-sourced entity. Wire an OrdersView.</p></div>
-    <div class="locus"><div class="locus-title">Read the docs</div><p><span class="accent">docs.akka.io</span> &mdash; SDK reference, patterns, examples.</p></div>
+    <div class="locus"><div class="locus-title">Read the docs</div><p><span class="accent">docs.akka.io</span> - SDK reference, patterns, examples.</p></div>
     <div class="locus"><div class="locus-title">Coming next</div><p>Day-long: workflows, consumers, deployment. 5-day: agents, multi-region, ops.</p></div>
   </div>
   <div class="pill-row">

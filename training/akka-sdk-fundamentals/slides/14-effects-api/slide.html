@@ -21,10 +21,10 @@ effects().reply(currentState());</pre>
     </div>
     <div>
       <ul class="bullets">
-        <li><span class="accent">persist(&hellip;)</span> &mdash; journal one or more events atomically</li>
-        <li><span class="accent">thenReply(state -&gt; &hellip;)</span> &mdash; runs after persistence, with new state</li>
-        <li><span class="accent">error(&hellip;)</span> &mdash; reject the command, nothing persisted</li>
-        <li><span class="accent">reply(&hellip;)</span> &mdash; query-only, no events</li>
+        <li><span class="accent">persist(&hellip;)</span> - journal one or more events atomically</li>
+        <li><span class="accent">thenReply(state -&gt; &hellip;)</span> - runs after persistence, with new state</li>
+        <li><span class="accent">error(&hellip;)</span> - reject the command, nothing persisted</li>
+        <li><span class="accent">reply(&hellip;)</span> - query-only, no events</li>
         <li>You never write to storage directly. Ever.</li>
       </ul>
     </div>
